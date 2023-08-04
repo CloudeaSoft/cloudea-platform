@@ -17,8 +17,21 @@ namespace Cloudea.Web
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddScoped<My1Service>();
 
+            builder.Services.AddCors(opt =>
+            {
+                opt.AddDefaultPolicy(b =>
+                {
+                    b.WithOrigins(new string[] { "http://localhost:5173" })
+                    //.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+                });
+            });
+
+            builder.Services.AddScoped<My1Service>();
+            
             builder.Services.AddControllers() // 也可是services.AddMvc或者services.AddControllersWithViews()
   .AddXmlDataContractSerializerFormatters();
 
@@ -30,6 +43,8 @@ namespace Cloudea.Web
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseCors();
+
             app.UseDefaultFiles();
             app.UseStaticFiles();      
 
