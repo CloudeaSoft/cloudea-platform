@@ -1,8 +1,12 @@
 ﻿using Cloudea.Core;
+using Cloudea.Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using MyService;
 using MySqlX.XDevAPI.Common;
+using Newtonsoft.Json;
+using System.Net;
 
 namespace Cloudea.Web.Controllers
 {
@@ -16,11 +20,11 @@ namespace Cloudea.Web.Controllers
             this.service = service;
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public async Task<int> Reee()
         {
             return service.Send();
-        }
+        }*/
 
         [HttpGet("{a}/{b}")]
         public ActionResult<int> Add(int a, int b)
@@ -30,79 +34,37 @@ namespace Cloudea.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> MyJsts()
+        public async Task<List<MyJst>> MyJsts()
         {
-            return Ok(new List<MyJst>
+            var list = new List<MyJst>();
+            using(HttpClient client = new HttpClient())
             {
-                new() {
-                        BS_OBJ_NAME= "DDDD",
-                        CGO_MBL_NO= "DDDD22110033",
-                        CGO_MBL_TYPE= "1",
-                        CGO_ATD_POL= "2023-10-01 00:00",
-                        BADNAME_d1= "XM小明",
-                        BADNAME_e1= "2023-10-01 23:00",
-                        BADNAME_f1= "XH小华",
-                        BADNAME_h1= "1",
-                        BADNAME_i1= "XF小芳"
-                },
-                new() {
-                        BS_OBJ_NAME= "DDDD",
-                        CGO_MBL_NO= "DDDD22110032",
-                        CGO_MBL_TYPE= "1",
-                        CGO_ATD_POL= "2023-10-01 00:00",
-                        BADNAME_d1= "XM小明",
-                        BADNAME_e1= "2023-10-01 23:00",
-                        BADNAME_f1= "XH小华",
-                        BADNAME_h1= "0",
-                        BADNAME_i1= ""
-                },
-                new()  {
-                        BS_OBJ_NAME="DDDD",
-                        CGO_MBL_NO="DDDD22110035",
-                        CGO_MBL_TYPE="2",
-                        CGO_ATD_POL="2023-10-02 00:00",
-                        BADNAME_d1="XM小明",
-                        BADNAME_e1="2023-10-02 23:00",
-                        BADNAME_f1="XH小华",
-                        BADNAME_h1="1",
-                        BADNAME_i1="系统"
-                },
-                new()  {
-                        BS_OBJ_NAME="DDDD",
-                        CGO_MBL_NO="DDDD22110039",
-                        CGO_MBL_TYPE="3",
-                        CGO_ATD_POL="2023-10-05 00:00",
-                        BADNAME_d1="XM小明",
-                        BADNAME_e1="2023-10-05 23:00",
-                        BADNAME_f1="XH小华",
-                        BADNAME_h1="1",
-                        BADNAME_i1="系统"
-                },
-                new() {
-                        BS_OBJ_NAME="DDDD",
-                        CGO_MBL_NO="DDDD22110039",
-                        CGO_MBL_TYPE="4",
-                        CGO_ATD_POL="2023-10-05 00:00",
-                        BADNAME_d1="XM小明",
-                        BADNAME_e1="2023-10-05 23:00",
-                        BADNAME_f1="XH小华",
-                        BADNAME_h1="1",
-                        BADNAME_i1="系统"
-                },
-                new()  {
-                        BS_OBJ_NAME="DDDD",
-                        CGO_MBL_NO="DDDD22110039",
-                        CGO_MBL_TYPE="5",
-                        CGO_ATD_POL="2023-10-05 00:00",
-                        BADNAME_d1="XM小明",
-                        BADNAME_e1="2023-10-05 23:00",
-                        BADNAME_f1="XH小华",
-                        BADNAME_h1="1",
-                        BADNAME_i1="系统"
-                }
-            });
+                var response = await client.GetAsync("http://localhost:53812/api/TdRequest/GetListABC");
+                list = await response.Content.ReadFromJsonAsync<List<MyJst>>();
+            }
+            /* var list = new PageResponse<MyJst>();
+             using(HttpClient client = new HttpClient())
+             {
+                 try
+                 {
+                     var response = await client.GetAsync("http://localhost:53812/api/TdRequest/GetListABC");
+                     string content = await response.Content.ReadAsStringAsync();
+                     if (response.StatusCode == HttpStatusCode.OK)
+                     {
+                         list = JsonConvert.DeserializeObject<PageResponse<MyJst>>(content);
+                     }
+                     else
+                     {
+                         return list;
+                     }
+                 }
+                 catch(Exception ex)
+                 {
+                     return list;
+                 }
+             }*/
+            return list;
         }
-
     }
 
     public class Student
@@ -110,18 +72,29 @@ namespace Cloudea.Web.Controllers
         public int Id { get; set; }
         public string Name { get; set; }
     }
-
     public class MyJst
     {
-        public string? BS_OBJ_NAME { get; set; }
-        public string? CGO_MBL_NO { get; set; }
-        public string? CGO_MBL_TYPE { get; set; }
-        public string? CGO_ATD_POL { get; set; }
-        public string? BADNAME_d1 { get; set; }
-        public string? BADNAME_e1 { get; set; }
-        public string? BADNAME_f1 { get; set; }
-        public string? BADNAME_h1 { get; set; }
-        public string? BADNAME_i1 { get; set; }
+        //业务编号
+        public string BS_CODE { get; set; }
+        //主提单号
+        public string CGO_MBL_NO { get; set; }
+        //签单类型
+        public string CGO_MBL_TYPE { get; set; } = "1";
+        //签回人员
+        public string QH_EXECUTEER { get; set; }
+        //签回日期
+        public DateTime? QH_CRT_DATE { get; set; }
+        //实际签回人员
+        public string QH_REAL_EXER { get; set; }
+        //扫描人员
+        public string SM_EXECUTEER { get; set; }
+        //扫描日期
+        public DateTime? SM_CRT_DATE { get; set; }
+        //实际扫描人员
+        public string SM_REAL_EXER { get; set; }
+        //接收状态
+        public string RECEIVE_STATUS { get; set; } = "0";
+        //接收人员
+        public string RECEIVER { get; set; } = "CCZ蔡蔡子";
     }
-
 }

@@ -2,6 +2,8 @@ using Cloudea.Core;
 using Cloudea.Infrastructure.Db;
 using Microsoft.Extensions.DependencyInjection;
 using MyService;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace Cloudea.Web
 {
@@ -17,6 +19,12 @@ namespace Cloudea.Web
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddMvc().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            });
 
             builder.Services.AddCors(opt =>
             {

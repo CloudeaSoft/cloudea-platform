@@ -10,10 +10,6 @@ namespace MyService
         {
             return a;
         }
-    }
-
-    public class My2Service : IService
-    {
 
     }
 }
