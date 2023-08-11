@@ -88,3 +88,4 @@ namespace Cloudea.Infrastructure.Models
             }
         }
     }
+}
