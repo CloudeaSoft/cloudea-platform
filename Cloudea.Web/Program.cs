@@ -13,6 +13,8 @@ namespace Cloudea.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            IConfiguration Configuration = builder.Configuration;
+            Console.WriteLine(Configuration["Cloudea:Name"]);
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -57,7 +59,6 @@ namespace Cloudea.Web
             app.UseStaticFiles();      
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
