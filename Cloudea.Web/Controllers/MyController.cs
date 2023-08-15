@@ -31,7 +31,7 @@ namespace Cloudea.Web.Controllers
         public async Task<string> HowAreYou()
         {
             
-            return "你好";
+            return $"你好,{service.Send()}";
         }
     }
 

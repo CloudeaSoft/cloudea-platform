@@ -11,57 +11,76 @@ namespace Cloudea.Web
     {
         public static void Main(string[] args)
         {
+            //Init Builder
             var builder = WebApplication.CreateBuilder(args);
 
+            //Configuration Source:appsettings.json. Auto injected in .Net Core
             IConfiguration Configuration = builder.Configuration;
             Console.WriteLine(Configuration["Cloudea:Name"]);
-            // Add services to the container.
+            Console.WriteLine(Configuration["Cloudea:Name"]);
+            Console.WriteLine(Configuration["Cloudea:Name"]);
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            builder.Services.AddMvc().AddJsonOptions(options =>
+            // Add services to the container. Use Configuration to config the services.
             {
-                options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
-                options.JsonSerializerOptions.PropertyNamingPolicy = null;
-            });
+                //添加 控制器
+                builder.Services.AddControllers();
+                // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+                builder.Services.AddEndpointsApiExplorer();
+                builder.Services.AddSwaggerGen();
 
-            builder.Services.AddCors(opt =>
-            {
-                opt.AddDefaultPolicy(b =>
+                builder.Services.AddMvc().AddJsonOptions(options =>
                 {
-                    b.WithOrigins(new string[] { "http://localhost:5173" })
-                    //.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
+                    options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
                 });
-            });
 
-            builder.Services.AddScoped<My1Service>();
-            
-            builder.Services.AddControllers() // 也可是services.AddMvc或者services.AddControllersWithViews()
-  .AddXmlDataContractSerializerFormatters();
+                //添加 配置跨域
+                builder.Services.AddCors(opt =>
+                {
+                    opt.AddDefaultPolicy(b =>
+                    {
+                        b.WithOrigins(new string[] { "http://localhost:5173" })
+                        //.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                    });
+                });
 
-            var app = builder.Build();
+                //注入XML分析
+                builder.Services.AddControllers() // 也可是services.AddMvc或者services.AddControllersWithViews()
+      .AddXmlDataContractSerializerFormatters();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                //批量注入自定义Service
+                {
+                    var asms = ReflectionHelper.GetAllReferencedAssembliesFromJst();
+                    builder.Services.RunModuleInitializers(asms);
+                }
             }
-            app.UseCors();
+            
+            //Build webapplication.
+            var app = builder.Build();
+            
+            //Add middlewares to pipeline.
+            {
+                // Configure the HTTP request pipeline.
+                if (app.Environment.IsDevelopment())
+                {
+                    app.UseSwagger();
+                    app.UseSwaggerUI();
+                }
+                app.UseCors();
 
-            app.UseDefaultFiles();
-            app.UseStaticFiles();      
+                app.UseDefaultFiles();
+                app.UseStaticFiles();
 
-            app.UseAuthorization();
+                app.UseAuthorization();
 
-            app.MapControllers();
+                app.MapControllers();
+                
+            }
 
+            //Run webapplication.
             app.Run();
         }
     }

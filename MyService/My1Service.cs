@@ -1,4 +1,5 @@
 ﻿using Cloudea.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MyService
 {
