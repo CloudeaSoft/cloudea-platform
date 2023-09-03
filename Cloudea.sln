@@ -25,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Core", "Cloudea.Cor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "10 - Test", "10 - Test", "{392EF7BD-81C6-415D-80FD-7B28C27D3346}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnet5-webapi", "dotnet5-webapi\dotnet5-webapi.csproj", "{5262F059-E69E-461D-8992-E36B2D24B0B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet5-webapi", "dotnet5-webapi\dotnet5-webapi.csproj", "{5262F059-E69E-461D-8992-E36B2D24B0B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiscTool", "MiscTool\MiscTool.csproj", "{ABB4B4F3-0591-4C62-A5DF-E84907802B15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{5262F059-E69E-461D-8992-E36B2D24B0B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5262F059-E69E-461D-8992-E36B2D24B0B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5262F059-E69E-461D-8992-E36B2D24B0B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABB4B4F3-0591-4C62-A5DF-E84907802B15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABB4B4F3-0591-4C62-A5DF-E84907802B15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABB4B4F3-0591-4C62-A5DF-E84907802B15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABB4B4F3-0591-4C62-A5DF-E84907802B15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +79,7 @@ Global
 		{CEEA1842-9626-45B0-9750-9ECF54E0A07A} = {38C37412-E073-4F63-8694-80EE16F2D7EB}
 		{084E8F54-9231-4C7F-B25A-2215A9E9FCBB} = {41F74210-E3B2-4202-B2C0-7FDE09520D0E}
 		{5262F059-E69E-461D-8992-E36B2D24B0B1} = {392EF7BD-81C6-415D-80FD-7B28C27D3346}
+		{ABB4B4F3-0591-4C62-A5DF-E84907802B15} = {38C37412-E073-4F63-8694-80EE16F2D7EB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90FBFF38-D36E-4A20-A675-C21D9F0462C5}

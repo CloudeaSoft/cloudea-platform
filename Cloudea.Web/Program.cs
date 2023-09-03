@@ -11,17 +11,18 @@ namespace Cloudea.Web
     {
         public static void Main(string[] args)
         {
-            //Init Builder
+            // Init Builder
             var builder = WebApplication.CreateBuilder(args);
 
-            //Configuration Source:appsettings.json. Auto injected in .Net Core
+            // Configuration Source: appsettings.json. // Auto injected by .NetCore frame
             IConfiguration Configuration = builder.Configuration;
-            Console.WriteLine(Configuration["Cloudea:Name"]);
-            Console.WriteLine(Configuration["Cloudea:Name"]);
             Console.WriteLine(Configuration["Cloudea:Name"]);
 
             // Add services to the container. Use Configuration to config the services.
             {
+                //以Freesql官方提供的默认方式连接数据库
+                builder.Services.AddDataBaseDefault(FreeSql.DataType.MySql, @"Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;");
+
                 //添加 控制器
                 builder.Services.AddControllers();
                 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -54,7 +55,7 @@ namespace Cloudea.Web
                 //批量注入自定义Service
                 {
                     var asms = ReflectionHelper.GetAllReferencedAssembliesFromJst();
-                    builder.Services.RunModuleInitializers(asms);
+                    builder.Services.RunModuleInitializers(asms);       
                 }
             }
             

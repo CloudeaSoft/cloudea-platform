@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MyService
 {
-    public class Class1 : IModuleInitializer
+    public class ModuleInitializer : IModuleInitializer
     {
         public void Initialize(IServiceCollection services)
         {

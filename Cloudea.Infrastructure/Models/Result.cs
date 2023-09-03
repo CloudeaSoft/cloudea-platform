@@ -40,6 +40,7 @@ namespace Cloudea.Infrastructure.Models
     /// <typeparam name="T"></typeparam>
     public class Result<T>
     {
+
         public Result(bool succeeded, T data = default(T))
         {
             Status = succeeded;

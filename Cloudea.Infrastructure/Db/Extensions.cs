@@ -8,10 +8,41 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Infrastructure.Db
-{
-    public static class Extensions
-    {
+namespace Cloudea.Infrastructure.Db {
+    public static class Extensions {
+
+        /// <summary>
+        /// FreeSql官方提供的默认注入
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="dataType"></param>
+        /// <param name="connectionString"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddDataBaseDefault(this IServiceCollection services,
+            DataType dataType,
+            string connectionString
+            ) {
+            Func<IServiceProvider, IFreeSql> fsqlFactory = r => {
+                IFreeSql fsql = new FreeSql.FreeSqlBuilder()
+                    .UseConnectionString(dataType, connectionString)
+                    .UseMonitorCommand(cmd => Console.WriteLine($"Sql：{cmd.CommandText}"))//监听SQL语句
+                    .UseAutoSyncStructure(true) //自动同步实体结构到数据库，FreeSql不会扫描程序集，只有CRUD时才会生成表。
+                    .Build();
+                return fsql;
+            };
+            services.AddSingleton<IFreeSql>(fsqlFactory);
+            return services;
+        }
+
+        #region 以下代码不启用
+        /// <summary>
+        /// FreeSql的包装注入
+        /// </summary>
+        /// <typeparam name="TOption"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="option"></param>
+        /// <param name="optionAction"></param>
+        /// <returns></returns>
         public static IServiceCollection AddDatabase<TOption>(this IServiceCollection services,
             DatabaseOption option,
             Action<IFreeSql<TOption>>? optionAction = null // Null
@@ -22,19 +53,18 @@ namespace Cloudea.Infrastructure.Db
                 .UseConnectionString(option.Type, option.ConnectionString)
                 .Build<TOption>();
 
-            /*//创建
+            //创建
             PropertyInfo createTimeProp = typeof(EntityBase).GetProperty(nameof(EntityBase.CreateTime));
             var updateTimeProp = typeof(EntityBase).GetProperty(nameof(EntityBase.UpdateTime));
 
             //添加 自动处理
             fsql.Aop.AuditValue += auditValue;
             fsql.Aop.CommandBefore += Aop_CommandBefore<TOption>;
-            
+
             /// fsql
-            if (option != null && option.GlobalSetting != null)
-            {
+            if (option != null && option.GlobalSetting != null) {
                 option.GlobalSetting(fsql);
-            }*/
+            }
 
             var type = typeof(IFreeSql);
             services.AddSingleton(type, fsql);
@@ -45,15 +75,18 @@ namespace Cloudea.Infrastructure.Db
             return services;
         }
 
-        private static void Aop_CommandBefore<TOption>(object sender, CommandBeforeEventArgs e)
-        {
+        /// <summary>
+        /// 自动任务
+        /// </summary>
+        /// <typeparam name="TOption"></typeparam>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void Aop_CommandBefore<TOption>(object sender, CommandBeforeEventArgs e) {
 
-            if (string.IsNullOrEmpty(TransactionControl<TOption>.TransactionId.Value) == false && e.Command.Transaction == null)
-            {
+            if (string.IsNullOrEmpty(TransactionControl<TOption>.TransactionId.Value) == false && e.Command.Transaction == null) {
                 // 附上事务
                 var context = TransactionControlPool.Instance.GetContext(TransactionControl<TOption>.TransactionId.Value);
-                if (context != null)
-                {
+                if (context != null) {
                     e.Command.Transaction = context.UnitOfWork.GetOrBeginTransaction();
                     e.Command.Connection = e.Command.Transaction.Connection;
                 }
@@ -66,23 +99,19 @@ namespace Cloudea.Infrastructure.Db
         /// <typeparam name="TOption"></typeparam>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection SetDefaultDatabase<TOption>(this IServiceCollection services)
-        {
+        public static IServiceCollection SetDefaultDatabase<TOption>(this IServiceCollection services) {
             var sqlService = services.FirstOrDefault(t => t.ServiceType == typeof(IFreeSql<TOption>));
 
-            if (sqlService == null)
-            {
+            if (sqlService == null) {
                 throw new Exception("默认数据库不存在");
             }
-            if (sqlService.ImplementationInstance == null)
-            {
+            if (sqlService.ImplementationInstance == null) {
                 throw new Exception("默认数据库未初始化");
             }
 
             services.AddSingleton(typeof(IFreeSql), sqlService.ImplementationInstance);
             // 设置默认 获得事务的方法
-            FreeSqlTransactionExtendsion.GetDefaultTransaction = (fsql) =>
-            {
+            FreeSqlTransactionExtendsion.GetDefaultTransaction = (fsql) => {
                 var instance = fsql as IFreeSql<TOption>;
                 return instance.BeginTransaction();
             };
@@ -93,26 +122,28 @@ namespace Cloudea.Infrastructure.Db
         private static Type _baseEntityType = typeof(EntityBase);
         // 存储 基础实体 的Create和Update属性
         private static PropertyInfo _createProp = typeof(EntityBase).GetProperty(nameof(EntityBase.CreateTime));
-        private static PropertyInfo _updateProp = typeof(EntityBase).GetProperty(nameof(EntityBase.UpdateTime));   
+        private static PropertyInfo _updateProp = typeof(EntityBase).GetProperty(nameof(EntityBase.UpdateTime));
 
-        // 插入/更新时统一处理的值(插入时间，修改时间）
-        private static void auditValue(object sender, AuditValueEventArgs args)
-        {
+        /// <summary>
+        /// 插入/更新时统一处理的值(插入时间，修改时间）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private static void auditValue(object sender, AuditValueEventArgs args) {
             // 判断声明该成员的类是否为 _baseEntityType => EntityBase
-            if (args.Property.DeclaringType != _baseEntityType)
-            {
+            if (args.Property.DeclaringType != _baseEntityType) {
                 return;
             }
 
-            // 插入动作 & 更新动作
-            if (args.Property.Name == _createProp.Name && args.AuditValueType == AuditValueType.Insert)
-            {
+            // 插入动作
+            if (args.Property.Name == _createProp.Name && args.AuditValueType == AuditValueType.Insert) {
                 args.Value = DateTime.Now;
-            } 
-            else if (args.Property.Name == _updateProp.Name)
-            {
+            }
+            // 更新动作
+            else if (args.Property.Name == _updateProp.Name) {
                 args.Value = DateTime.Now;
             }
         }
+        #endregion
     }
 }
