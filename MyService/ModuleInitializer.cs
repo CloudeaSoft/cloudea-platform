@@ -1,4 +1,5 @@
 ﻿using Cloudea.Core;
+using Cloudea.MyService;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyService
+namespace Cloudea.MyService
 {
     public class ModuleInitializer : IModuleInitializer
     {

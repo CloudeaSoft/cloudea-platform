@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiscTool {
+namespace Cloudea.MiscTool {
     public class RegionClock {
         public async Task<DateTime> getDate() {
             return DateTime.Now;

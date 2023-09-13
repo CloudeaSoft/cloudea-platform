@@ -1,9 +1,9 @@
 ﻿using Cloudea.Core;
 using Cloudea.Infrastructure.Models;
+using Cloudea.MyService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using MyService;
 using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
 using System.Net;

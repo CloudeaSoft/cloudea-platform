@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Entity", "Cloudea.E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Infrastructure", "Cloudea.Infrastructure\Cloudea.Infrastructure.csproj", "{FF7DA414-BEA2-4C76-906E-A2A1D8920F05}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyService", "MyService\MyService.csproj", "{CEEA1842-9626-45B0-9750-9ECF54E0A07A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.MyService", "MyService\Cloudea.MyService.csproj", "{CEEA1842-9626-45B0-9750-9ECF54E0A07A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Core", "Cloudea.Core\Cloudea.Core.csproj", "{084E8F54-9231-4C7F-B25A-2215A9E9FCBB}"
 EndProject
@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "10 - Test", "10 - Test", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet5-webapi", "dotnet5-webapi\dotnet5-webapi.csproj", "{5262F059-E69E-461D-8992-E36B2D24B0B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiscTool", "MiscTool\MiscTool.csproj", "{ABB4B4F3-0591-4C62-A5DF-E84907802B15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.MiscTool", "MiscTool\Cloudea.MiscTool.csproj", "{ABB4B4F3-0591-4C62-A5DF-E84907802B15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

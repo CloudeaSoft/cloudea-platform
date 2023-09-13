@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MiscTool;
+using Cloudea.MiscTool;
 
 namespace Cloudea.Web.Controllers.MiscTool {
 

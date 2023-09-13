@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Cloudea.Entity.MiscTool;
 using Cloudea.Infrastructure.Models;
 
-namespace MiscTool {
+namespace Cloudea.MiscTool {
     public class FileManager {
 
         private readonly IFreeSql Database;

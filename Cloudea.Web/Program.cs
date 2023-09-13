@@ -1,7 +1,6 @@
 ﻿using Cloudea.Core;
 using Cloudea.Infrastructure.Db;
 using Microsoft.Extensions.DependencyInjection;
-using MyService;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
@@ -51,7 +50,12 @@ namespace Cloudea.Web {
 
                 //自定义自动注入 通过扫描得到的类
                 {
-                    var asms = ReflectionHelper.GetAllReferencedAssembliesFromJst();
+                    var asms = ReflectionHelper.GetAllReferencedAssemblies();
+                    foreach (var asm in asms) {
+                        foreach (var a in asm.GetTypes()) {
+                            Console.WriteLine(a);
+                        }
+                    }
                     builder.Services.RunModuleInitializers(asms);
                 }
             }
