@@ -3,8 +3,10 @@ using Cloudea.Infrastructure.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Cloudea.MiscTool;
+using Cloudea.Web.Controllers.Base;
 
-namespace Cloudea.Web.Controllers.MiscTool {
+namespace Cloudea.Web.Controllers.MiscTool
+{
 
     public class FileManagerController : ApiControllerBase {
 

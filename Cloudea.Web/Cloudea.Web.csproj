@@ -12,11 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Files\" />
-    <Folder Include="Files\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Cloudea.Entity\Cloudea.Entity.csproj" />
     <ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
     <ProjectReference Include="..\MiscTool\Cloudea.MiscTool.csproj" />

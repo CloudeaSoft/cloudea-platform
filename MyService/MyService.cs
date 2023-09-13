@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cloudea.MyService {
-    public class My1Service {
+    public class MyService {
         public int a = 5;
 
         public int Send() {

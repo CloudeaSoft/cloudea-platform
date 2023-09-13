@@ -7,13 +7,15 @@ using Microsoft.Extensions.Logging;
 using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
 using System.Net;
+using Cloudea.Infrastructure;
+using Cloudea.Web.Controllers.Base;
 
 namespace Cloudea.Web.Controllers
 {
     public class MyController : ApiControllerBase
     {
-        private readonly My1Service service;
-        public MyController(My1Service service)
+        private readonly MyService.MyService service;
+        public MyController(MyService.MyService service)
         {
             this.service = service;
         }
