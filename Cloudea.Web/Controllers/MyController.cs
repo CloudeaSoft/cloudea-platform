@@ -10,9 +10,7 @@ using System.Net;
 
 namespace Cloudea.Web.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class MyController : ControllerBase
+    public class MyController : ApiControllerBase
     {
         private readonly My1Service service;
         public MyController(My1Service service)

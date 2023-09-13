@@ -1,16 +1,13 @@
-using Cloudea.Core;
+ï»¿using Cloudea.Core;
 using Cloudea.Infrastructure.Db;
 using Microsoft.Extensions.DependencyInjection;
 using MyService;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
-namespace Cloudea.Web
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
+namespace Cloudea.Web {
+    public class Program {
+        public static void Main(string[] args) {
             // Init Builder
             var builder = WebApplication.CreateBuilder(args);
 
@@ -20,26 +17,26 @@ namespace Cloudea.Web
 
             // Add services to the container. Use Configuration to config the services.
             {
-                //ÒÔFreesql¹Ù·½Ìá¹©µÄÄ¬ÈÏ·½Ê½Á¬½ÓÊı¾İ¿â
-                builder.Services.AddDataBaseDefault(FreeSql.DataType.MySql, @"Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;");
+                //æ³¨å…¥ Freesql
+                builder.Services.AddDataBaseDefault(
+                    FreeSql.DataType.MySql,
+                    @"Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;"
+                );
 
-                //Ìí¼Ó ¿ØÖÆÆ÷
+                //æ³¨å…¥ æ§åˆ¶å™¨
                 builder.Services.AddControllers();
                 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
 
-                builder.Services.AddMvc().AddJsonOptions(options =>
-                {
+                builder.Services.AddMvc().AddJsonOptions(options => {
                     options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
                 });
 
-                //Ìí¼Ó ÅäÖÃ¿çÓò
-                builder.Services.AddCors(opt =>
-                {
-                    opt.AddDefaultPolicy(b =>
-                    {
+                //æ³¨å…¥ è·¨åŸŸé…ç½®
+                builder.Services.AddCors(opt => {
+                    opt.AddDefaultPolicy(b => {
                         b.WithOrigins(new string[] { "http://localhost:5173" })
                         //.AllowAnyOrigin()
                         .AllowAnyMethod()
@@ -48,25 +45,24 @@ namespace Cloudea.Web
                     });
                 });
 
-                //×¢ÈëXML·ÖÎö
-                builder.Services.AddControllers() // Ò²¿ÉÊÇservices.AddMvc»òÕßservices.AddControllersWithViews()
+                //æ³¨å…¥ XMLåˆ†æ
+                builder.Services.AddControllers() // services.AddMvcÂ»Ã²Ã•ÃŸservices.AddControllersWithViews()
       .AddXmlDataContractSerializerFormatters();
 
-                //ÅúÁ¿×¢Èë×Ô¶¨ÒåService
+                //è‡ªå®šä¹‰è‡ªåŠ¨æ³¨å…¥ é€šè¿‡æ‰«æå¾—åˆ°çš„ç±»
                 {
                     var asms = ReflectionHelper.GetAllReferencedAssembliesFromJst();
-                    builder.Services.RunModuleInitializers(asms);       
+                    builder.Services.RunModuleInitializers(asms);
                 }
             }
-            
+
             //Build webapplication.
             var app = builder.Build();
-            
+
             //Add middlewares to pipeline.
             {
                 // Configure the HTTP request pipeline.
-                if (app.Environment.IsDevelopment())
-                {
+                if (app.Environment.IsDevelopment()) {
                     app.UseSwagger();
                     app.UseSwaggerUI();
                 }
@@ -78,7 +74,7 @@ namespace Cloudea.Web
                 app.UseAuthorization();
 
                 app.MapControllers();
-                
+
             }
 
             //Run webapplication.

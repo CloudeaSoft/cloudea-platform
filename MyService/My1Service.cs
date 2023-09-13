@@ -7,8 +7,9 @@ namespace MyService
     {
         public int a = 5;
 
-        public int Send()
+        public async int Send()
         {
+            using HttpResponseMessage response = 
             return a;
         }
 

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers {
-    [Route("api/[controller]/[action]")]
     [ApiController]
+    [Route("api/[controller]/[action]")]
     public class ApiControllerBase : ControllerBase {
     }
 }
