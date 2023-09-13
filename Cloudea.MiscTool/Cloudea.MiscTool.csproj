@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cloudea.Core\Cloudea.Core.csproj" />
+    <ProjectReference Include="..\Cloudea.Entity\Cloudea.Entity.csproj" />
+    <ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

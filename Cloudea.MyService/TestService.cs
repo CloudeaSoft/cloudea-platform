@@ -1,8 +1,7 @@
-﻿using Cloudea.Core;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Cloudea.MyService {
-    public class MyService {
+    public class TestService {
         public int a = 5;
 
         public int Send() {

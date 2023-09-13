@@ -1,5 +1,4 @@
-﻿using Cloudea.Core;
-using Cloudea.Infrastructure.Models;
+﻿using Cloudea.Infrastructure.Models;
 using Cloudea.MyService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,8 +13,8 @@ namespace Cloudea.Web.Controllers
 {
     public class MyController : ApiControllerBase
     {
-        private readonly MyService.MyService service;
-        public MyController(MyService.MyService service)
+        private readonly TestService service;
+        public MyController(TestService service)
         {
             this.service = service;
         }
@@ -28,7 +27,7 @@ namespace Cloudea.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<string> HowAreYou()
+        public string HowAreYou()
         {
             
             return $"你好,{service.Send()}";

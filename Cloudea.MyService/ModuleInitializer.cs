@@ -13,7 +13,7 @@ namespace Cloudea.MyService
     {
         public void Initialize(IServiceCollection services)
         {
-            services.AddScoped<MyService>();
+            services.AddScoped<TestService>();
         }
     }
 }

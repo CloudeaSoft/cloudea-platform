@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Cloudea.MiscTool;
 using Cloudea.Web.Controllers.Base;
+using Cloudea.Infrastructure.Models;
 
 namespace Cloudea.Web.Controllers.MiscTool
 {
@@ -14,8 +15,18 @@ namespace Cloudea.Web.Controllers.MiscTool
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index() {
-            return Ok(await regionClock.getDate());
+        public DateTime Index() {
+            return regionClock.getDate();
+        }
+
+        [HttpGet]
+        public Result getTimeToUnix(DateTime dateTime) {
+            return regionClock.getTimeToUnix(dateTime);
+        }
+
+        [HttpGet]
+        public Result getUnixToTime(string timeStamp) {
+            return regionClock.getUnixToTime(timeStamp);
         }
     }
 }
