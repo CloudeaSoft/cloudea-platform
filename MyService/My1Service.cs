@@ -3,13 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MyService
 {
-    public class My1Service : IService
+    public class My1Service
     {
         public int a = 5;
 
-        public async int Send()
+        public int Send()
         {
-            using HttpResponseMessage response = 
+            var a = 5;
             return a;
         }
 
