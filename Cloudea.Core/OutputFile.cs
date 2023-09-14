@@ -11,11 +11,13 @@ namespace Cloudea.Core
     {
         public static void outputTxt(IConfiguration configuration)
         {
-            using (StreamReader sr = new StreamReader(configuration["Cloudea:Icon:TextIcon"], Encoding.UTF8)) {
+            try {
+                using StreamReader sr = new(configuration["Cloudea:Icon:TextIcon"], Encoding.UTF8);
                 string line;
-                while ((line = sr.ReadLine()) != null) {
-                    Console.WriteLine(line);
-                }
+                while ((line = sr.ReadLine()) != null) Console.WriteLine(line);
+            }
+            catch (Exception ex) { 
+                
             }
         }
     }

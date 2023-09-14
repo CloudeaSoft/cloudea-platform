@@ -1,6 +1,6 @@
 ﻿namespace Cloudea.Infrastructure.Models
 {
-    public class PageRequest
+    public class RequestPage
     {
         /// <summary>
         /// 页数

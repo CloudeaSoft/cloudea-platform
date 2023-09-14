@@ -64,7 +64,7 @@ namespace Cloudea
         /// <param name="select"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public static async Task<PageResponse<T>> ToPageListAsync<T>(this ISelect<T> select, PageRequest request)
+        public static async Task<ResponsePage<T>> ToPageListAsync<T>(this ISelect<T> select, PageRequest request)
         {
             return await select.ToPageList(request.Page, request.Limit);
         }
@@ -77,14 +77,14 @@ namespace Cloudea
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public static async Task<PageResponse<T>> ToPageList<T>(this ISelect<T> select, int page, int pageSize)
+        public static async Task<ResponsePage<T>> ToPageList<T>(this ISelect<T> select, int page, int pageSize)
         {
             if (page <= 0)
             {
                 var total = await select.CountAsync();
                 var data = await select.ToListAsync();
 
-                return new PageResponse<T>()
+                return new ResponsePage<T>()
                 {
                     Rows = data,
                     Total = total
@@ -107,7 +107,7 @@ namespace Cloudea
                     }
                 }
                 var list = await select.Count(out long total).Page(page, pageSize).ToListAsync();
-                return new PageResponse<T>()
+                return new ResponsePage<T>()
                 {
                     Total = total,
                     Rows = list

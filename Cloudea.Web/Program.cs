@@ -17,96 +17,89 @@ namespace Cloudea.Web
         {
             // Init Builder
             var builder = WebApplication.CreateBuilder(args);
-
-            // Configuration Source: appsettings.json. // Auto injected by .NetCore frame
+            // 在控制台打印图标
             OutputFile.outputTxt(builder.Configuration);
 
-            // Add services to the container. Use Configuration to config the services.
-            {
-                //注入 Freesql
-                builder.Services.AddDataBaseDefault(
-                    FreeSql.DataType.MySql,
-                    @"Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;"
-                );
+            #region 依赖注入 Add services to the container. Use Configuration to config the services.
 
-                //注入 控制器
-                builder.Services.AddControllers();
-                // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-                builder.Services.AddEndpointsApiExplorer();
-                builder.Services.AddSwaggerGen(options =>
-                {
-                    options.SwaggerDoc("v1", new OpenApiInfo {
-                        Version = "v1",
-                        Title = "ToDo API",
-                        Description = "An ASP.NET Core Web API for managing ToDo items",
-                        TermsOfService = new Uri("https://example.com/terms"),
-                        Contact = new OpenApiContact {
-                            Name = "Example Contact",
-                            Url = new Uri("https://example.com/contact")
-                        },
-                        License = new OpenApiLicense {
-                            Name = "Example License",
-                            Url = new Uri("https://example.com/license")
-                        }
-                    });
-
-                    // using System.Reflection;
-                    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            // 控制器
+            builder.Services.AddControllers();
+            
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(options => {
+                options.SwaggerDoc("v1", new OpenApiInfo {
+                    Version = "v1",
+                    Title = "ToDo API",
+                    Description = "An ASP.NET Core Web API for managing ToDo items",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact {
+                        Name = "Example Contact",
+                        Url = new Uri("https://example.com/contact")
+                    },
+                    License = new OpenApiLicense {
+                        Name = "Example License",
+                        Url = new Uri("https://example.com/license")
+                    }
                 });
 
-                builder.Services.AddMvc().AddJsonOptions(options => {
-                    options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
-                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                // using System.Reflection;
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
+
+            builder.Services.AddMvc().AddJsonOptions(options => {
+                options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            });
+
+            // 跨域配置
+            builder.Services.AddCors(opt => {
+                opt.AddDefaultPolicy(b => {
+                    b.WithOrigins(new string[] { "http://localhost:1111" })
+                    //.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
                 });
+            });
 
-                //注入 跨域配置
-                builder.Services.AddCors(opt => {
-                    opt.AddDefaultPolicy(b => {
-                        b.WithOrigins(new string[] { "http://localhost:5173" })
-                        //.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
-                    });
-                });
+            // Service 中的服务类
+            builder.Services.RunModuleInitializers();
 
-                //注入 XML分析
-                // builder.Services.AddControllers(); // services.AddMvc»òÕßservices.AddControllersWithViews()
-                                                   //.AddXmlDataContractSerializerFormatters();
-
-                //自动注入 Service 中的类
-                {
-                    var asms = ReflectionHelper.GetAllReferencedAssemblies();
-                    builder.Services.RunModuleInitializers(asms);
-                }
-            }
-
+            // Serilog配置
             builder.Host.UseSerilog((context, configuration) =>
                 configuration.ReadFrom.Configuration(context.Configuration));
 
-            //Build webapplication.
+            // Freesql
+            builder.Services.AddDataBaseDefault(
+                    FreeSql.DataType.MySql,
+                    @"Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;");
+
+            #endregion
+
+            //Build Webapplication.
             var app = builder.Build();
 
-            //Add middlewares to pipeline.
-            {
-                // Configure the HTTP request pipeline.
-                if (app.Environment.IsDevelopment()) {
-                    app.UseSwagger();
-                    app.UseSwaggerUI();
-                }
-                app.UseCors();
-
-                app.UseDefaultFiles();
-                app.UseStaticFiles();
-
-                app.UseAuthorization();
-
-                app.MapControllers();
-
-                app.UseSerilogRequestLogging();
+            #region 装配中间件管道 Configure the HTTP request pipeline.
+            
+            if (app.Environment.IsDevelopment()) {
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
+            app.UseCors();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.UseSerilogRequestLogging();
+
+            #endregion
+            
             //Run webapplication.
             app.Run();
         }

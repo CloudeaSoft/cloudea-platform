@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Cloudea.Core;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Cloudea.Core
 {
     public static class ModuleInitializerExtensions
     {
@@ -13,9 +14,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <param name="assemblies"></param>
-        public static IServiceCollection RunModuleInitializers(this IServiceCollection services,
-         IEnumerable<Assembly> assemblies)
+        public static IServiceCollection RunModuleInitializers(
+            this IServiceCollection services
+            //IEnumerable<Assembly> assemblies
+            )
         {
+             var assemblies = GetAllReferencedAssemblies();
+
             //遍历给定的 Assembly集合
             foreach (var asm in assemblies)
             {
@@ -34,6 +39,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
             }
             return services;
+        }
+
+        /// <summary>
+        /// 获取所有指定命名空间的类
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<Assembly> GetAllReferencedAssemblies()
+        {
+            var path = AppDomain.CurrentDomain.RelativeSearchPath ?? AppDomain.CurrentDomain.BaseDirectory;
+            var referencedAssemblies = System.IO.Directory.GetFiles(path, "Cloudea.*.dll").Select(Assembly.LoadFrom).ToList();
+            return referencedAssemblies;
         }
     }
 }

@@ -63,7 +63,7 @@ namespace Cloudea.Infrastructure.Models
         }
 
         /// <summary>
-        /// 普通Result转换为泛型Result
+        /// 隐式转换为泛型Result
         /// </summary>
         /// <param name="response"></param>
         public static implicit operator Result<T>(Result response)

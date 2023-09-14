@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Web", "Cloudea.Web\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 - Web", "01 - Web", "{67829578-1C35-4639-9D05-EF76D6507ED5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 - Service", "03 - Service", "{38C37412-E073-4F63-8694-80EE16F2D7EB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 - Module", "03 - Module", "{38C37412-E073-4F63-8694-80EE16F2D7EB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 - Data", "04 - Data", "{73D22F29-19EB-46A5-A037-59CB7AC9D577}"
 EndProject
@@ -30,8 +30,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.MyService", "Cloudea.MyService\Cloudea.MyService.csproj", "{BEED79F0-F141-4939-A9F7-762A860FE1A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudea.WebTest", "Cloudea.WebTest\Cloudea.WebTest.csproj", "{3EFBDEC9-5B06-4D0A-B560-150925BD7FA3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudea.WebMvcTest", "Cloudea.WebMvcTest\Cloudea.WebMvcTest.csproj", "{E7080DB4-E642-4AD0-BE2E-D6B1E9D0527D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,10 +73,6 @@ Global
 		{3EFBDEC9-5B06-4D0A-B560-150925BD7FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EFBDEC9-5B06-4D0A-B560-150925BD7FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EFBDEC9-5B06-4D0A-B560-150925BD7FA3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E7080DB4-E642-4AD0-BE2E-D6B1E9D0527D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7080DB4-E642-4AD0-BE2E-D6B1E9D0527D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7080DB4-E642-4AD0-BE2E-D6B1E9D0527D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7080DB4-E642-4AD0-BE2E-D6B1E9D0527D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,7 +87,6 @@ Global
 		{8C1146E4-9EB5-4E0B-B04D-3EC896D06FA3} = {38C37412-E073-4F63-8694-80EE16F2D7EB}
 		{BEED79F0-F141-4939-A9F7-762A860FE1A3} = {38C37412-E073-4F63-8694-80EE16F2D7EB}
 		{3EFBDEC9-5B06-4D0A-B560-150925BD7FA3} = {67829578-1C35-4639-9D05-EF76D6507ED5}
-		{E7080DB4-E642-4AD0-BE2E-D6B1E9D0527D} = {67829578-1C35-4639-9D05-EF76D6507ED5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90FBFF38-D36E-4A20-A675-C21D9F0462C5}
