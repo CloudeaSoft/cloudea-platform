@@ -1,18 +1,25 @@
 ﻿using Cloudea.Core;
 using Cloudea.Infrastructure.Db;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using System.Reflection;
+using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
-namespace Cloudea.Web {
-    public class Program {
-        public static void Main(string[] args) {
+namespace Cloudea.Web
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
             // Init Builder
             var builder = WebApplication.CreateBuilder(args);
 
             // Configuration Source: appsettings.json. // Auto injected by .NetCore frame
-            IConfiguration Configuration = builder.Configuration;
-            Console.WriteLine(Configuration["Cloudea:Name"]);
+            OutputFile.outputTxt(builder.Configuration);
 
             // Add services to the container. Use Configuration to config the services.
             {
@@ -26,7 +33,27 @@ namespace Cloudea.Web {
                 builder.Services.AddControllers();
                 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
                 builder.Services.AddEndpointsApiExplorer();
-                builder.Services.AddSwaggerGen();
+                builder.Services.AddSwaggerGen(options =>
+                {
+                    options.SwaggerDoc("v1", new OpenApiInfo {
+                        Version = "v1",
+                        Title = "ToDo API",
+                        Description = "An ASP.NET Core Web API for managing ToDo items",
+                        TermsOfService = new Uri("https://example.com/terms"),
+                        Contact = new OpenApiContact {
+                            Name = "Example Contact",
+                            Url = new Uri("https://example.com/contact")
+                        },
+                        License = new OpenApiLicense {
+                            Name = "Example License",
+                            Url = new Uri("https://example.com/license")
+                        }
+                    });
+
+                    // using System.Reflection;
+                    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                });
 
                 builder.Services.AddMvc().AddJsonOptions(options => {
                     options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
@@ -45,20 +72,18 @@ namespace Cloudea.Web {
                 });
 
                 //注入 XML分析
-                builder.Services.AddControllers() // services.AddMvc»òÕßservices.AddControllersWithViews()
-      .AddXmlDataContractSerializerFormatters();
+                // builder.Services.AddControllers(); // services.AddMvc»òÕßservices.AddControllersWithViews()
+                                                   //.AddXmlDataContractSerializerFormatters();
 
-                //自定义自动注入 通过扫描得到的类
+                //自动注入 Service 中的类
                 {
                     var asms = ReflectionHelper.GetAllReferencedAssemblies();
-                    foreach (var asm in asms) {
-                        foreach (var a in asm.GetTypes()) {
-                            Console.WriteLine(a);
-                        }
-                    }
                     builder.Services.RunModuleInitializers(asms);
                 }
             }
+
+            builder.Host.UseSerilog((context, configuration) =>
+                configuration.ReadFrom.Configuration(context.Configuration));
 
             //Build webapplication.
             var app = builder.Build();
@@ -79,6 +104,7 @@ namespace Cloudea.Web {
 
                 app.MapControllers();
 
+                app.UseSerilogRequestLogging();
             }
 
             //Run webapplication.

@@ -7,31 +7,29 @@ namespace Cloudea.Infrastructure.Models
     /// </summary>
     public class Result
     {
-        public Result(bool succeeded, object data = null)
+        public bool Status { get; set; }
+        public string Message { get; set; } = default!;
+        public object? Data { get; set; }
+
+        public Result(bool succeeded, object? data = null)
         {
             Status = succeeded;
-            this.Data = data;
+            Data = data;
         }
 
-        public bool Status { get; set; }
-        public string Message { get; set; }
-        public object Data { get; set; }
-
-        public static Result Success(object data = null, string message = null)
+        public static Result Success(object? data = null, string? message = null)
         {
-            var result = new Result(true, data);
-            result.Message = message ?? "成功";
-            return result;
-        }
-
-        public static Result Fail(string error = "", object data = null)
-        {
-            var res = new Result(false);
-            res.Message = error ?? "失败";
-            res.Data = data;
+            var res = new Result(true, data);
+            res.Message = message ?? "成功";
             return res;
         }
 
+        public static Result Fail(string? error = null, object? data = null)
+        {
+            var res = new Result(false, data);
+            res.Message = error ?? "失败";
+            return res;
+        }
     }
 
     /// <summary>
@@ -40,39 +38,41 @@ namespace Cloudea.Infrastructure.Models
     /// <typeparam name="T"></typeparam>
     public class Result<T>
     {
-
-        public Result(bool succeeded, T data = default(T))
-        {
-            Status = succeeded;
-            this.Data = data;
-        }
-
         public bool Status { get; set; }
-        public string Message { get; set; }
+        public string Message { get; set; } = default!;
         public T Data { get; set; }
 
-        public static Result<T> Success(T data = default(T), string message = null)
+        public Result(bool succeeded, T data = default)
         {
-            var result = new Result<T>(true, data);
-            result.Message = message ?? "成功";
-            return result;
+            Status = succeeded;
+            Data = data;
         }
 
-        public static Result<T> Fail(string error = "", T data = default(T))
+        public static Result<T> Success(T data, string? message = null)
         {
-            var res = new Result<T>(false);
-            res.Message = error ?? "失败";
-            res.Data = data;
+            var res = new Result<T>(true, data);
+            res.Message = message ?? "成功";
             return res;
         }
 
+        public static Result<T> Fail(string? error = null, T data = default)
+        {
+            var res = new Result<T>(false, data);
+            res.Message = error ?? "失败";
+            return res;
+        }
+
+        /// <summary>
+        /// 普通Result转换为泛型Result
+        /// </summary>
+        /// <param name="response"></param>
         public static implicit operator Result<T>(Result response)
         {
-            if (!(response.Data is T) && response.Data != null)
+            if (response.Data is not T && response.Data != null) // data为不为空 且 data不符合要求
             {
                 throw new ArgumentException($"Data的类型与{typeof(T).Name}不符");
             }
-            if (response.Data != null)
+            else if (response.Data != null) // data为不为空 且 data符合要求
             {
                 return new Result<T>(response.Status)
                 {
@@ -80,7 +80,7 @@ namespace Cloudea.Infrastructure.Models
                     Message = response.Message
                 };
             }
-            else
+            else // data为空
             {
                 return new Result<T>(response.Status)
                 {
