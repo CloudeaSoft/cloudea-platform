@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net;
 using Cloudea.Infrastructure;
-using Cloudea.Web.Controllers.Base;
+using Cloudea.Web.Utils.ApiBase;
 
 namespace Cloudea.Web.Controllers
 {

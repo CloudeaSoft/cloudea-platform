@@ -2,7 +2,7 @@
 
 namespace Cloudea.Infrastructure.Models
 {
-    public class PageResponse<T>
+    public class ResponsePage<T>
     {
         /// <summary>
         /// 总数
