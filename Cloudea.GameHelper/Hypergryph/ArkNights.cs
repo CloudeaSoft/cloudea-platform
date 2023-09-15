@@ -19,19 +19,6 @@ namespace Cloudea.GameHelper.Hypergryph
         public async Task<GachaHistory> GetGachaPage(string token = "", int page = 2, int channelId = 2)
         {
             GachaHistory gh = new();
-
-/*            token = @"2nN9OGXbi+iggbfu21cl3mzoBLM/6yzBF3vKKBVP4LnwETfOwdATFqitg2M4rvlm3xJQ1NWjIjGji1ObtqOjQowrOPy
-5ubYh+ExPfdvWUe1rfcC94a/JgFgG9V3wRMUSsKxHoP5TSHNk0pM4JzL8ade0mXFaGIKbPzv6No1FEttqfJHQaW8gLq37DdH0v+FLGnFKdpKnXwbB
-fcQ8rnroL7NW1qnezEFSHAFqyE323jcSpnEJZERkGrRLdoTeLrauzZ9Z8TMIbayhYsp9NjVaM5dQczIIBjVSKuXzPQ==";
-            var uri = new UriBuilder($"https://ak.hypergryph.com/user/api/inquiry/gacha?{page}&{token}&{channelId}");
-            
-            await httpClient.GetFromJsonAsync<GachaHistory>(uri.Uri);
-            var gh2 = await httpClient.GetAsync(uri.Uri);
-            Console.Write(uri.Uri);
-            Console.Write(gh2.Content.ReadAsStringAsync());*/
-
-
-
             return gh;
         }
 
