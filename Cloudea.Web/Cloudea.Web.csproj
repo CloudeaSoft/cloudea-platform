@@ -15,6 +15,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Cloudea.Core\Cloudea.Core.csproj" />
 		<ProjectReference Include="..\Cloudea.Entity\Cloudea.Entity.csproj" />
+		<ProjectReference Include="..\Cloudea.GameHelper\Cloudea.GameHelper.csproj" />
 		<ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
 		<ProjectReference Include="..\Cloudea.MiscTool\Cloudea.MiscTool.csproj" />
 		<ProjectReference Include="..\Cloudea.MyService\Cloudea.MyService.csproj" />

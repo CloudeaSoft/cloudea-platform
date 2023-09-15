@@ -64,7 +64,7 @@ namespace Cloudea
         /// <param name="select"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public static async Task<ResponsePage<T>> ToPageListAsync<T>(this ISelect<T> select, PageRequest request)
+        public static async Task<ResponsePage<T>> ToPageListAsync<T>(this ISelect<T> select, RequestPage request)
         {
             return await select.ToPageList(request.Page, request.Limit);
         }

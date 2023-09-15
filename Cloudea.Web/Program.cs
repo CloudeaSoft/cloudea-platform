@@ -1,9 +1,11 @@
 ﻿using Cloudea.Core;
 using Cloudea.Infrastructure.Db;
+using Cloudea.Web.Utils.ApiBase;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Configuration;
 using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -23,8 +25,10 @@ namespace Cloudea.Web
             #region 依赖注入 Add services to the container. Use Configuration to config the services.
 
             // 控制器
-            builder.Services.AddControllers();
-            
+            builder.Services.AddControllers(options => { //添加约定器，对ApiConventionController的派生类添加路由前缀
+                options.Conventions.Add(new NamespaceRouteControllerModelConvention("/api"));
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options => {
@@ -52,6 +56,9 @@ namespace Cloudea.Web
                 options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
+
+            // Http请求
+            builder.Services.AddHttpClient();
 
             // 跨域配置
             builder.Services.AddCors(opt => {
@@ -82,7 +89,7 @@ namespace Cloudea.Web
             var app = builder.Build();
 
             #region 装配中间件管道 Configure the HTTP request pipeline.
-            
+
             if (app.Environment.IsDevelopment()) {
                 app.UseSwagger();
                 app.UseSwaggerUI();
@@ -99,7 +106,7 @@ namespace Cloudea.Web
             app.UseSerilogRequestLogging();
 
             #endregion
-            
+
             //Run webapplication.
             app.Run();
         }

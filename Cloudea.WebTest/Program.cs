@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Serilog;
 using Serilog.Events;
 
@@ -21,6 +22,9 @@ try {
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
+    builder.Services.AddAuthentication(options => options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie();//<------------------
+
     builder.Host.UseSerilog();
 
     var app = builder.Build();
@@ -35,9 +39,13 @@ try {
 
     app.UseHttpsRedirection();
 
+    app.UseAuthentication();//<------------------
+
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.UseStaticFiles();
 
     app.Run();
 
