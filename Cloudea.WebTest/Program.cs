@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
 using Serilog.Events;
 
@@ -22,13 +23,17 @@ try {
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    builder.Services.AddAuthentication(options => options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie();//<------------------
+    builder.Services
+        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
+            options => builder.Configuration.Bind("JwtSettings", options))
+        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+            options => builder.Configuration.Bind("CookieSettings", options));
 
     builder.Host.UseSerilog();
 
     var app = builder.Build();
-    
+
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment()) {
         app.UseSwagger();

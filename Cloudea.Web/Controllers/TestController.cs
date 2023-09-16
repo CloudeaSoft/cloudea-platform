@@ -10,7 +10,7 @@ using Cloudea.Web.Utils.ApiBase;
 
 namespace Cloudea.Web.Controllers
 {
-    public class TestController : ApiControllerBase
+    public class TestController : NamespaceRouteControllerBase
     {
         private readonly TestService testService;
 

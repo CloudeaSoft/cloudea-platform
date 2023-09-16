@@ -23,7 +23,6 @@ namespace Cloudea
             fsql.CodeFirst.SyncStructure(types.ToArray());
         }
 
-
         /// <summary>
         /// 通过sql查找条数( "select count(*) from xxx" )
         /// </summary>
@@ -40,6 +39,7 @@ namespace Cloudea
             }
             throw new Exception("parse count error!");
         }
+
         /// <summary>
         ///  通过sql查找条数( "select count(*) from xxx" )
         /// </summary>
@@ -55,18 +55,6 @@ namespace Cloudea
                 return count;
             }
             throw new Exception("parse count error!");
-        }
-
-        /// <summary>
-        /// 获得分页数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="select"></param>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public static async Task<ResponsePage<T>> ToPageListAsync<T>(this ISelect<T> select, RequestPage request)
-        {
-            return await select.ToPageList(request.Page, request.Limit);
         }
 
         /// <summary>
@@ -116,7 +104,19 @@ namespace Cloudea
         }
 
         /// <summary>
-        /// 通过Id查找
+        /// 获得分页数据 异步
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="select"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public static async Task<ResponsePage<T>> ToPageListAsync<T>(this ISelect<T> select, RequestPage request)
+        {
+            return await select.ToPageList(request.Page, request.Limit);
+        }
+
+        /// <summary>
+        /// 通过Id查找 异步
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="select"></param>
@@ -154,19 +154,6 @@ namespace Cloudea
         }
 
         /// <summary>
-        /// 通过sql查询单个实体 异步
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="fsql"></param>
-        /// <param name="sql"></param>
-        /// <param name="param"></param>
-        /// <returns></returns>
-        public static async Task<T> FindEntityBySqlAsync<T>(this IFreeSql fsql, string sql, object param = null) where T : class
-        {
-            return await fsql.Ado.QuerySingleAsync<T>(sql, param);
-        }
-
-        /// <summary>
         /// 通过sql查询单个实体
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -177,6 +164,19 @@ namespace Cloudea
         public static T FindEntityBySql<T>(this IFreeSql fsql, string sql, object param = null) where T : class
         {
             return fsql.Ado.QuerySingle<T>(sql, param);
+        }
+
+        /// <summary>
+        /// 通过sql查询单个实体 异步
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fsql"></param>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public static async Task<T> FindEntityBySqlAsync<T>(this IFreeSql fsql, string sql, object param = null) where T : class
+        {
+            return await fsql.Ado.QuerySingleAsync<T>(sql, param);
         }
     }
 }

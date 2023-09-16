@@ -19,6 +19,7 @@
 		<ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
 		<ProjectReference Include="..\Cloudea.MiscTool\Cloudea.MiscTool.csproj" />
 		<ProjectReference Include="..\Cloudea.MyService\Cloudea.MyService.csproj" />
+		<ProjectReference Include="..\Cloudea.SystemTool\Cloudea.SystemTool.csproj" />
 	</ItemGroup>
 
 </Project>

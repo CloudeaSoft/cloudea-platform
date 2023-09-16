@@ -26,30 +26,29 @@ namespace Cloudea.GameHelper.Hypergryph
         {
             return 1;
         }
-
     }
 
     public class GachaHistory
     {
-        List<GachaHistoryListData> List { get; set; }
+        public List<GachaHistoryList> List { get; set; } = new();
 
-        GachaHistoryPagenation Pagenation { get; set; }
+        public GachaHistoryPagenation Pagenation { get; set; } = new();
     }
 
-    public class GachaHistoryPagenation
-    {
-        public int Current { get; set; }
-
-        public int Total { get; set; }
-    }
-
-    public class GachaHistoryListData
+    public class GachaHistoryList
     {
         public List<GachaHistoryChar> Chars { get; set; }
 
         public string Pool { get; set; } = "";
 
         public long Ts { get; set; }
+    }
+
+    public class GachaHistoryPagenation
+    {
+        public int current { get; set; } = 1;
+
+        public int total { get; set; } = 1;
     }
 
     public class GachaHistoryChar

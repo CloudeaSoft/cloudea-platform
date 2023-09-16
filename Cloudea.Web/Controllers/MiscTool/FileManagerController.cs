@@ -10,7 +10,8 @@ namespace Cloudea.Web.Controllers.MiscTool
     /// <summary>
     /// 文件管理器接口集
     /// </summary>
-    public class FileManagerController : ApiControllerBase {
+    public class FileManagerController : NamespaceRouteControllerBase
+    {
 
         private readonly FileManager fileManager;
 
