@@ -28,7 +28,7 @@ namespace Cloudea.Web.Utils.ApiBase
         }
 
         /// <summary>
-        /// 
+        /// 添加Attribute
         /// </summary>
         /// <param name="controller"></param>
         public void Apply(ControllerModel controller)

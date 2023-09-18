@@ -49,6 +49,16 @@ namespace Cloudea.Web.Controllers
         {
             testService.LoggerTest();
         }
+
+        /// <summary>
+        /// put
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        public string TestPut()
+        {
+            return "put";
+        }
     }
 
 }

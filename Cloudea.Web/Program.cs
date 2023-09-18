@@ -63,7 +63,7 @@ namespace Cloudea.Web
             // 跨域配置
             builder.Services.AddCors(opt => {
                 opt.AddDefaultPolicy(b => {
-                    b.WithOrigins(new string[] { "http://localhost:1111" })
+                    b.WithOrigins(new string[] { "http://localhost:5173" })
                     //.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
@@ -71,7 +71,7 @@ namespace Cloudea.Web
                 });
             });
 
-            // Service 中的服务类
+            // Module 中的服务类
             builder.Services.RunModuleInitializers();
 
             // Serilog配置
@@ -90,6 +90,7 @@ namespace Cloudea.Web
 
             #region 装配中间件管道 Configure the HTTP request pipeline.
 
+
             if (app.Environment.IsDevelopment()) {
                 app.UseSwagger();
                 app.UseSwaggerUI();
@@ -100,6 +101,12 @@ namespace Cloudea.Web
             app.UseStaticFiles();
 
             app.UseAuthorization();
+
+            //允许X-HTTP-Method-Override属性
+            app.UseHttpMethodOverride();
+
+            //自定义路由
+            app.UseRouting();
 
             app.MapControllers();
 

@@ -1,4 +1,4 @@
-﻿namespace Cloudea.EntityAction
+﻿namespace Cloudea.HttpModel
 {
     public class Class1
     {

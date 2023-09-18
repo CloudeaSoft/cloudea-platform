@@ -4,17 +4,17 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>95a9b2a5-cb9e-4c62-a8dc-b6fd879f9776</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="IGeekFan.AspNetCore.Identity.FreeSql" Version="0.0.534" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
-    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.22" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.11" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cloudea.Entity\Cloudea.Entity.csproj" />
     <ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
   </ItemGroup>
 
