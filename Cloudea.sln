@@ -37,9 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.HttpModel", "Cloude
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Account", "Cloudea.Account\Cloudea.Account.csproj", "{FF5DE7B3-2BDA-4045-A74F-EDCDF0831266}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilterAndMidWare", "FilterAndMidWare\FilterAndMidWare.csproj", "{79426AE7-E118-488E-8C82-002DD23E0453}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilterAndMidWare", "FilterAndMidWare\FilterAndMidWare.csproj", "{79426AE7-E118-488E-8C82-002DD23E0453}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "Identity\Identity.csproj", "{5C26FA12-9446-4C70-823D-ED2BFCB827D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity", "Identity\Identity.csproj", "{5C26FA12-9446-4C70-823D-ED2BFCB827D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

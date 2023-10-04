@@ -1,4 +1,4 @@
-﻿namespace Identity.Entity;
+﻿namespace Cloudea.Infrastructure.Db;
 
 public interface ISoftDelete
 {

@@ -3,31 +3,42 @@ using Identity.Entity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddFreeSqlIdentity(builder.Configuration);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDataBaseDefault(
+    FreeSql.DataType.MySql,
+    @"Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;"
+);
+
 builder.Services.AddAuthentication();
+
+builder.Services.AddFreeSqlIdentity(builder.Configuration);
 
 builder.Services.AddDataProtection();
 
 builder.Services.Configure<IdentityOptions>(options => {
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequiredLength = 6;
+    // Password
+    options.Password.RequiredLength = 6; // The minimum length a password must be. Defaults to 6.
+    options.Password.RequiredUniqueChars = 1; // The minimum number of unique characters which a password must contain.Defaults to 1.
+    options.Password.RequireDigit = false; // If passwords must contain a digit.
+    options.Password.RequireLowercase = false; // If passwords must contain a lower case ASCII character. Defaults to true.
+    options.Password.RequireUppercase = false; // If passwords must contain a upper case ASCII character. Defaults to true.
+    options.Password.RequireNonAlphanumeric = false; // If passwords must contain a non-alphanumeric character. Defaults to true.
+
+    // Token
     options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
     options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
 
-    options.User.AllowedUserNameCharacters =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    // User
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
     options.User.RequireUniqueEmail = false;
 });
 

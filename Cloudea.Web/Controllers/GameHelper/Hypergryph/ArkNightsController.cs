@@ -1,4 +1,5 @@
 ﻿using Cloudea.GameHelper.Hypergryph;
+using Cloudea.Infrastructure.Models;
 using Cloudea.Web.Utils.ApiBase;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,9 +32,9 @@ namespace Cloudea.Web.Controllers.GameHelper.Hypergryph
         /// <param name="channelId"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<GachaHistory> GetGachaPage(string token, int page, int channelId)
-        {   
-            return await arkNights.GetGachaPage(token, page, channelId);
+        public async Task<string> GetGachaPage(int page, string token, int channelId)
+        {
+            return await arkNights.GetGachaPage(page, token, channelId);
         }
 
         /// <summary>

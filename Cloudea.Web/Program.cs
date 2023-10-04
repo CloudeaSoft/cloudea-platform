@@ -81,9 +81,11 @@ namespace Cloudea.Web
             // Freesql
             builder.Services.AddDataBaseDefault(
                     FreeSql.DataType.MySql,
-                    @"Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;");
+                    builder.Configuration["ConnectionStrings:LocalTest:ConnectionString"]);
 
             #endregion
+
+            Log.Logger.Information("在这里");
 
             //Build Webapplication.
             var app = builder.Build();

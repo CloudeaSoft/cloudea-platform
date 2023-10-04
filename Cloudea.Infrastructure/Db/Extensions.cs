@@ -1,5 +1,6 @@
 ﻿using FreeSql;
 using FreeSql.Aop;
+using FreeSql.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,15 @@ namespace Cloudea.Infrastructure.Db {
                     .UseConnectionString(dataType, connectionString)
                     .UseMonitorCommand(cmd => Console.WriteLine($"Sql：{cmd.CommandText}"))//监听SQL语句
                     .UseAutoSyncStructure(true) //自动同步实体结构到数据库，FreeSql不会扫描程序集，只有CRUD时才会生成表。
+                    .UseMappingPriority(MappingPriorityType.FluentApi, MappingPriorityType.Attribute, MappingPriorityType.Aop)
                     .Build();
+                
+                //软删除
+                /*fsql.GlobalFilter.Apply<ISoftDelete>("IsDeleted", a => a.IsDeleted == false);*/
+
                 return fsql;
             };
+
             services.AddSingleton<IFreeSql>(fsqlFactory);
             return services;
         }

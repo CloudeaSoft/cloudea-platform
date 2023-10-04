@@ -3,7 +3,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile><!--xml注释-->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<UserSecretsId>c341397e-d2ca-430c-a6fc-fec80d1e71ac</UserSecretsId><!--xml注释-->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,6 +21,29 @@
 		<ProjectReference Include="..\Cloudea.MiscTool\Cloudea.MiscTool.csproj" />
 		<ProjectReference Include="..\Cloudea.MyService\Cloudea.MyService.csproj" />
 		<ProjectReference Include="..\Cloudea.SystemTool\Cloudea.SystemTool.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Program.cs">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="TextIcon.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="TextIcon.txt">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Logs\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="appsettings.Development.json">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 </Project>

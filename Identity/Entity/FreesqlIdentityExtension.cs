@@ -10,7 +10,8 @@ public static class FreesqlIdentityExtension
 {
     public static IServiceCollection AddFreeSqlIdentity(this IServiceCollection services, IConfiguration configuration)
     {
-        Func<IServiceProvider, IFreeSql> fsql = r => {
+
+        /*Func<IServiceProvider, IFreeSql> fsql = r => {
             IFreeSql fsql = new FreeSqlBuilder()
                     .UseConnectionString(DataType.MySql, "Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;")
                     //.UseNameConvert(NameConvertType.PascalCaseToUnderscoreWithLower)
@@ -25,7 +26,8 @@ public static class FreesqlIdentityExtension
             return fsql;
         };
 
-        services.AddSingleton<IFreeSql>(fsql);
+        services.AddSingleton<IFreeSql>(fsql);*/
+
         services.AddFreeRepository();
         services.AddScoped<UnitOfWorkManager>();
 
