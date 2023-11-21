@@ -1,8 +1,17 @@
 ﻿using Cloudea.Core;
-using Cloudea.Infrastructure.Db;
+using Cloudea.Infrastructure;
+using Cloudea.Infrastructure.Database;
+using Cloudea.Service.Base.Authentication;
+using Cloudea.Web.Middlewares;
+using Cloudea.Web.OptionsSetup;
 using Cloudea.Web.Utils.ApiBase;
+using Google.Protobuf.WellKnownTypes;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Configuration;
@@ -25,17 +34,24 @@ namespace Cloudea.Web
             #region 依赖注入 Add services to the container. Use Configuration to config the services.
 
             // 控制器
-            builder.Services.AddControllers(options => { //添加约定器，对ApiConventionController的派生类添加路由前缀
+            builder.Services.AddControllers(options => {
+                // 添加过滤器
+                //options.Filters.Add<>();
+
+                // 添加约定器，对ApiConventionController的派生类添加路由前缀
                 options.Conventions.Add(new NamespaceRouteControllerModelConvention("/api"));
             });
 
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen(options => {
+                // 描述文档
                 options.SwaggerDoc("v1", new OpenApiInfo {
                     Version = "v1",
-                    Title = "ToDo API",
-                    Description = "An ASP.NET Core Web API for managing ToDo items",
+                    Title = "Cloudea API",
+                    Description = "施工中，还请耐心等候",
                     TermsOfService = new Uri("https://example.com/terms"),
                     Contact = new OpenApiContact {
                         Name = "Example Contact",
@@ -47,9 +63,31 @@ namespace Cloudea.Web
                     }
                 });
 
-                // using System.Reflection;
+                // 自动生成接口注释文档
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+                // 验证
+                #region 启用swagger验证功能
+                var openApiSecurity = new OpenApiSecurityScheme {
+                    Name = "Authorization", //jwt 默认参数名称
+                    Description = "JWT认证授权，使用直接在下框中输入Bearer {token}（注意两者之间是一个空格）\"",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,  //jwt默认存放Authorization信息的位置（请求头）
+                    Reference = new OpenApiReference {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = JwtBearerDefaults.AuthenticationScheme
+                    }
+                };
+
+                options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, openApiSecurity);
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                        {
+                            { openApiSecurity, Array.Empty<string>() }
+                        });
+                #endregion
             });
 
             builder.Services.AddMvc().AddJsonOptions(options => {
@@ -57,18 +95,58 @@ namespace Cloudea.Web
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
 
+            // 身份认证
+            builder.Services
+                .AddAuthentication(x => {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options => {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters {
+                        //NameClaimType = JwtClaimTypes.Name,
+                        //RoleClaimType = JwtClaimTypes.Role,
+
+                        // 颁发者
+                        ValidateIssuer = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+
+                        // 颁发密钥
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"])),
+
+                        // 受颁发人
+                        ValidateAudience = true,
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+
+                        // 密钥生存周期
+                        ValidateLifetime = true
+                    };
+                });
+            builder.Services.AddAuthorization();
+
             // Http请求
+            builder.Services.AddHttpContextAccessor();
+
+            // Http客户端
             builder.Services.AddHttpClient();
+
+            builder.Services.AddMemoryCache();
 
             // 跨域配置
             builder.Services.AddCors(opt => {
                 opt.AddDefaultPolicy(b => {
-                    b.WithOrigins(new string[] { "http://localhost:5173" })
+                    b.WithOrigins(["http://localhost:5173"])
                     //.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
                 });
+            });
+
+            builder.Services.AddMediatR(cfg => {
+                cfg.RegisterServicesFromAssemblies(AssemblyLoader.GetAllAssemblies());
             });
 
             // Module 中的服务类
@@ -79,41 +157,63 @@ namespace Cloudea.Web
                 configuration.ReadFrom.Configuration(context.Configuration));
 
             // Freesql
+            DatabaseOptions dataBase = new("LocalTest",builder.Configuration);
             builder.Services.AddDataBaseDefault(
-                    FreeSql.DataType.MySql,
-                    builder.Configuration["ConnectionStrings:LocalTest:ConnectionString"]);
+                    dataBase.Type,
+                    dataBase.ConnectionString);
 
+            builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+
+            {
+                builder.Services.ConfigureOptions<JwtOptionsSetup>();
+                builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
+                builder.Services.ConfigureOptions<MailOptionsSetup>();
+            }
             #endregion
-
-            Log.Logger.Information("在这里");
 
             //Build Webapplication.
             var app = builder.Build();
 
             #region 装配中间件管道 Configure the HTTP request pipeline.
+            app.Logger.LogInformation("系统开始运行...");
+
+#if DEBUG
+            if (app.Environment.IsDevelopment()) {
+                app.UseDeveloperExceptionPage();
+            }
+#else
+            app.UseMiddleware<SwaggerAuthMiddleware>();
+            // 全局错误捕获
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+#endif
 
 
             if (app.Environment.IsDevelopment()) {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            app.UseCors();
-
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-
-            app.UseAuthorization();
 
             //允许X-HTTP-Method-Override属性
             app.UseHttpMethodOverride();
 
-            //自定义路由
+            // 路由
             app.UseRouting();
+            app.UseCors();
 
+            // 控制器
             app.MapControllers();
 
+            // 接口请求日志
             app.UseSerilogRequestLogging();
 
+            // 认证与认证过滤器
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseMiddleware<UserLoginGuidAuthenticationMiddleware>();
+
+            // 静态文件
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             #endregion
 
             //Run webapplication.

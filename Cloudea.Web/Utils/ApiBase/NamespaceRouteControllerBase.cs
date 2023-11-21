@@ -12,5 +12,6 @@ namespace Cloudea.Web.Utils.ApiBase
     [ApiController]
     public abstract class NamespaceRouteControllerBase : ControllerBase
     {
+
     }
 }

@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Cloudea.Infrastructure": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:53222;http://localhost:53228"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -8,19 +8,26 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MediatR" Version="12.2.0" />
+		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.12.0.78982">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Cloudea.BaseTool\Cloudea.Service.Base.csproj" />
+		<ProjectReference Include="..\Cloudea.BookShelf\Cloudea.Service.BookShelf.csproj" />
 		<ProjectReference Include="..\Cloudea.Core\Cloudea.Core.csproj" />
 		<ProjectReference Include="..\Cloudea.Entity\Cloudea.Entity.csproj" />
-		<ProjectReference Include="..\Cloudea.GameHelper\Cloudea.GameHelper.csproj" />
+		<ProjectReference Include="..\Cloudea.GameHelper\Cloudea.Service.GameHelper.csproj" />
 		<ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
-		<ProjectReference Include="..\Cloudea.MiscTool\Cloudea.MiscTool.csproj" />
-		<ProjectReference Include="..\Cloudea.MyService\Cloudea.MyService.csproj" />
-		<ProjectReference Include="..\Cloudea.SystemTool\Cloudea.SystemTool.csproj" />
+		<ProjectReference Include="..\Cloudea.MyService\Cloudea.Service.TestService.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -37,13 +44,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Logs\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Content Update="appsettings.Development.json">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EditorConfigFiles Remove="C:\Users\20251\source\repos\CloudeaSoft\cloudea-platform\Cloudea.Web\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="C:\Users\20251\source\repos\CloudeaSoft\cloudea-platform\Cloudea.Web\.editorconfig" />
 	</ItemGroup>
 
 </Project>

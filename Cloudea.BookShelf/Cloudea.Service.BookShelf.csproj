@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cloudea.BaseTool\Cloudea.Service.Base.csproj" />
+    <ProjectReference Include="..\Cloudea.Core\Cloudea.Core.csproj" />
+    <ProjectReference Include="..\Cloudea.Entity\Cloudea.Entity.csproj" />
+  </ItemGroup>
+
+</Project>

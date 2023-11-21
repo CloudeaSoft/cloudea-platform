@@ -1,12 +1,14 @@
 ﻿using Cloudea.Infrastructure.Models;
 using Cloudea.MyService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.Net;
-using Cloudea.Infrastructure;
 using Cloudea.Web.Utils.ApiBase;
+using Cloudea.Service.Base.User;
+using MediatR;
+using Cloudea.Service.Base.Message;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Cloudea.Service.Base.Authentication;
+using Cloudea.Entity.Base.Role;
 
 namespace Cloudea.Web.Controllers
 {
@@ -14,9 +16,16 @@ namespace Cloudea.Web.Controllers
     {
         private readonly TestService testService;
 
-        public TestController(TestService testService)
+        private readonly CurrentUserService currentUserService;
+        private readonly ISender _sender;
+        private readonly JwtBearerOptions jwtBearerOptions;
+
+        public TestController(TestService testService, CurrentUserService currentUserService, ISender sender, IOptions<JwtBearerOptions> jwtBearerOptions)
         {
             this.testService = testService;
+            this.currentUserService = currentUserService;
+            _sender = sender;
+            this.jwtBearerOptions = jwtBearerOptions.Value;
         }
 
         /// <summary>
@@ -35,6 +44,7 @@ namespace Cloudea.Web.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
+        [HasPermission(Base_Permission.AccessMember)]
         [HttpGet]
         public Result Send()
         {
@@ -59,6 +69,35 @@ namespace Cloudea.Web.Controllers
         {
             return "put";
         }
-    }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> Testuser()
+        {
+            var res = await currentUserService.GetUserInfo();
+            if (res is null) {
+                return NotFound();
+            }
+            return Ok(Result.Success(res));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MailTest()
+        {
+            var res = await _sender.Send(new SendEmailRequest() {
+                To = new() { "1837622674@qq.com" },
+                Subject = "Test",
+                Body = "Test"
+            });
+            return Ok(res);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> TestOption()
+        {
+            return Ok(jwtBearerOptions);
+        }
+    }
 }

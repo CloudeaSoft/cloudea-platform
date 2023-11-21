@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.GameHelper
+namespace Cloudea.Service.GameHelper
 {
     public class ModuleInitializer : IModuleInitializer
     {
         public void Initialize(IServiceCollection services)
         {
-            services.AddScoped<Hypergryph.ArkNights>();
+            services.AddScoped<ArkNightsService>();
+            services.AddScoped<OsuService>();
         }
     }
 }

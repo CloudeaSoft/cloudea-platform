@@ -1,4 +1,4 @@
-﻿using Cloudea.Infrastructure.Db;
+﻿using Cloudea.Infrastructure.Database;
 using FreeSql.DataAnnotations;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Cloudea.Entity
 {
-    public class Student : EntityBase
+
+    public class Student : BaseEntity
     {
         public string Name { get; set; }
         public int Age { get; set; }
