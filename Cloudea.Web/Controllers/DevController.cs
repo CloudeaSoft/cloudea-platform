@@ -1,15 +1,15 @@
 ﻿using Cloudea.Infrastructure.Utils;
-using Cloudea.Web.Utils.ApiBase;
 using Cloudea.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Cloudea.Infrastructure.Database;
 using Microsoft.AspNetCore.Authorization;
+using Cloudea.Infrastructure.API;
 
 namespace Cloudea.Web.Controllers
 {
-    [Authorize]
-    public class DevController : NamespaceRouteControllerBase
+    /*[Authorize]*/
+    public class DevController : ApiControllerBase
     {
         private IFreeSql Database { get; set; }
         public ILogger<DevController> Logger { get; set; }

@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Cloudea.Web.Middlewares
 {
-    // Swagger账号密码
+    /// <summary>
+    /// Swagger账号密码
+    /// </summary>
     public class SwaggerAuthMiddleware
     {
         private readonly RequestDelegate next;

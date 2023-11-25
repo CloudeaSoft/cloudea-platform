@@ -1,14 +1,12 @@
 ﻿using Cloudea.Entity.Base.User;
-using Cloudea.Infrastructure.Models;
-using Cloudea.Service.Base.User;
-using Cloudea.Service.Base.User.Models;
-using Cloudea.Web.Utils.ApiBase;
+using Cloudea.Infrastructure.API;
+using Cloudea.Service.Auth.Domain.User;
+using Cloudea.Service.Auth.Domain.User.Models;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Crypto;
 
 namespace Cloudea.Web.Controllers.Base
 {
-    public class UserController : NamespaceRouteControllerBase
+    public class UserController : ApiControllerBase
     {
         private readonly UserService userService;
         private readonly AuthUserService authUserService;
@@ -90,6 +88,13 @@ namespace Cloudea.Web.Controllers.Base
             if (res.IsFailure()) {
                 return NotFound(res);
             }
+            return Ok(res);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UserProfile(long userId)
+        {
+            var res = await userService.ReadUserById(userId);
             return Ok(res);
         }
 

@@ -6,6 +6,9 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<UserSecretsId>c341397e-d2ca-430c-a6fc-fec80d1e71ac</UserSecretsId><!--xml注释-->
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Controllers\Base\FileController.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MediatR" Version="12.2.0" />
@@ -23,24 +26,19 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Cloudea.BaseTool\Cloudea.Service.Base.csproj" />
 		<ProjectReference Include="..\Cloudea.BookShelf\Cloudea.Service.BookShelf.csproj" />
-		<ProjectReference Include="..\Cloudea.Core\Cloudea.Core.csproj" />
 		<ProjectReference Include="..\Cloudea.Entity\Cloudea.Entity.csproj" />
 		<ProjectReference Include="..\Cloudea.GameHelper\Cloudea.Service.GameHelper.csproj" />
 		<ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
 		<ProjectReference Include="..\Cloudea.MyService\Cloudea.Service.TestService.csproj" />
+		<ProjectReference Include="..\Cloudea.Service.Authentication.Infrastructure\Cloudea.Service.Auth.Infrastructure.csproj" />
+		<ProjectReference Include="..\Cloudea.Service.File.Infrastructure\Cloudea.Service.File.Infrastructure.csproj" />
+		<ProjectReference Include="..\Cloudea.Service.Forum\Cloudea.Service.Forum.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Resource Include="Program.cs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Resource>
-	  <Resource Include="TextIcon.txt" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="TextIcon.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 
 	<ItemGroup>

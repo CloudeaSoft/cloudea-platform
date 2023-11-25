@@ -1,20 +1,12 @@
-﻿using Cloudea.Core;
 using Cloudea.Infrastructure;
 using Cloudea.Infrastructure.Database;
-using Cloudea.Service.Base.Authentication;
+using Cloudea.Web.Filters;
 using Cloudea.Web.Middlewares;
 using Cloudea.Web.OptionsSetup;
-using Cloudea.Web.Utils.ApiBase;
-using Google.Protobuf.WellKnownTypes;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using System.Configuration;
 using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -28,6 +20,7 @@ namespace Cloudea.Web
         {
             // Init Builder
             var builder = WebApplication.CreateBuilder(args);
+
             // 在控制台打印图标
             OutputFile.outputTxt(builder.Configuration);
 
@@ -36,11 +29,12 @@ namespace Cloudea.Web
             // 控制器
             builder.Services.AddControllers(options => {
                 // 添加过滤器
-                //options.Filters.Add<>();
-
-                // 添加约定器，对ApiConventionController的派生类添加路由前缀
-                options.Conventions.Add(new NamespaceRouteControllerModelConvention("/api"));
-            });
+                options.Filters.Add<HttpResponseExceptionFilter>();
+            })
+                .AddJsonOptions(options => {
+                    options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                });
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -90,10 +84,10 @@ namespace Cloudea.Web
                 #endregion
             });
 
-            builder.Services.AddMvc().AddJsonOptions(options => {
+            builder.Services.AddMvc();/*.AddJsonOptions(options => {
                 options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
-            });
+            });*/
 
             // 身份认证
             builder.Services
@@ -157,7 +151,7 @@ namespace Cloudea.Web
                 configuration.ReadFrom.Configuration(context.Configuration));
 
             // Freesql
-            DatabaseOptions dataBase = new("LocalTest",builder.Configuration);
+            DatabaseOptions dataBase = new("LocalTest", builder.Configuration);
             builder.Services.AddDataBaseDefault(
                     dataBase.Type,
                     dataBase.ConnectionString);
@@ -179,25 +173,27 @@ namespace Cloudea.Web
 
 #if DEBUG
             if (app.Environment.IsDevelopment()) {
-                app.UseDeveloperExceptionPage();
+                // 错误处理
+                app.UseExceptionHandler("/error-development");
+
+                // 接口文档
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+            else {
+                app.UseExceptionHandler("/error");
             }
 #else
             app.UseMiddleware<SwaggerAuthMiddleware>();
             // 全局错误捕获
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 #endif
-
-
-            if (app.Environment.IsDevelopment()) {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
             //允许X-HTTP-Method-Override属性
             app.UseHttpMethodOverride();
 
             // 路由
             app.UseRouting();
+            // 跨域
             app.UseCors();
 
             // 控制器

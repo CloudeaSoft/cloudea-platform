@@ -1,4 +1,5 @@
-﻿using Cloudea.Core;
+﻿using Cloudea.Infrastructure;
+using Cloudea.Service.GameHelper.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,8 @@ namespace Cloudea.Service.GameHelper
     {
         public void Initialize(IServiceCollection services)
         {
-            services.AddScoped<ArkNightsService>();
-            services.AddScoped<OsuService>();
+            services.AddScoped<IArkNightsService, ArkNightsService>();
+            services.AddScoped<IOsuService, OsuService>();
         }
     }
 }

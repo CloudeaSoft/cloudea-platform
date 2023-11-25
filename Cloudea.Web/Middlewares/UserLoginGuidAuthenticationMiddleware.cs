@@ -1,5 +1,5 @@
-﻿using Cloudea.Service.Base.Authentication.Models;
-using Cloudea.Service.Base.User;
+﻿using Cloudea.Service.Auth.Domain.Authentication.Models;
+using Cloudea.Service.Auth.Domain.User;
 
 namespace Cloudea.Web.Middlewares
 {

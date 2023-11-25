@@ -1,7 +1,8 @@
 ﻿using Cloudea.GameHelper;
+using Cloudea.Infrastructure.API;
 using Cloudea.Infrastructure.Models;
 using Cloudea.Service.GameHelper;
-using Cloudea.Web.Utils.ApiBase;
+using Cloudea.Service.GameHelper.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,15 +13,15 @@ namespace Cloudea.Web.Controllers.GameHelper
     /// <summary>
     /// 明日方舟相关工具接口集
     /// </summary>
-    public class ArkNightsController : NamespaceRouteControllerBase
+    public class ArkNightsController : ApiControllerBase
     {
-        private readonly ArkNightsService arkNights;
+        private readonly IArkNightsService arkNights;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="arkNights"></param>
-        public ArkNightsController(ArkNightsService arkNights)
+        public ArkNightsController(IArkNightsService arkNights)
         {
             this.arkNights = arkNights;
         }

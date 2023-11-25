@@ -46,15 +46,6 @@ namespace Cloudea.Web.Middlewares
             // 生成错误信息
             ProblemDetails problem;
             switch (exception) {
-                /*               case ApplicationException ex:
-                                   response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                                   problem = new() {
-                                       Status = (int)HttpStatusCode.InternalServerError,
-                                       Type = "Server error",
-                                       Title = "Server error",
-                                       Detail = "An internal server has occured"
-                                   };
-                                   break;*/
                 case NullReferenceException ex:
                     response.StatusCode = (int)HttpStatusCode.NotFound;
                     problem = new() {
@@ -74,8 +65,6 @@ namespace Cloudea.Web.Middlewares
                     };
                     break;
             }
-
-            //_logger.LogError(exception, exception.Message);
 
             string result = JsonSerializer.Serialize(problem);
             await context.Response.WriteAsync(result);

@@ -2,9 +2,6 @@
 using Cloudea.Infrastructure.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Text.Json.Nodes;
-using Cloudea.Service.Base.File;
 
 namespace Cloudea.Service.BookShelf
 {
@@ -12,14 +9,12 @@ namespace Cloudea.Service.BookShelf
     {
         private readonly IFreeSql Database;
         private readonly ILogger<BookService> logger;
-        private readonly FileService fileService;
 
 
-        public BookService(IFreeSql database, ILogger<BookService> logger, FileService fileManager)
+        public BookService(IFreeSql database, ILogger<BookService> logger)
         {
             Database = database;
             this.logger = logger;
-            this.fileService = fileManager;
         }
 
         public async Task<List<BookMeta>> GetBook()
@@ -80,7 +75,7 @@ namespace Cloudea.Service.BookShelf
                 }
 
                 //存储文件
-                await fileService.Upload(file,"rootpath",true);
+                /*await fileService.Upload(file, "rootpath", true);*/
 
                 //存入数据库
                 var c = new BookChapter() {

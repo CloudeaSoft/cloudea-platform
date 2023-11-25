@@ -1,4 +1,5 @@
-﻿using FreeSql;
+﻿using Cloudea.Infrastructure.Domain;
+using FreeSql;
 using FreeSql.Aop;
 using FreeSql.Internal;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,14 +34,10 @@ namespace Cloudea.Infrastructure.Database
                                                                                           //.UseAutoSyncStructure(true) //自动同步实体结构到数据库，FreeSql不会扫描程序集，只有CRUD时才会生成表。
                     .UseMappingPriority(MappingPriorityType.FluentApi, MappingPriorityType.Attribute, MappingPriorityType.Aop)
                     .Build();
-
-                //软删除
-                fsql.Aop.AuditValue += auditValue;
+  
+                fsql.Aop.AuditValue += AuditValue;
                 return fsql;
             };
-
-
-
             services.AddSingleton(fsqlFactory);
             return services;
         }
@@ -53,13 +50,13 @@ namespace Cloudea.Infrastructure.Database
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private static void auditValue(object sender, AuditValueEventArgs args)
+        private static void AuditValue(object sender, AuditValueEventArgs args)
         {
             // 判断声明该成员的类是否为 _baseEntityType => EntityBase
             if (args.Property.DeclaringType != _baseEntityType) {
                 return;
             }
-
+            var a = args.Property.DeclaringType == typeof(IHasTimeProperty);
             // 插入动作
             if (args.Property.Name == _createProp.Name && args.AuditValueType == AuditValueType.Insert) {
                 args.Value = DateTime.Now;

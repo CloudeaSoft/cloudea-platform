@@ -1,12 +1,12 @@
 ﻿using Cloudea.Service.BookShelf;
 using Cloudea.Entity.BookShelf;
 using Cloudea.Infrastructure.Models;
-using Cloudea.Web.Utils.ApiBase;
 using Microsoft.AspNetCore.Mvc;
+using Cloudea.Infrastructure.API;
 
 namespace Cloudea.Web.Controllers.BookShelf
 {
-    public class BookController : NamespaceRouteControllerBase
+    public class BookController : ApiControllerBase
     {
         private readonly BookService bookManager;
 

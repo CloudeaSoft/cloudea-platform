@@ -1,5 +1,6 @@
 ﻿using Cloudea.GameHelper.Models.ArkNights;
 using Cloudea.Infrastructure.Models;
+using Cloudea.Service.GameHelper.Abstractions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net;
@@ -9,7 +10,7 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace Cloudea.Service.GameHelper
 {
-    public class ArkNightsService
+    public class ArkNightsService : IArkNightsService
     {
         private readonly IHttpClientFactory _factory;
         private readonly ILogger<ArkNightsService> _logger;

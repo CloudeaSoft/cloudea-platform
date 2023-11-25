@@ -1,4 +1,4 @@
-﻿using Cloudea.Service.Base.Authentication;
+﻿using Cloudea.Service.Base.Jwt;
 using Microsoft.Extensions.Options;
 
 namespace Cloudea.Web.OptionsSetup;

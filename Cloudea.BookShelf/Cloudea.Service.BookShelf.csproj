@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cloudea.BaseTool\Cloudea.Service.Base.csproj" />
-    <ProjectReference Include="..\Cloudea.Core\Cloudea.Core.csproj" />
     <ProjectReference Include="..\Cloudea.Entity\Cloudea.Entity.csproj" />
   </ItemGroup>
 

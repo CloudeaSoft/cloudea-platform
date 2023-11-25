@@ -1,4 +1,4 @@
-﻿using Cloudea.Core;
+﻿using Cloudea.Infrastructure;
 using Cloudea.MyService;
 using Microsoft.Extensions.DependencyInjection;
 using System;

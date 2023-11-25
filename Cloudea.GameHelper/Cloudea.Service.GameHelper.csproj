@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cloudea.Core\Cloudea.Core.csproj" />
+    <ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

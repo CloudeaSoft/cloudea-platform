@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Cloudea.Infrastructure.Models;
-using Cloudea.Web.Utils.ApiBase;
 using Cloudea.Service.Base;
+using Cloudea.Infrastructure.API;
 
 namespace Cloudea.Web.Controllers.Base
 {

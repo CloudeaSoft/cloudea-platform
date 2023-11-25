@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Cloudea.Infrastructure.Database;
+using BaseEntity = Cloudea.Infrastructure.Database.BaseEntity;
 
 namespace Cloudea
 {
@@ -33,8 +34,7 @@ namespace Cloudea
         {
             var table = that.Ado.ExecuteDataTable(sql, param);
             object rawCount = table.Rows[0][0];
-            if (int.TryParse(rawCount.ToString(), out int count))
-            {
+            if (int.TryParse(rawCount.ToString(), out int count)) {
                 return count;
             }
             throw new Exception("parse count error!");
@@ -50,8 +50,7 @@ namespace Cloudea
         {
             var table = await that.Ado.ExecuteDataTableAsync(sql, param);
             object rawCount = table.Rows[0][0];
-            if (int.TryParse(rawCount.ToString(), out int count))
-            {
+            if (int.TryParse(rawCount.ToString(), out int count)) {
                 return count;
             }
             throw new Exception("parse count error!");
@@ -67,36 +66,29 @@ namespace Cloudea
         /// <returns></returns>
         public static async Task<ResponsePage<T>> ToPageList<T>(this ISelect<T> select, int page, int pageSize)
         {
-            if (page <= 0)
-            {
+            if (page <= 0) {
                 var total = await select.CountAsync();
                 var data = await select.ToListAsync();
 
-                return new ResponsePage<T>()
-                {
+                return new ResponsePage<T>() {
                     Rows = data,
                     Total = total
                 };
             }
-            else
-            {
+            else {
                 dynamic s = select;
-                if (s._orderby == null)
-                {
+                if (s._orderby == null) {
                     var tables = s._tables as List<SelectTableInfo>;
                     var pktb = tables.Where(a => a.Table.Primarys.Any()).FirstOrDefault();
-                    if (pktb != null)
-                    {
+                    if (pktb != null) {
                         select = select.OrderByPropertyName(pktb?.Table.Primarys.First().Attribute.Name);
                     }
-                    else
-                    {
+                    else {
                         select = select.OrderByPropertyName(tables.First().Table.Columns.First().Value.Attribute.Name);
                     }
                 }
                 var list = await select.Count(out long total).Page(page, pageSize).ToListAsync();
-                return new ResponsePage<T>()
-                {
+                return new ResponsePage<T>() {
                     Total = total,
                     Rows = list
                 };

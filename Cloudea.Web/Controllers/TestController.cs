@@ -1,26 +1,26 @@
 ﻿using Cloudea.Infrastructure.Models;
 using Cloudea.MyService;
 using Microsoft.AspNetCore.Mvc;
-using Cloudea.Web.Utils.ApiBase;
-using Cloudea.Service.Base.User;
 using MediatR;
 using Cloudea.Service.Base.Message;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
-using Cloudea.Service.Base.Authentication;
 using Cloudea.Entity.Base.Role;
+using Microsoft.AspNetCore.Diagnostics;
+using Cloudea.Infrastructure.API;
+using Cloudea.Service.Auth.Domain.Authentication;
+using Cloudea.Service.Auth.Domain.Abstractions;
 
 namespace Cloudea.Web.Controllers
 {
-    public class TestController : NamespaceRouteControllerBase
+    public class TestController : ApiControllerBase
     {
         private readonly TestService testService;
-
-        private readonly CurrentUserService currentUserService;
+        private readonly ICurrentUserService currentUserService;
         private readonly ISender _sender;
         private readonly JwtBearerOptions jwtBearerOptions;
 
-        public TestController(TestService testService, CurrentUserService currentUserService, ISender sender, IOptions<JwtBearerOptions> jwtBearerOptions)
+        public TestController(TestService testService, ICurrentUserService currentUserService, ISender sender, IOptions<JwtBearerOptions> jwtBearerOptions)
         {
             this.testService = testService;
             this.currentUserService = currentUserService;
@@ -98,6 +98,32 @@ namespace Cloudea.Web.Controllers
         public async Task<IActionResult> TestOption()
         {
             return Ok(jwtBearerOptions);
+        }
+
+        [HttpGet("Throw")]
+        public IActionResult Throw() =>
+            throw new Exception("Sample exception");
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("/error")]
+        public IActionResult HandleError() =>
+            Problem();
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("/error-development")]
+        public IActionResult HandleErrorDevelopment(
+            [FromServices] IHostEnvironment hostEnvironment)
+        {
+            if (!hostEnvironment.IsDevelopment()) {
+                return NotFound();
+            }
+
+            var exceptionHandlerFeature =
+                HttpContext.Features.Get<IExceptionHandlerFeature>()!;
+
+            return Problem(
+                detail: exceptionHandlerFeature.Error.StackTrace,
+                title: exceptionHandlerFeature.Error.Message);
         }
     }
 }
