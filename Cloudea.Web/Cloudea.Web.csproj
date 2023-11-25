@@ -55,4 +55,8 @@
 	  <None Include="C:\Users\20251\source\repos\CloudeaSoft\cloudea-platform\Cloudea.Web\.editorconfig" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\" />
+	</ItemGroup>
+
 </Project>
