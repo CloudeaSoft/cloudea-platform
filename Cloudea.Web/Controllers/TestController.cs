@@ -5,25 +5,23 @@ using MediatR;
 using Cloudea.Service.Base.Message;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
-using Cloudea.Entity.Base.Role;
 using Microsoft.AspNetCore.Diagnostics;
 using Cloudea.Infrastructure.API;
-using Cloudea.Service.Auth.Domain.Authentication;
 using Cloudea.Service.Auth.Domain.Abstractions;
+using Cloudea.Service.Auth.Domain.Attributes;
+using Cloudea.Service.Auth.Domain.Entities;
 
 namespace Cloudea.Web.Controllers
 {
     public class TestController : ApiControllerBase
     {
         private readonly TestService testService;
-        private readonly ICurrentUserService currentUserService;
         private readonly ISender _sender;
         private readonly JwtBearerOptions jwtBearerOptions;
 
-        public TestController(TestService testService, ICurrentUserService currentUserService, ISender sender, IOptions<JwtBearerOptions> jwtBearerOptions)
+        public TestController(TestService testService, ISender sender, IOptions<JwtBearerOptions> jwtBearerOptions)
         {
             this.testService = testService;
-            this.currentUserService = currentUserService;
             _sender = sender;
             this.jwtBearerOptions = jwtBearerOptions.Value;
         }
@@ -44,7 +42,7 @@ namespace Cloudea.Web.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        [HasPermission(Base_Permission.AccessMember)]
+        [HasPermission(Permission.AccessMember)]
         [HttpGet]
         public Result Send()
         {
@@ -68,19 +66,6 @@ namespace Cloudea.Web.Controllers
         public string TestPut()
         {
             return "put";
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> Testuser()
-        {
-            var res = await currentUserService.GetUserInfo();
-            if (res is null) {
-                return NotFound();
-            }
-            return Ok(Result.Success(res));
         }
 
         [HttpPost]

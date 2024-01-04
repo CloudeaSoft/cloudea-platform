@@ -1,5 +1,5 @@
 ﻿using Cloudea.Infrastructure.API;
-using Cloudea.Service.File.Domain;
+using Cloudea.Service.File.Domain.Applications;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 

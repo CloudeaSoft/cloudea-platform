@@ -10,5 +10,5 @@ namespace Cloudea.Service.GameHelper.Abstractions;
 
 public interface IArkNightsService
 {
-    public Task<Result<GachaHistory>> GetGacha(string token, int channelId);
+    Task<Result<GachaHistory>> ListGacha(string token, int channelId);
 }

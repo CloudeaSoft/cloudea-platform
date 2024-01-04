@@ -1,0 +1,36 @@
+﻿using Cloudea.Service.Auth.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Cloudea.Service.Auth.Domain.Overrides;
+
+public class PermissionAuthorizationHandler
+    : AuthorizationHandler<PermissionRequirement>
+{
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    public PermissionAuthorizationHandler(IServiceScopeFactory scopeFactory)
+    {
+        _scopeFactory = scopeFactory;
+    }
+
+    protected override async Task<Task> HandleRequirementAsync(
+        AuthorizationHandlerContext context,
+        PermissionRequirement requirement)
+    {
+        HashSet<string> permissions = context
+            .User
+            .Claims
+            .Where(x => x.Type == JwtClaims.USER_PERMISSIONS)
+            .Select(x => x.Value)
+            .ToHashSet();
+        foreach (var permission in permissions) {
+            await Console.Out.WriteLineAsync(permission.ToString());
+        }
+
+        if (permissions.Contains(requirement.Permission)) {
+            context.Succeed(requirement);
+        }
+        return Task.CompletedTask;
+    }
+}

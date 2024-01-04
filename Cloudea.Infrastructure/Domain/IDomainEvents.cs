@@ -16,5 +16,5 @@ public interface IDomainEvents
     /// </summary>
     /// <param name="eventItem"></param>
     void AddDomainEventIfAbsent(INotification eventItem);
-    public void ClearDomainEvents();
+    void ClearDomainEvents();
 }

@@ -1,5 +1,5 @@
-﻿using Cloudea.Service.Auth.Domain.Authentication.Models;
-using Cloudea.Service.Auth.Domain.User;
+﻿using Cloudea.Service.Auth.Domain.Applications;
+using Cloudea.Service.Auth.Domain.Models;
 
 namespace Cloudea.Web.Middlewares
 {
@@ -15,7 +15,7 @@ namespace Cloudea.Web.Middlewares
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, AuthUserService authUserService)
+        public async Task InvokeAsync(HttpContext context, UserDomainService authUserService)
         {
 
             var req = context.Request;

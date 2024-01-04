@@ -1,5 +1,6 @@
 using Cloudea.Infrastructure;
 using Cloudea.Infrastructure.Database;
+using Cloudea.Service.HubTest;
 using Cloudea.Web.Filters;
 using Cloudea.Web.Middlewares;
 using Cloudea.Web.OptionsSetup;
@@ -35,7 +36,6 @@ namespace Cloudea.Web
                     options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
                 });
-
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -84,10 +84,9 @@ namespace Cloudea.Web
                 #endregion
             });
 
-            builder.Services.AddMvc();/*.AddJsonOptions(options => {
-                options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
-                options.JsonSerializerOptions.PropertyNamingPolicy = null;
-            });*/
+            builder.Services.AddMvc();
+
+            builder.Services.AddSignalR();
 
             // 身份认证
             builder.Services
@@ -184,7 +183,11 @@ namespace Cloudea.Web
                 app.UseExceptionHandler("/error");
             }
 #else
+            // 接口文档
             app.UseMiddleware<SwaggerAuthMiddleware>();
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
             // 全局错误捕获
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 #endif
@@ -197,6 +200,7 @@ namespace Cloudea.Web
             app.UseCors();
 
             // 控制器
+            app.MapHub<ChatRoomHub>("/ChatRoomHub"); // Websocket服务器
             app.MapControllers();
 
             // 接口请求日志

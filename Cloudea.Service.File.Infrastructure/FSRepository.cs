@@ -1,4 +1,4 @@
-﻿using Cloudea.Service.File.Domain;
+﻿using Cloudea.Service.File.Domain.Abstractions;
 using Cloudea.Service.File.Domain.Entities;
 
 namespace Cloudea.Service.File.Infrastructure;

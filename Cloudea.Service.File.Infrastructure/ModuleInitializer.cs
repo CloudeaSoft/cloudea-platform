@@ -1,5 +1,6 @@
 ﻿using Cloudea.Infrastructure;
-using Cloudea.Service.File.Domain;
+using Cloudea.Service.File.Domain.Abstractions;
+using Cloudea.Service.File.Domain.Applications;
 using Cloudea.Service.File.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Cloudea.Infrastructure.Database;
-using BaseEntity = Cloudea.Infrastructure.Database.BaseEntity;
+using Cloudea.Infrastructure.Domain;
 
 namespace Cloudea
 {
@@ -114,7 +114,7 @@ namespace Cloudea
         /// <param name="select"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<T> FindByIdAsync<T>(this ISelect<T> select, long id) where T : BaseEntity
+        public static async Task<T> FindByIdAsync<T>(this ISelect<T> select, Guid id) where T : BaseDomainEntity
         {
             return await select.Where(t => t.Id == id).FirstAsync();
         }

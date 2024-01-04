@@ -11,10 +11,9 @@ using BaseDomainEntity = Cloudea.Infrastructure.Domain.BaseDomainEntity;
 namespace Cloudea.Service.File.Domain.Entities
 {
     [AutoGenerateTable]
-    public record File_UploadedFile : BaseDomainEntity, IHasTimeProperty
+    [Table(Name = "file_uploadedfile")]
+    public record File_UploadedFile : BaseDomainEntity
     {
-        public DateTime CreationTime { get; private set; }
-
         /// <summary>
         /// 文件大小（尺寸为字节）
         /// </summary>
@@ -47,7 +46,7 @@ namespace Cloudea.Service.File.Domain.Entities
         /// <summary>
         /// 创建
         /// </summary>
-        /// <param name="guid"></param>
+        /// <param name="id"></param>
         /// <param name="fileSizeInBytes"></param>
         /// <param name="fileName"></param>
         /// <param name="fileSHA256Hash"></param>
@@ -55,7 +54,7 @@ namespace Cloudea.Service.File.Domain.Entities
         /// <param name="remoteUrl"></param>
         /// <returns></returns>
         public static File_UploadedFile Create(
-            Guid Id,
+            Guid id,
             long fileSizeInBytes,
             string fileName,
             string fileSHA256Hash,
@@ -63,8 +62,7 @@ namespace Cloudea.Service.File.Domain.Entities
             Uri remoteUrl)
         {
             File_UploadedFile item = new File_UploadedFile() {
-                Id = Id,
-                CreationTime = DateTime.Now,
+                Id = id,
                 FileName = fileName,
                 FileSHA256Hash = fileSHA256Hash,
                 FileSizeInBytes = fileSizeInBytes,

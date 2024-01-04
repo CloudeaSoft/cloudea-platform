@@ -1,4 +1,5 @@
 ﻿using Cloudea;
+using Cloudea.Infrastructure.Domain;
 using Cloudea.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
@@ -8,14 +9,14 @@ using System.Threading.Tasks;
 namespace Cloudea.Infrastructure.Database
 {
     public abstract class BaseCurdService<TEntity>
-        where TEntity : BaseEntity, new()
+        where TEntity : BaseDataEntity, new()
     {
-        public IFreeSql Database { get; set; }
+        public IFreeSql _database { get; set; }
 
         protected BaseCurdService(IFreeSql database)
         {
-            Database = database;
-        }    
+            _database = database;
+        }
 
         #region 增加
         /// <summary>
@@ -28,7 +29,7 @@ namespace Cloudea.Infrastructure.Database
             if (!CheckModel(entity, out string errMsg)) {
                 return Result.Fail(errMsg);
             }
-            long id = await Database.Insert(entity).ExecuteIdentityAsync();
+            long id = await _database.Insert(entity).ExecuteIdentityAsync();
             return Result.Success(id);
         }
 
@@ -39,7 +40,7 @@ namespace Cloudea.Infrastructure.Database
         /// <returns></returns>
         public virtual async Task<Result<long>> Create(List<TEntity> list)
         {
-            long id = await Database.Insert(list).ExecuteIdentityAsync();
+            long id = await _database.Insert(list).ExecuteIdentityAsync();
             return Result.Success(id);
         }
         #endregion
@@ -51,7 +52,13 @@ namespace Cloudea.Infrastructure.Database
         /// <returns></returns>
         public virtual FreeSql.ISelect<TEntity> BaseSelect()
         {
-            return Database.Select<TEntity>();
+            return _database.Select<TEntity>();
+        }
+
+        public virtual async Task<Result<List<TEntity>>> Read()
+        {
+            var entityList = await BaseSelect().ToListAsync();
+            return Result<List<TEntity>>.Success(entityList);
         }
 
         /// <summary>
@@ -59,9 +66,9 @@ namespace Cloudea.Infrastructure.Database
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public virtual async Task<Result<TEntity>> Read(long id)
+        public virtual async Task<Result<TEntity>> Read(Guid id)
         {
-            var entity = await Database.Select<TEntity>().Where(t => t.Id == id).FirstAsync();
+            var entity = await _database.Select<TEntity>().Where(t => t.Id == id).FirstAsync();
             if (entity == null) {
                 return Result.Fail("Id不存在");
             }
@@ -75,7 +82,7 @@ namespace Cloudea.Infrastructure.Database
         /// <returns></returns>
         public virtual async Task<TEntity> FindEntityByWhere(Expression<Func<TEntity, bool>> exp)
         {
-            return await Database.Select<TEntity>().Where(exp).FirstAsync();
+            return await _database.Select<TEntity>().Where(exp).FirstAsync();
         }
 
         /// <summary>
@@ -85,7 +92,7 @@ namespace Cloudea.Infrastructure.Database
         /// <returns></returns>
         public virtual async Task<List<TEntity>> FindListByWhere(Expression<Func<TEntity, bool>> exp)
         {
-            return await Database.Select<TEntity>().Where(exp).ToListAsync();
+            return await _database.Select<TEntity>().Where(exp).ToListAsync();
         }
 
         /// <summary>
@@ -110,7 +117,7 @@ namespace Cloudea.Infrastructure.Database
         /// <returns></returns>
         public virtual async Task<Result<ResponsePage<TEntity>>> GetBaseList(RequestPage req)
         {
-            return Result.Success(await Database.Select<TEntity>().ToPageListAsync(req));
+            return Result.Success(await _database.Select<TEntity>().ToPageListAsync(req));
         }
 
         /// <summary>
@@ -118,9 +125,9 @@ namespace Cloudea.Infrastructure.Database
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public virtual async Task<bool> Exist(long id)
+        public virtual async Task<bool> Exist(Guid id)
         {
-            return await Database.Select<TEntity>().Where(t => t.Id == id).AnyAsync();
+            return await _database.Select<TEntity>().Where(t => t.Id == id).AnyAsync();
         }
 
         /// <summary>
@@ -130,7 +137,7 @@ namespace Cloudea.Infrastructure.Database
         /// <returns></returns>
         public virtual async Task<bool> Exist(Expression<Func<TEntity, bool>> exp)
         {
-            return await Database.Select<TEntity>().Where(exp).AnyAsync();
+            return await _database.Select<TEntity>().Where(exp).AnyAsync();
         }
         #endregion
 
@@ -145,10 +152,7 @@ namespace Cloudea.Infrastructure.Database
             if (!CheckModel(entity, out string errMsg)) {
                 return Result.Fail(errMsg);
             }
-            if (entity.Id <= 0) {
-                return Result.Fail("Id 不符合规范");
-            }
-            await Database.Update<TEntity>().SetSource(entity).ExecuteAffrowsAsync();
+            await _database.Update<TEntity>().SetSource(entity).ExecuteAffrowsAsync();
             return Result.Success();
         }
         #endregion
@@ -159,10 +163,10 @@ namespace Cloudea.Infrastructure.Database
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public virtual async Task<Result> Delete(long id)
+        public virtual async Task<Result> Delete(Guid id)
         {
-            if (await Database.Select<TEntity>().AnyAsync(t => t.Id == id)) {
-                await Database.Select<TEntity>().Where(t => t.Id == id).ToDelete().ExecuteAffrowsAsync();
+            if (await _database.Select<TEntity>().AnyAsync(t => t.Id == id)) {
+                await _database.Select<TEntity>().Where(t => t.Id == id).ToDelete().ExecuteAffrowsAsync();
                 return Result.Success();
             }
             else {
@@ -175,13 +179,13 @@ namespace Cloudea.Infrastructure.Database
         /// </summary>
         /// <param name="idList"></param>
         /// <returns></returns>
-        public virtual async Task<Result> DeleteList(List<long> idList)
+        public virtual async Task<Result> DeleteList(List<Guid> idList)
         {
             // 合法性检查
             if (idList == null || idList.Count == 0) {
                 return Result.Fail("删除数据不能为空");
             }
-            await Database.Select<TEntity>().Where(t => idList.Contains(t.Id)).ToDelete().ExecuteAffrowsAsync();
+            await _database.Select<TEntity>().Where(t => idList.Contains(t.Id)).ToDelete().ExecuteAffrowsAsync();
             return Result.Success();
         }
         #endregion

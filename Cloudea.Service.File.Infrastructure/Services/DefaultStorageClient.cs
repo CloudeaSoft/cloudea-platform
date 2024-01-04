@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Cloudea.Service.File.Domain;
 using File = System.IO.File;
+using Cloudea.Service.File.Domain.Abstractions;
+using Cloudea.Service.File.Domain.Enums;
 
 namespace Cloudea.Service.File.Infrastructure.Services;
 /// <summary>

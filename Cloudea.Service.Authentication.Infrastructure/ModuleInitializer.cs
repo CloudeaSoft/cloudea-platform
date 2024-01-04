@@ -1,9 +1,9 @@
 ﻿using Cloudea.Infrastructure;
 using Cloudea.Service.Auth.Domain;
 using Cloudea.Service.Auth.Domain.Abstractions;
-using Cloudea.Service.Auth.Domain.Authentication;
-using Cloudea.Service.Auth.Domain.Role;
-using Cloudea.Service.Auth.Domain.User;
+using Cloudea.Service.Auth.Domain.Applications;
+using Cloudea.Service.Auth.Domain.Overrides;
+using Cloudea.Service.Auth.Domain.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,17 +13,25 @@ namespace Cloudea.Service.Auth.Infrastructure
     {
         public void Initialize(IServiceCollection services)
         {
-            services.AddScoped<UserDomainService>();
-            services.AddScoped<UserService>();
+            // Utils
             services.AddScoped<VerificationCodeService>();
-            services.AddScoped<AuthUserService>();
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
-            services.AddSingleton<RoleService>();
-            services.AddSingleton<UserRoleService>();
-            services.AddSingleton<RolePermissionService>();
+
+            // Overrides
             services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
-            services.AddSingleton<IPermissionService, PermissionService>();
+
+            // Domain Service / Repository / DbContext
+            services.AddScoped<UserDomainService>();
+            services.AddScoped<AuthDomainService>();
+            services.AddScoped<ICurrentUser, CurrentUser>();
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IUserLoginRepository, UserLoginRepository>();
+
+            services.AddScoped<UserDbContext>();
+            services.AddScoped<RoleDbContext>();
         }
     }
 }

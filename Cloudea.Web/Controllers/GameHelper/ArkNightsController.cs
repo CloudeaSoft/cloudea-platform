@@ -35,7 +35,7 @@ namespace Cloudea.Web.Controllers.GameHelper
         [HttpGet]
         public async Task<IActionResult> Gacha(string token, int channelId)
         {
-            var res = await arkNights.GetGacha(token, channelId);
+            var res = await arkNights.ListGacha(token, channelId);
             if(res.Status is false) {
                 return NotFound(res);
             }

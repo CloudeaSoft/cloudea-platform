@@ -27,29 +27,30 @@ namespace Cloudea.Service.GameHelper
         /// <param name="token"></param>
         /// <param name="channelId"></param>
         /// <returns></returns>
-        public async Task<Result<GachaHistory>> GetGacha(string token, int channelId)
+        public async Task<Result<GachaHistory>> ListGacha(string token, int channelId)
         {
-            //空结果
-            var res = new GachaHistory();
+            // 初始化
+            var gachaHistory = new GachaHistory();
+            var client = _factory.CreateClient();
 
             try {
                 // 测试连接
-                var testRes = await GetGachaPage(1, token, channelId);
+                var testRes = await GetGacha(1, token, channelId, client);
                 if (testRes.code != 0) {
                     return Result.Fail($"token已过期. Code:{testRes.code}");
                 }
-                res.list = res.list.Concat(testRes.data.list).ToArray();
+                gachaHistory.list = gachaHistory.list.Concat(testRes.data.list).ToArray();
                 int total = testRes.data.pagination.total;
 
-                //if (total >= 2) {
-                //    // 循环发送请求，最多100条记录
-                //    for (int i = 2; i <= 100; i++) {
-                //        var pageRes = await GetGachaPage(i, token, channelId);
-                //        res.list = res.list.Concat(pageRes.data.list).ToArray();
-                //        // 判断页码是否到底，到底则跳出循环
-                //        if (pageRes.data.pagination.current >= total) break;
-                //    }
-                //}
+                if (total >= 2) {
+                    // 循环发送请求，最多100条记录
+                    for (int i = 2; i <= 100; i++) {
+                        var pageRes = await GetGacha(i, token, channelId, client);
+                        gachaHistory.list = gachaHistory.list.Concat(pageRes.data.list).ToArray();
+                        // 判断页码是否到底，到底则跳出循环
+                        if (pageRes.data.pagination.current >= total) break;
+                    }
+                }
             }
             catch (Exception ex) {
                 _logger.LogError(ex.ToString());
@@ -57,7 +58,7 @@ namespace Cloudea.Service.GameHelper
             }
 
             //返回结果
-            return Result.Success(res);
+            return Result.Success(gachaHistory);
         }
 
         /// <summary>
@@ -67,10 +68,8 @@ namespace Cloudea.Service.GameHelper
         /// <param name="token"></param>
         /// <param name="channelId"></param>
         /// <returns></returns>
-        public async Task<GachaHistoryPage> GetGachaPage(int page, string token, int channelId)
+        public async Task<GachaHistoryPage> GetGacha(int page, string token, int channelId, HttpClient client)
         {
-            var client = _factory.CreateClient();
-
             // token转码
             var finToken = HttpUtility.UrlEncode(token);
             finToken = finToken.Replace("+", "%2B");
