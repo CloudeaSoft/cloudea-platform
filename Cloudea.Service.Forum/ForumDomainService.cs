@@ -31,20 +31,27 @@ namespace Cloudea.Service.Forum.Domain
             return await _forumTopicRepository.List();
         }
 
+        /// <summary>
+        /// 发帖
+        /// </summary>
         public async Task<Result<long>> PostTopicAsync(
             Guid userId,
             Guid sectionId,
             string title,
-            string content)
-        {
+            string content) {
+            // 创建帖子
             var newTopic = Forum_Topic.Create(userId, sectionId, title, content);
+            var createRes = await _forumTopicRepository.SaveTopic(newTopic);
 
-            return await _forumTopicRepository.SaveTopic(newTopic);
+            //主题帖子计数增加
+            var increaseRes = await _forumSectionRepository.IncreaseTopicCount(sectionId);
+
+            return Result.Success(createRes.Data);
         }
 
         public async Task<Result<List<Forum_Section>>> ListSectionAsync()
         {
-            return await _forumSectionRepository.List();
+            return await _forumSectionRepository.Read();
         }
 
         public async Task<Result<long>> CreateSectionAsync(string name, Guid masterId)

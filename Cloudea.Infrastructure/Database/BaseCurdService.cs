@@ -115,7 +115,7 @@ namespace Cloudea.Infrastructure.Database
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        public virtual async Task<Result<ResponsePage<TEntity>>> GetBaseList(RequestPage req)
+        public virtual async Task<Result<PageResponse<TEntity>>> GetBaseList(PageRequest req)
         {
             return Result.Success(await _database.Select<TEntity>().ToPageListAsync(req));
         }

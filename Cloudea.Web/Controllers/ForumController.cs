@@ -9,17 +9,26 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cloudea.Web.Controllers
 {
     [Authorize]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class ForumController : ApiControllerBase
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     {
+        private readonly ForumService _forumService;
         private readonly ForumDomainService _forumDomainService;
         private readonly ICurrentUser _currentUser;
 
-        public ForumController(ForumDomainService forumDomainService, ICurrentUser currentUser)
-        {
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+        public ForumController(ForumDomainService forumDomainService, ICurrentUser currentUser, ForumService forumService) {
             _forumDomainService = forumDomainService;
             _currentUser = currentUser;
+            _forumService = forumService;
         }
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
+        /// <summary>
+        /// 获取Section列表
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> SectionList()
         {
@@ -27,12 +36,23 @@ namespace Cloudea.Web.Controllers
             return Ok(res);
         }
 
+        /// <summary>
+        /// 获取Section信息
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
         public async Task<IActionResult> Section()
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
         {
             return Ok();
         }
 
+        /// <summary>
+        /// 新增Section
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Section(string name)
         {

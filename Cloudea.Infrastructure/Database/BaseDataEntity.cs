@@ -16,6 +16,6 @@ namespace Cloudea.Infrastructure.Database
         /// 逻辑主键
         /// </summary>
         [Column()]
-        public Guid Id { get; protected set; } = Guid.NewGuid();
+        public Guid Id { get; protected set; }= Guid.NewGuid();
     }
 }

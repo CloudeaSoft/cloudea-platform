@@ -15,8 +15,15 @@ using System.Text.Unicode;
 
 namespace Cloudea.Web
 {
+    /// <summary>
+    /// 主程序
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// 主程序入口
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             // Init Builder
@@ -97,6 +104,7 @@ namespace Cloudea.Web
                 .AddJwtBearer(options => {
                     options.RequireHttpsMetadata = false;
                     options.SaveToken = true;
+#pragma warning disable CS8604 // 引用类型参数可能为 null。
                     options.TokenValidationParameters = new TokenValidationParameters {
                         //NameClaimType = JwtClaimTypes.Name,
                         //RoleClaimType = JwtClaimTypes.Role,
@@ -116,6 +124,7 @@ namespace Cloudea.Web
                         // 密钥生存周期
                         ValidateLifetime = true
                     };
+#pragma warning restore CS8604 // 引用类型参数可能为 null。
                 });
             builder.Services.AddAuthorization();
 

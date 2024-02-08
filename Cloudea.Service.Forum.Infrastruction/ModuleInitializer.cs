@@ -8,11 +8,14 @@ namespace Cloudea.Service.Forum
     {
         public void Initialize(IServiceCollection services)
         {
+            services.AddScoped<ForumService>();
+
             services.AddScoped<ForumDomainService>();
 
             services.AddScoped<IForumTopicRepository, ForumTopicRepository>();
             services.AddScoped<IForumSectionRepository, ForumSectionRepository>();
-            services.AddScoped<ForumReplyService>();
+            services.AddScoped<ForumReplyRepository>();
+
         }
     }
 }

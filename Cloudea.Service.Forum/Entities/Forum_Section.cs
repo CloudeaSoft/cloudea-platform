@@ -7,14 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Cloudea.Entity.Forum
-{
+namespace Cloudea.Entity.Forum {
     /// <summary>
     /// 论坛板块
     /// </summary>
     [AutoGenerateTable]
-    public record Forum_Section : BaseDataEntity
-    {
+    public record Forum_Section : BaseDataEntity {
         /// <summary>
         /// 板块名
         /// </summary>
@@ -36,8 +34,16 @@ namespace Cloudea.Entity.Forum
         /// </summary>
         public long TopicCount { get; set; }
 
-        public static Forum_Section Create(string name, Guid masterId, string? statement = null)
-        {
+        /// <summary>
+        /// 实例化
+        /// </summary>
+        /// <param name="name">板块名字</param>
+        /// <param name="masterId">板块管理人id</param>
+        /// <param name="statement">简介</param>
+        /// <returns></returns>
+        public static Forum_Section? Create(string name, Guid masterId, string? statement = null) {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("主题名不可为空");
+            if (masterId == Guid.Empty) throw new ArgumentNullException("人员Id不可为空");
             return new Forum_Section() {
                 Id = Guid.NewGuid(),
                 Name = name,

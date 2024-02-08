@@ -13,13 +13,17 @@ using Cloudea.Service.Auth.Domain.Entities;
 
 namespace Cloudea.Web.Controllers
 {
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class TestController : ApiControllerBase
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     {
         private readonly TestService testService;
         private readonly ISender _sender;
         private readonly JwtBearerOptions jwtBearerOptions;
 
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public TestController(TestService testService, ISender sender, IOptions<JwtBearerOptions> jwtBearerOptions)
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             this.testService = testService;
             _sender = sender;
@@ -69,7 +73,9 @@ namespace Cloudea.Web.Controllers
         }
 
         [HttpPost]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public async Task<IActionResult> MailTest()
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             var res = await _sender.Send(new SendEmailRequest() {
                 To = new() { "1837622674@qq.com" },
@@ -80,23 +86,33 @@ namespace Cloudea.Web.Controllers
         }
 
         [HttpGet]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
         public async Task<IActionResult> TestOption()
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             return Ok(jwtBearerOptions);
         }
 
         [HttpGet("Throw")]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public IActionResult Throw() =>
             throw new Exception("Sample exception");
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("/error")]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public IActionResult HandleError() =>
             Problem();
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("/error-development")]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public IActionResult HandleErrorDevelopment(
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
             [FromServices] IHostEnvironment hostEnvironment)
         {
             if (!hostEnvironment.IsDevelopment()) {

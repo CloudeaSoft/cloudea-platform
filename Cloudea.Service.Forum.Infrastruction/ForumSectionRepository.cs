@@ -15,7 +15,11 @@ namespace Cloudea.Service.Forum.Domain
 
         public ForumSectionRepository(IFreeSql database) : base(database)
         {
-            _database = database;
+            
+        }
+
+        public Task<Result> IncreaseTopicCount(Guid id) {
+            throw new NotImplementedException();
         }
 
         public async Task<Result<List<Forum_Section>>> List()

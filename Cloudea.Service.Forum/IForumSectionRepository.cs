@@ -10,8 +10,10 @@ namespace Cloudea.Service.Forum.Domain
 {
     public interface IForumSectionRepository
     {
-        Task<Result<List<Forum_Section>>> List();
+        Task<Result<List<Forum_Section>>> Read();
 
         Task<Result<long>> SaveSection(Forum_Section newSection);
+
+        Task<Result> IncreaseTopicCount(Guid id);
     }
 }

@@ -10,12 +10,16 @@ namespace Cloudea.Web.Middlewares
     {
         private readonly RequestDelegate _next;
 
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public UserLoginGuidAuthenticationMiddleware(RequestDelegate next)
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             _next = next;
         }
 
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public async Task InvokeAsync(HttpContext context, UserDomainService authUserService)
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
 
             var req = context.Request;
@@ -24,13 +28,17 @@ namespace Cloudea.Web.Middlewares
             // 检查 user login guid
             if (req.Headers.TryGetValue("Authorization", out _)) {
                 var userIdClaim = context.User.Claims.FirstOrDefault(t => t.Type == JwtClaims.USER_ID);
+#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
                 string userId = userIdClaim?.Value;
+#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
 
                 Console.WriteLine("userid:" + userId);
 
 
                 var userGuidClaim = context.User.Claims.FirstOrDefault(t => t.Type == JwtClaims.USER_LOGIN_GUID);
+#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
                 string guid = userGuidClaim?.Value;
+#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
 
                 Console.WriteLine("guid:" + guid);
 

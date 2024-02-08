@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cloudea.Service.Forum.Domain.Models
 {
-    public class SectionListResponse : ResponsePage<SectionInfo>
+    public class SectionListResponse : PageResponse<SectionInfo>
     {
 
     }

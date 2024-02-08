@@ -10,7 +10,9 @@ namespace Cloudea.Web.Middlewares;
 public class SwaggerAuthMiddleware
 {
     private readonly RequestDelegate next;
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public SwaggerAuthMiddleware(RequestDelegate next)
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     {
         this.next = next;
     }
@@ -31,7 +33,9 @@ public class SwaggerAuthMiddleware
             if (authHeader != null && authHeader.StartsWith("Basic ")) {
                 // Get the credentials from request header
                 var header = AuthenticationHeaderValue.Parse(authHeader);
+#pragma warning disable CS8604 // 引用类型参数可能为 null。
                 var inBytes = Convert.FromBase64String(header.Parameter);
+#pragma warning restore CS8604 // 引用类型参数可能为 null。
                 var credentials = Encoding.UTF8.GetString(inBytes).Split(':');
                 var username = credentials[0];
                 var password = credentials[1];

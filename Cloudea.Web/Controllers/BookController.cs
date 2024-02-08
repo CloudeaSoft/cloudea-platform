@@ -11,13 +11,17 @@ using Org.BouncyCastle.Crypto;
 namespace Cloudea.Web.Controllers
 {
     [Authorize]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class BookController : ApiControllerBase
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     {
         private readonly BookDomainService _bookDomainService;
         private readonly MetaDbContext _metaDbContext;
         private readonly ICurrentUser _currentUser;
 
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public BookController(BookDomainService bookManager, ICurrentUser currentUser, MetaDbContext metaDbContext)
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             _bookDomainService = bookManager;
             _currentUser = currentUser;
@@ -25,7 +29,9 @@ namespace Cloudea.Web.Controllers
         }
 
         [HttpGet]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public async Task<IActionResult> BookMeta(Guid id)
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             var res = await _metaDbContext.Read(id);
             if (res.IsFailure()) {
@@ -35,7 +41,9 @@ namespace Cloudea.Web.Controllers
         }
 
         [HttpPost]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public async Task<IActionResult> BookMeta([FromBody] CreateBookMetaRequest request)
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             if (request is null) {
                 return BadRequest();
@@ -57,13 +65,19 @@ namespace Cloudea.Web.Controllers
         }
 
         [HttpPut]
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public async Task<IActionResult> BookMeta([FromBody] UpdateBookMetaRequest request)
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
         {
             return Ok();
         }
 
         [HttpDelete]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public async Task<IActionResult> BookMetaDelete(Guid id)
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             var user = await _currentUser.GetUserIdAsync();
             var bookRes = await _bookDomainService.DeleteMetaAsync(id, user);
@@ -75,7 +89,11 @@ namespace Cloudea.Web.Controllers
         }
 
         [HttpPost]
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
         public async Task<IActionResult> BookVolume()
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             return Ok();
         }
