@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cloudea.Service.Auth.Infrastructure
 {
-    public class UserDbContext : BaseCurdService<User>
+    public class UserDbContext : BaseRepository<User>
     {
         public UserDbContext(IFreeSql database) : base(database)
         {

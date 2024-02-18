@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cloudea.Service.Book.Infrastructure
 {
-    public class MetaDbContext : BaseCurdService<BookMeta>
+    public class MetaDbContext : BaseRepository<BookMeta>
     {
         public MetaDbContext(IFreeSql database) : base(database)
         {

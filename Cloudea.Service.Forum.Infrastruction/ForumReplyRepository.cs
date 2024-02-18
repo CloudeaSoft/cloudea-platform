@@ -3,7 +3,7 @@ using Cloudea.Infrastructure.Database;
 
 namespace Cloudea.Service.Forum.Domain
 {
-    public class ForumReplyRepository : BaseCurdService<Forum_Reply>
+    public class ForumReplyRepository : BaseRepository<Forum_Reply>
     {
         private readonly IFreeSql _database;
 

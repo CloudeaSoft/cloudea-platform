@@ -1,11 +1,9 @@
 ﻿using Cloudea.Infrastructure.Database;
 using FreeSql.DataAnnotations;
 
-
 namespace Cloudea.Entity.Forum;
-
 /// <summary>
-/// 论坛主题帖
+/// 论坛主题帖实体
 /// </summary>
 [AutoGenerateTable]
 [Index("uk_section_topic", "SectionId,Id", true)]
@@ -19,7 +17,6 @@ public record Forum_Topic : BaseDataEntity
     /// 用户ID - 发帖人
     /// </summary>
     public Guid UserId { get; set; }
-
     /// <summary>
     /// 标题
     /// </summary>
@@ -28,7 +25,6 @@ public record Forum_Topic : BaseDataEntity
     /// 内容
     /// </summary>
     public string Content { get; set; }
-
     /// <summary>
     /// 点击次数
     /// </summary>
@@ -39,6 +35,14 @@ public record Forum_Topic : BaseDataEntity
     [Column(DbType = "timestamp")]
     public DateTime LastClickTime { get; set; }
 
+    /// <summary>
+    /// 创建对象
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="sectionId"></param>
+    /// <param name="title"></param>
+    /// <param name="content"></param>
+    /// <returns></returns>
     public static Forum_Topic Create(
         Guid userId,
         Guid sectionId,

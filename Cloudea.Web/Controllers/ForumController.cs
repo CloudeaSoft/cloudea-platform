@@ -9,21 +9,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cloudea.Web.Controllers
 {
     [Authorize]
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+
     public class ForumController : ApiControllerBase
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     {
-        private readonly ForumService _forumService;
-        private readonly ForumDomainService _forumDomainService;
+        private readonly ForumApplicationService _forumService;
         private readonly ICurrentUser _currentUser;
 
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
-        public ForumController(ForumDomainService forumDomainService, ICurrentUser currentUser, ForumService forumService) {
-            _forumDomainService = forumDomainService;
+
+        public ForumController(ICurrentUser currentUser, ForumApplicationService forumService)
+        {
             _currentUser = currentUser;
             _forumService = forumService;
         }
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
         /// <summary>
         /// 获取Section列表
@@ -32,8 +29,7 @@ namespace Cloudea.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> SectionList()
         {
-            var res = await _forumDomainService.ListSectionAsync();
-            return Ok(res);
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -41,11 +37,9 @@ namespace Cloudea.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
         public async Task<IActionResult> Section()
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
         {
-            return Ok();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -56,10 +50,7 @@ namespace Cloudea.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Section(string name)
         {
-            var sectionName = name;
-            var masterId = await _currentUser.GetUserIdAsync();
-            var res = await _forumDomainService.CreateSectionAsync(sectionName, masterId);
-            return Ok(res);
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -69,15 +60,14 @@ namespace Cloudea.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> GetTopic()
         {
-            var res = await _forumDomainService.GetTopicAsync(Guid.NewGuid());
-            return Ok(res);
+            throw new NotImplementedException();
         }
 
         /// <summary>
         /// 获取主题帖列表
         /// </summary>
         [HttpGet]
-        public void ListTopic()
+        public void TopicList()
         {
             throw new NotImplementedException();
         }
@@ -105,14 +95,10 @@ namespace Cloudea.Web.Controllers
         /// 发表主题帖
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> PostTopic([FromBody] PostTopicRequest request)
+        public async Task<IActionResult> Topic([FromBody] PostTopicRequest request)
         {
-            var userId = await _currentUser.GetUserIdAsync();
-            var sectionId = request.sectionId;
-            string title = request.title;
-            string content = request.content;
-
-            var res = await _forumDomainService.PostTopicAsync(userId, sectionId, title, content);
+            request.userId = await _currentUser.GetUserIdAsync();
+            var res = await _forumService.PostTopicAsync(request);
             return Ok(res);
         }
 

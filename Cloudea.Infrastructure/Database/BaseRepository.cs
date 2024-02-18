@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Cloudea.Infrastructure.Database
 {
-    public abstract class BaseCurdService<TEntity>
+    public abstract class BaseRepository<TEntity>
         where TEntity : BaseDataEntity, new()
     {
         public IFreeSql _database { get; set; }
 
-        protected BaseCurdService(IFreeSql database)
+        protected BaseRepository(IFreeSql database)
         {
             _database = database;
         }

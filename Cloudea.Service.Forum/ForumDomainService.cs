@@ -1,6 +1,8 @@
 ﻿using Cloudea.Entity.Forum;
 using Cloudea.Infrastructure.Models;
 using Cloudea.Service.Forum.Domain.Abstractions;
+using Cloudea.Service.Forum.Domain.Models;
+using FluentValidation;
 using Org.BouncyCastle.Asn1.X509.Qualified;
 using System;
 using System.Collections.Generic;
@@ -10,55 +12,30 @@ using System.Threading.Tasks;
 
 namespace Cloudea.Service.Forum.Domain
 {
-    public class ForumDomainService
+    public class ForumDomainService(IValidator<PostTopicRequest> postTopicRequestValidator)
     {
-        private readonly IForumTopicRepository _forumTopicRepository;
-        private readonly IForumSectionRepository _forumSectionRepository;
-
-        public ForumDomainService(IForumTopicRepository forumTopicRepository, IForumSectionRepository forumSectionRepository)
-        {
-            _forumTopicRepository = forumTopicRepository;
-            _forumSectionRepository = forumSectionRepository;
-        }
-
-        public async Task<Result<Forum_Topic>> GetTopicAsync(Guid topicId)
-        {
-            return await _forumTopicRepository.Get(topicId);
-        }
-
-        public async Task<Result<List<Forum_Topic>>> ListTopicAsync()
-        {
-            return await _forumTopicRepository.List();
-        }
+        private readonly IValidator<PostTopicRequest> _postTopicRequestValidator = postTopicRequestValidator;
 
         /// <summary>
-        /// 发帖
+        /// 创建Forum_Topic实体
         /// </summary>
-        public async Task<Result<long>> PostTopicAsync(
-            Guid userId,
-            Guid sectionId,
-            string title,
-            string content) {
-            // 创建帖子
-            var newTopic = Forum_Topic.Create(userId, sectionId, title, content);
-            var createRes = await _forumTopicRepository.SaveTopic(newTopic);
-
-            //主题帖子计数增加
-            var increaseRes = await _forumSectionRepository.IncreaseTopicCount(sectionId);
-
-            return Result.Success(createRes.Data);
-        }
-
-        public async Task<Result<List<Forum_Section>>> ListSectionAsync()
+        public async Task<Result<Forum_Topic>> CreateTopic(PostTopicRequest request)
         {
-            return await _forumSectionRepository.Read();
-        }
+            // request合法性检查
+            var validateRes = _postTopicRequestValidator.Validate(request);
+            // request合法性检查未通过
+            if (validateRes.IsValid is false) {
+                return Result.Fail($"创建帖子失败。原因：{validateRes.Errors}");
+            }
 
-        public async Task<Result<long>> CreateSectionAsync(string name, Guid masterId)
-        {
-            var newSection = Forum_Section.Create(name, masterId);
+            // 创建Forum_Topic实体
+            var newTopic = Forum_Topic.Create(
+                request.userId,
+                request.sectionId,
+                request.title,
+                request.content);
 
-            return await _forumSectionRepository.SaveSection(newSection);
+            return Result.Success(newTopic);
         }
     }
 }

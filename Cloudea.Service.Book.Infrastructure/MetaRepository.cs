@@ -7,7 +7,7 @@ using Cloudea.Service.Book.Domain.Abstractions;
 
 namespace Cloudea.Service.Book.Infrastructure
 {
-    public class MetaRepository : BaseCurdService<BookMeta>, IMetaRepository
+    public class MetaRepository : BaseRepository<BookMeta>, IMetaRepository
     {
         private readonly ILogger<MetaRepository> logger;
 

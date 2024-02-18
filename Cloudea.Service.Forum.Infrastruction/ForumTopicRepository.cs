@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace Cloudea.Service.Forum.Domain
 {
-    public class ForumTopicRepository : BaseCurdService<Forum_Topic>, IForumTopicRepository
+    public class ForumTopicRepository : BaseRepository<Forum_Topic>, IForumTopicRepository
     {
         private readonly IFreeSql _database;
 

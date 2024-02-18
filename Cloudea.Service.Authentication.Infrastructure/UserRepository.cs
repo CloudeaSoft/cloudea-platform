@@ -9,7 +9,7 @@ using Cloudea.Service.Auth.Domain.Abstractions;
 
 namespace Cloudea.Service.Auth.Domain
 {
-    public class UserRepository : BaseCurdService<User>, IUserRepository
+    public class UserRepository : BaseRepository<User>, IUserRepository
     {
         private readonly ILogger<UserRepository> _logger;
 

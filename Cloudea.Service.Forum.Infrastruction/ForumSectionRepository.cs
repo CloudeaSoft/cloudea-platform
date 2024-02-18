@@ -9,27 +9,31 @@ using System.Threading.Tasks;
 
 namespace Cloudea.Service.Forum.Domain
 {
-    public class ForumSectionRepository : BaseCurdService<Forum_Section>, IForumSectionRepository
+    public class ForumSectionRepository(IFreeSql database) : BaseRepository<Forum_Section>(database), IForumSectionRepository
     {
-        private readonly IFreeSql _database;
-
-        public ForumSectionRepository(IFreeSql database) : base(database)
+        public async Task<Result<Forum_Section>> ReadSection(Guid sectionId)
         {
-            
+            return await Read(sectionId);
         }
 
-        public Task<Result> IncreaseTopicCount(Guid id) {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Result<List<Forum_Section>>> List()
+        public async Task<Result<List<Forum_Section>>> ListSection()
         {
             return await Read();
         }
 
-        public async Task<Result<long>> SaveSection(Forum_Section newSection)
+        public async Task<Result<long>> CreateSection(Forum_Section newSection)
         {
             return await Create(newSection);
+        }
+
+        public Task<Result> IncreaseTopicCount(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result> DecreaseTopicCount(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
