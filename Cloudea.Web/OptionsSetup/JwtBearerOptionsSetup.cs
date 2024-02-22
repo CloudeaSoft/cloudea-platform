@@ -4,8 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Cloudea.Web.OptionsSetup
-{
+namespace Cloudea.Web.OptionsSetup {
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释

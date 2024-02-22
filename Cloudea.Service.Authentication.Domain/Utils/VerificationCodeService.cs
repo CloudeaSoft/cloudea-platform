@@ -59,7 +59,7 @@ namespace Cloudea.Service.Auth.Domain.Utils
                 .Where(t => t.Email == email && t.VerCodeType == codeType).FirstAsync();
             if (entity == null)
             {
-                return Result.Fail("验证码错误");
+                return Result.Failure(new Error("验证码错误"));
             }
 
             if (entity.VerCode == code)
@@ -75,12 +75,12 @@ namespace Cloudea.Service.Auth.Domain.Utils
                 }
                 else
                 {
-                    return Result.Fail("验证码已过期请重新获取");
+                    return Result.Failure(new Error("验证码已过期请重新获取"));
                 }
             }
             else
             {
-                return Result.Fail("验证码错误");
+                return Result.Failure(new Error("验证码错误"));
             }
         }
 
@@ -110,7 +110,7 @@ namespace Cloudea.Service.Auth.Domain.Utils
                 // 如果时间还没超过一分钟又要发了  退回
                 if (entity.VerCodeVaildTime.HasValue && entity.VerCodeVaildTime.Value.AddMinutes(-1 * (EXPIRE_TIME - 1)) >= DateTime.Now)
                 {
-                    return Result.Fail("请稍后再试");
+                    return Result.Failure(new Error("请稍后再试"));
                 }
 
                 await Database.Update<UserVercode>()

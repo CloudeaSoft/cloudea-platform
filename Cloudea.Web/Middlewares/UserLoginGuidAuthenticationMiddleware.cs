@@ -1,13 +1,11 @@
 ﻿using Cloudea.Service.Auth.Domain.Applications;
 using Cloudea.Service.Auth.Domain.Models;
 
-namespace Cloudea.Web.Middlewares
-{
+namespace Cloudea.Web.Middlewares {
     /// <summary>
     /// 唯一用户登录
     /// </summary>
-    public class UserLoginGuidAuthenticationMiddleware
-    {
+    public class UserLoginGuidAuthenticationMiddleware {
         private readonly RequestDelegate _next;
 
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释

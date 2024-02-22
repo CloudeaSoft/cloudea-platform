@@ -32,7 +32,7 @@ namespace Cloudea.Service.Auth.Domain.Applications
         {
             _userRepository = userRepository;
             _memoryCache = memoryCache;
-            AES_KEY = configuration["Secrets:AESKEY"];
+            AES_KEY = configuration["Secrets:AESKEY"]!;
             _userVerificationCodeService = userVerificationCodeService;
             _jwtTokenService = jwtTokenService;
             _userRoleRepository = userRoleRepository;
@@ -75,13 +75,13 @@ namespace Cloudea.Service.Auth.Domain.Applications
         {
             // 检查用户是否已经注册过了
             if (await CheckUserRegistered(email)) {
-                return Result.Fail("该邮箱已被注册");
+                return new Error("该邮箱已被注册");
             }
 
             // 检查验证码有效性
             var checkRes = await _userVerificationCodeService.CheckVerCodeEmail(email, VerificationCodeType.RegisterByEmail, verCode);
             if (checkRes.Status is false) {
-                return Result.Fail(checkRes.Message);
+                return checkRes.Error;
             }
 
             // 生成并返回注册Token
@@ -99,13 +99,13 @@ namespace Cloudea.Service.Auth.Domain.Applications
             if (userName == null ||
                 registerToken == null ||
                 password == null) {
-                return Result.Fail("信息不能为空");
+                return new Error("信息不能为空");
             }
 
             // 验证token有效性,并提取邮箱信息
             string userEmail;
             if (string.IsNullOrWhiteSpace(registerToken)) {
-                return Result.Fail("token不能为空");
+                return new Error("token不能为空");
             }
             // 解析token
             try {
@@ -114,23 +114,23 @@ namespace Cloudea.Service.Auth.Domain.Applications
             }
             catch (Exception ex) {
                 //_logger.LogError(ex, message: "FinishRegister:" + ex.Message);
-                return Result.Fail("token 解析错误");
+                return new Error("token 解析错误");
             }
 
             // 验证信息合法性
             if (string.IsNullOrEmpty(password)) {
-                return Result.Fail("密码不能为空");
+                return new Error("密码不能为空");
             }
             if (password.Length < 6) {
-                return Result.Fail("密码不能小于6位");
+                return new Error("密码不能小于6位");
             }
 
             if (string.IsNullOrEmpty(userName)) {
-                return Result.Fail("名称不能为空");
+                return new Error("名称不能为空");
             }
 
             if (await CheckUserRegistered(userEmail)) {
-                return Result.Fail("该邮箱已被注册");
+                return new Error("该邮箱已被注册");
             }
 
             // 创建新用户信息
@@ -166,10 +166,10 @@ namespace Cloudea.Service.Auth.Domain.Applications
             //用户名+密码登录
             if (request.LoginType == LoginType.UserNamePassword) {
                 if (string.IsNullOrWhiteSpace(request.UserName)) {
-                    return Result.Fail("用户名不能为空");
+                    return new Error("用户名不能为空");
                 }
                 if (string.IsNullOrWhiteSpace(request.Password)) {
-                    return Result.Fail("密码不能为空");
+                    return new Error("密码不能为空");
                 }
 
                 userId = await _userRepository.GetUserIdByUserName(request.UserName);
@@ -185,10 +185,10 @@ namespace Cloudea.Service.Auth.Domain.Applications
             // 邮箱+密码登录
             else if (request.LoginType == LoginType.EmailPassword) {
                 if (string.IsNullOrWhiteSpace(request.Email)) {
-                    return Result.Fail("邮箱不能为空");
+                    return new Error("邮箱不能为空");
                 }
                 if (string.IsNullOrWhiteSpace(request.Password)) {
-                    return Result.Fail("密码不能为空");
+                    return new Error("密码不能为空");
                 }
 
                 userId = await _userRepository.GetUserIdByEmail(request.Email);
@@ -204,10 +204,10 @@ namespace Cloudea.Service.Auth.Domain.Applications
             // 邮箱+验证码登录
             else {
                 if (string.IsNullOrWhiteSpace(request.Email)) {
-                    return Result.Fail("邮箱不能为空");
+                    return new Error("邮箱不能为空");
                 }
                 if (string.IsNullOrWhiteSpace(request.Vercode)) {
-                    return Result.Fail("验证码不能为空");
+                    return new Error("验证码不能为空");
                 }
 
                 userId = await _userRepository.GetUserIdByEmail(request.Email);
@@ -226,9 +226,9 @@ namespace Cloudea.Service.Auth.Domain.Applications
             return await GenerateUserLoginToken(userId);
         }
 
-        private static Result HandleLoginFailure()
+        private static Result<string> HandleLoginFailure()
         {
-            return Result.Fail("登陆失败. 填写信息有误");
+            return new Error("登陆失败. 填写信息有误");
         }
 
         /// <summary>

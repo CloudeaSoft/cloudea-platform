@@ -42,7 +42,7 @@ namespace Cloudea.Service.Auth.Domain.Applications
                 Guid userId = Guid.Parse(claim.Value);
                 var res = await _userService.GetUser(userId);
                 if (!res.Status) {
-                    string err = $"userId:{userId} GetInfo:{res.Message}";
+                    string err = $"userId:{userId} GetInfo:{res.Error}";
                     _logger.LogError(err);
                     _user = null;
                     _inited = true;

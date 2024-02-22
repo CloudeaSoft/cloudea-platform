@@ -8,15 +8,12 @@ using System.Text;
 using System.Web;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 
-namespace Cloudea.Service.GameHelper
-{
-    public class ArkNightsService : IArkNightsService
-    {
+namespace Cloudea.Service.GameHelper {
+    public class ArkNightsService : IArkNightsService {
         private readonly IHttpClientFactory _factory;
         private readonly ILogger<ArkNightsService> _logger;
 
-        public ArkNightsService(IHttpClientFactory factory, ILogger<ArkNightsService> logger)
-        {
+        public ArkNightsService(IHttpClientFactory factory, ILogger<ArkNightsService> logger) {
             _factory = factory;
             _logger = logger;
         }
@@ -27,8 +24,7 @@ namespace Cloudea.Service.GameHelper
         /// <param name="token"></param>
         /// <param name="channelId"></param>
         /// <returns></returns>
-        public async Task<Result<GachaHistory>> ListGacha(string token, int channelId)
-        {
+        public async Task<Result<GachaHistory>> ListGacha(string token, int channelId) {
             // 初始化
             var gachaHistory = new GachaHistory();
             var client = _factory.CreateClient();
@@ -37,7 +33,7 @@ namespace Cloudea.Service.GameHelper
                 // 测试连接
                 var testRes = await GetGacha(1, token, channelId, client);
                 if (testRes.code != 0) {
-                    return Result.Fail($"token已过期. Code:{testRes.code}");
+                    return new Error($"token已过期. Code:{testRes.code}");
                 }
                 gachaHistory.list = gachaHistory.list.Concat(testRes.data.list).ToArray();
                 int total = testRes.data.pagination.total;
@@ -54,7 +50,7 @@ namespace Cloudea.Service.GameHelper
             }
             catch (Exception ex) {
                 _logger.LogError(ex.ToString());
-                return Result.Fail();
+                return new Error(ex.ToString());
             }
 
             //返回结果
@@ -68,8 +64,7 @@ namespace Cloudea.Service.GameHelper
         /// <param name="token"></param>
         /// <param name="channelId"></param>
         /// <returns></returns>
-        public async Task<GachaHistoryPage> GetGacha(int page, string token, int channelId, HttpClient client)
-        {
+        public async Task<GachaHistoryPage> GetGacha(int page, string token, int channelId, HttpClient client) {
             // token转码
             var finToken = HttpUtility.UrlEncode(token);
             finToken = finToken.Replace("+", "%2B");

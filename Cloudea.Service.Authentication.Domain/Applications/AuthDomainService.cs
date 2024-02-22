@@ -22,10 +22,10 @@ namespace Cloudea.Service.Auth.Domain.Applications
             var res = await _authRepository.GetRoleList();
             if (res == null)
             {
-                return Result.Fail();
+                return new Error("角色不存在");
             }
             var roles = res.Data;
-            return Result.Success(roles);
+            return roles;
         }
 
         /// <summary>
@@ -39,11 +39,11 @@ namespace Cloudea.Service.Auth.Domain.Applications
             var res = await _authRepository.GetRole(roleId);
             if (res == null)
             {
-                return Result.Fail("角色不存在");
+                return new Error("角色不存在");
             }
             var role = res.Data;
             role.Permissions = permissions;
-            return Result.Success(role);
+            return role;
         }
 
         public async Task<Result<Role>> CreateRole(string name, List<Permission> permissions)
@@ -51,11 +51,12 @@ namespace Cloudea.Service.Auth.Domain.Applications
             var res = await _authRepository.GetRole(name);
             if (res is not null)
             {
-                return Result.Fail("已存在");
+                return new Error("角色已存在");
             }
-            var newRole = new Role(1, "Admin");
-            newRole.Permissions = permissions;
-            return Result.Success(newRole);
+            var newRole = new Role(1, "Admin") {
+                Permissions = permissions
+            };
+            return newRole;
         }
     }
 }

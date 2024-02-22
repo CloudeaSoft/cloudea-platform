@@ -1,8 +1,7 @@
 ﻿using Cloudea.Service.Base.Message;
 using Microsoft.Extensions.Options;
 
-namespace Cloudea.Web.OptionsSetup
-{
+namespace Cloudea.Web.OptionsSetup {
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class MailOptionsSetup : IConfigureOptions<MailOptions>
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释

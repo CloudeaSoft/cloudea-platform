@@ -1,28 +1,20 @@
-﻿using Cloudea.GameHelper;
-using Cloudea.Infrastructure.API;
-using Cloudea.Infrastructure.Models;
-using Cloudea.Service.GameHelper;
+﻿using Cloudea.Infrastructure.API;
 using Cloudea.Service.GameHelper.Abstractions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Cloudea.Web.Controllers.GameHelper
-{
+namespace Cloudea.Web.Controllers.GameHelper {
 
     /// <summary>
     /// 明日方舟相关工具接口集
     /// </summary>
-    public class ArkNightsController : ApiControllerBase
-    {
+    public class ArkNightsController : ApiControllerBase {
         private readonly IArkNightsService arkNights;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="arkNights"></param>
-        public ArkNightsController(IArkNightsService arkNights)
-        {
+        public ArkNightsController(IArkNightsService arkNights) {
             this.arkNights = arkNights;
         }
 
@@ -33,10 +25,9 @@ namespace Cloudea.Web.Controllers.GameHelper
         /// <param name="channelId"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Gacha(string token, int channelId)
-        {
+        public async Task<IActionResult> Gacha(string token, int channelId) {
             var res = await arkNights.ListGacha(token, channelId);
-            if(res.Status is false) {
+            if (res.Status is false) {
                 return NotFound(res);
             }
             return Ok(res);

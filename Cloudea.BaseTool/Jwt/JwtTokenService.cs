@@ -7,12 +7,10 @@ using System.Text;
 
 namespace Cloudea.Service.Base.Jwt;
 
-public class JwtTokenService
-{
+public class JwtTokenService {
     private readonly JwtOptions _jwtOptions;
 
-    public JwtTokenService(IOptions<JwtOptions> jwtOptions)
-    {
+    public JwtTokenService(IOptions<JwtOptions> jwtOptions) {
         _jwtOptions = jwtOptions.Value;
     }
 
@@ -27,10 +25,9 @@ public class JwtTokenService
     /// <param name="claims">身份信息</param>
     /// <param name="expireDays">过期时间 默认:30天</param>
     /// <returns></returns>
-    public Result<string> Generate(List<Claim> claims, int expireDays = DEFAULT_EXPIRE_DAYS)
-    {
-        if (claims == null || claims.Count == 0) {
-            return Result.Fail("身份信息不能为空");
+    public Result<string> Generate(List<Claim> claims, int expireDays = DEFAULT_EXPIRE_DAYS) {
+        if (claims is null || claims.Count == 0) {
+            return JwtTokenErrors.IdentityCannotBeNull;
         }
 
         // 使用UTF8编码存储密钥
@@ -49,5 +46,9 @@ public class JwtTokenService
         // 转化为JwtToken字符串
         var token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
         return Result.Success(token);
+    }
+
+    public static class JwtTokenErrors {
+        public static readonly Error IdentityCannotBeNull = new("身份信息不能为空");
     }
 }

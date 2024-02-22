@@ -1,102 +1,70 @@
-﻿using System;
-using System.Net.Http.Headers;
+﻿using Microsoft.AspNetCore.Routing.Template;
+using MySqlX.XDevAPI.CRUD;
+using System.Text.Json.Serialization;
 
 namespace Cloudea.Infrastructure.Models;
 
-public class ResultBase
+/// <summary>
+/// 返回结果
+/// </summary>
+public class Result
 {
-    public bool Status { get; set; }
-    public string Message { get; set; } = default!;
-
-    public bool IsSuccess()
+    protected internal Result(bool succeeded, Error error)
     {
-        return Status;
+        if (succeeded && error != Error.None ||
+            !succeeded && error == Error.None) {
+            throw new InvalidOperationException();
+        }
+
+        Status = succeeded;
+        Error = error;
     }
 
-    public bool IsFailure()
-    {
-        return !Status;
-    }
+    public bool Status { get; protected set; }
+
+    public Error Error { get; protected set; } = default!;
+
+    [JsonIgnore]
+    public bool IsSuccess { get { return Status; } }
+
+    [JsonIgnore]
+    public bool IsFailure { get { return !Status; } }
+
+    public static Result Success()
+        => new(true, Error.None);
+
+    public static Result<TValue> Success<TValue>(TValue value) => new(true, Error.None, value);
+
+    public static Result Failure(Error error)
+        => new(false, error);
+
+    public static Result<TValue> Failure<TValue>(Error error) => new(false, error, default);
+
+    public static implicit operator Result(Error error) => Failure(error);
 }
 
 /// <summary>
 /// 返回结果
 /// </summary>
-public class Result : ResultBase
+/// <typeparam name="TValue"></typeparam>
+public class Result<TValue> : Result
 {
-    public object? Data { get; set; }
+    private readonly TValue? _data;
 
-    public Result(bool succeeded, object? data = null)
+    protected internal Result(bool status, Error error, TValue? value)
+        : base(status, error) =>
+        _data = value;
+
+    public TValue Data => Status
+        ? _data!
+        : throw new InvalidOperationException("The value of a failure result can not be accessed");
+
+    public static implicit operator Result<TValue>(TValue value) => Create(value);
+
+    public static implicit operator Result<TValue>(Error error) => Failure<TValue>(error);
+
+    private static Result<TValue> Create(TValue? value)
     {
-        Status = succeeded;
-        Data = data;
-    }
-
-    public static Result Success(object? data = null, string? message = null)
-    {
-        var res = new Result(true, data);
-        res.Message = message ?? "成功";
-        return res;
-    }
-
-    public static Result Fail(string? error = null, object? data = null)
-    {
-        var res = new Result(false, data);
-        res.Message = error ?? "失败";
-        return res;
-    }
-}
-
-/// <summary>
-/// 返回结果
-/// </summary>
-/// <typeparam name="T"></typeparam>
-public class Result<T> : ResultBase
-{
-    public T Data { get; set; }
-
-    public Result(bool succeeded, T data = default)
-    {
-        Status = succeeded;
-        Data = data;
-    }
-
-    public static Result<T> Success(T data, string? message = null)
-    {
-        var res = new Result<T>(true, data);
-        res.Message = message ?? "成功";
-        return res;
-    }
-
-    public static Result<T> Fail(string? error = null, T data = default)
-    {
-        var res = new Result<T>(false, data);
-        res.Message = error ?? "失败";
-        return res;
-    }
-
-    /// <summary>
-    /// 隐式转换为泛型Result
-    /// </summary>
-    /// <param name="response"></param>
-    public static implicit operator Result<T>(Result response)
-    {
-        if (response.Data is not T && response.Data != null) // data为不为空 且 data不符合要求
-        {
-            throw new ArgumentException($"Data的类型与{typeof(T).Name}不符");
-        }
-        else if (response.Data != null) // data为不为空 且 data符合要求
-        {
-            return new Result<T>(response.Status) {
-                Data = (T)response.Data,
-                Message = response.Message
-            };
-        }
-        else // data为空
-        {
-            return new Result<T>(response.Status) {
-                Message = response.Message
-            };
-        }
+        return new(true, Error.None, value);
     }
 }

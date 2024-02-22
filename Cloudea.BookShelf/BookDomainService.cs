@@ -28,12 +28,12 @@ namespace Cloudea.Service.Book.Domain
             //查重
             var res = await _metaRepository.FindMetaByName(title);
             if (res is not null) {
-                return Result.Fail("书籍已存在");
+                return new Error("书籍已存在");
             }
 
             Guid metaId = Guid.NewGuid();
             var meta = BookMeta.QuickCreate(metaId, title, author, creatorId);
-            return Result.Success(meta);
+            return meta;
         }
 
         /// <summary>
@@ -44,20 +44,20 @@ namespace Cloudea.Service.Book.Domain
         {
             var res = await _metaRepository.FindMetaById(bookId);
             if (res is null) {
-                return Result.Fail();
+                return new Error("");
             }
             if (res.Creator != creator) {
-                return Result.Fail();
+                return new Error("");
             }
             res.SoftDelete();
-            return Result.Success(res);
+            return res;
         }
 
         public async Task<Result<BookVolume>> UploadVolumeAsync(Guid creatorId, Guid metaId, string title)
         {
-            await _volumeRepository.GetByTitle("Title");
-
-            return Result.Success();
+            var res = await _volumeRepository.GetByTitle("Title");
+            throw new NotImplementedException();
+            return res;
         }
     }
 }

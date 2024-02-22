@@ -7,8 +7,7 @@ using Cloudea.Service.Auth.Domain.Utils;
 using Cloudea.Service.Auth.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cloudea.Web.Controllers
-{
+namespace Cloudea.Web.Controllers {
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class IdentityController : ApiControllerBase
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
@@ -34,7 +33,7 @@ namespace Cloudea.Web.Controllers
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             var res = await authUserService.StartRegister(email, verCode);
-            if (res.IsFailure()) {
+            if (res.IsFailure) {
                 return BadRequest(res);
             }
             return Ok(res);
@@ -46,7 +45,7 @@ namespace Cloudea.Web.Controllers
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             var userRes = await authUserService.Register(user.RegisterToken, user.UserName, user.Password);
-            if (userRes.IsFailure()) {
+            if (userRes.IsFailure) {
                 return BadRequest(userRes);
             }
             var createRes = await _userDbContext.Create(userRes.Data);
@@ -69,7 +68,7 @@ namespace Cloudea.Web.Controllers
 #pragma warning restore CS0472 // 由于此类型的值永不等于 "null"，该表达式的结果始终相同
 
             var tokenRes = await authUserService.Login(request);
-            if (tokenRes.IsFailure()) {
+            if (tokenRes.IsFailure) {
                 return NotFound();
             }
             return Ok(tokenRes);
@@ -111,7 +110,7 @@ namespace Cloudea.Web.Controllers
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             var res = await verificationCodeService.SendVerCodeEmail(email, codeType);
-            if (res.IsFailure()) {
+            if (res.IsFailure) {
                 return BadRequest(res);
             }
             return Ok(res);

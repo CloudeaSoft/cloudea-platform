@@ -11,7 +11,7 @@ namespace Cloudea.Infrastructure.Database
     public abstract class BaseRepository<TEntity>
         where TEntity : BaseDataEntity, new()
     {
-        public IFreeSql _database { get; set; }
+        protected IFreeSql _database { get; set; }
 
         protected BaseRepository(IFreeSql database)
         {
@@ -26,11 +26,11 @@ namespace Cloudea.Infrastructure.Database
         /// <returns></returns>
         public virtual async Task<Result<long>> Create(TEntity entity)
         {
-            if (!CheckModel(entity, out string errMsg)) {
-                return Result.Fail(errMsg);
+            if (!CheckModel(entity, out Error errMsg)) {
+                return errMsg;
             }
             long id = await _database.Insert(entity).ExecuteIdentityAsync();
-            return Result.Success(id);
+            return id;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Cloudea.Infrastructure.Database
         public virtual async Task<Result<long>> Create(List<TEntity> list)
         {
             long id = await _database.Insert(list).ExecuteIdentityAsync();
-            return Result.Success(id);
+            return id;
         }
         #endregion
 
@@ -58,7 +58,7 @@ namespace Cloudea.Infrastructure.Database
         public virtual async Task<Result<List<TEntity>>> Read()
         {
             var entityList = await BaseSelect().ToListAsync();
-            return Result<List<TEntity>>.Success(entityList);
+            return entityList;
         }
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace Cloudea.Infrastructure.Database
         {
             var entity = await _database.Select<TEntity>().Where(t => t.Id == id).FirstAsync();
             if (entity == null) {
-                return Result.Fail("Id不存在");
+                return BaseRepositoryErrors.IdNotExist;
             }
-            return Result<TEntity>.Success(entity);
+            return entity;
         }
 
         /// <summary>
@@ -100,13 +100,13 @@ namespace Cloudea.Infrastructure.Database
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public virtual bool CheckModel(TEntity entity, out string message)
+        public virtual bool CheckModel(TEntity entity, out Error error)
         {
             if (entity == null) {
-                message = "数据不能为空";
+                error = BaseRepositoryErrors.DataCannotBeEmpty;
                 return false;
             }
-            message = "";
+            error = Error.None;
             return true;
         }
 
@@ -117,7 +117,7 @@ namespace Cloudea.Infrastructure.Database
         /// <returns></returns>
         public virtual async Task<Result<PageResponse<TEntity>>> GetBaseList(PageRequest req)
         {
-            return Result.Success(await _database.Select<TEntity>().ToPageListAsync(req));
+            return await _database.Select<TEntity>().ToPageListAsync(req);
         }
 
         /// <summary>
@@ -147,13 +147,13 @@ namespace Cloudea.Infrastructure.Database
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public virtual async Task<Result> Update(TEntity entity)
+        public virtual async Task<Result<int>> Update(TEntity entity)
         {
-            if (!CheckModel(entity, out string errMsg)) {
-                return Result.Fail(errMsg);
+            if (!CheckModel(entity, out Error errMsg)) {
+                return errMsg;
             }
-            await _database.Update<TEntity>().SetSource(entity).ExecuteAffrowsAsync();
-            return Result.Success();
+            var res = await _database.Update<TEntity>().SetSource(entity).ExecuteAffrowsAsync();
+            return res;
         }
         #endregion
 
@@ -163,14 +163,14 @@ namespace Cloudea.Infrastructure.Database
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public virtual async Task<Result> Delete(Guid id)
+        public virtual async Task<Result<int>> Delete(Guid id)
         {
             if (await _database.Select<TEntity>().AnyAsync(t => t.Id == id)) {
-                await _database.Select<TEntity>().Where(t => t.Id == id).ToDelete().ExecuteAffrowsAsync();
-                return Result.Success();
+                var res = await _database.Select<TEntity>().Where(t => t.Id == id).ToDelete().ExecuteAffrowsAsync();
+                return res;
             }
             else {
-                return Result.Fail("数据不存在");
+                return BaseRepositoryErrors.DataNotExist;
             }
         }
 
@@ -179,15 +179,26 @@ namespace Cloudea.Infrastructure.Database
         /// </summary>
         /// <param name="idList"></param>
         /// <returns></returns>
-        public virtual async Task<Result> DeleteList(List<Guid> idList)
+        public virtual async Task<Result<int>> DeleteList(List<Guid> idList)
         {
             // 合法性检查
             if (idList == null || idList.Count == 0) {
-                return Result.Fail("删除数据不能为空");
+                return BaseRepositoryErrors.DeleteNullData;
             }
-            await _database.Select<TEntity>().Where(t => idList.Contains(t.Id)).ToDelete().ExecuteAffrowsAsync();
-            return Result.Success();
+            var res = await _database.Select<TEntity>().Where(t => idList.Contains(t.Id)).ToDelete().ExecuteAffrowsAsync();
+            return res;
         }
         #endregion
+    }
+
+    public static class BaseRepositoryErrors
+    {
+        public static readonly Error DeleteNullData = new("删除数据不能为空");
+
+        public static readonly Error DataNotExist = new("数据不存在");
+
+        public static readonly Error DataCannotBeEmpty = new("数据不能为空");
+
+        public static readonly Error IdNotExist = new("Id不存在");
     }
 }

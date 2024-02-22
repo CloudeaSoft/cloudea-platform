@@ -1,15 +1,12 @@
-﻿using Cloudea.Infrastructure.Models;
-using Microsoft.AspNetCore.Mvc;
-using Cloudea.Infrastructure.API;
-using Cloudea.Service.Book.Domain;
+﻿using Cloudea.Infrastructure.API;
 using Cloudea.Service.Auth.Domain.Abstractions;
+using Cloudea.Service.Book.Domain;
+using Cloudea.Service.Book.Domain.Models;
 using Cloudea.Service.Book.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
-using Cloudea.Service.Book.Domain.Models;
-using Org.BouncyCastle.Crypto;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Cloudea.Web.Controllers
-{
+namespace Cloudea.Web.Controllers {
     [Authorize]
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class BookController : ApiControllerBase
@@ -34,8 +31,8 @@ namespace Cloudea.Web.Controllers
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             var res = await _metaDbContext.Read(id);
-            if (res.IsFailure()) {
-                return BadRequest(res.Message);
+            if (res.IsFailure) {
+                return BadRequest(res.Error);
             }
             return Ok(res);
         }
@@ -57,8 +54,8 @@ namespace Cloudea.Web.Controllers
 
             var userId = await _currentUser.GetUserIdAsync();
             var bookRes = await _bookDomainService.CreateMetaAsync(userId, title, author);
-            if (bookRes.IsFailure()) {
-                return BadRequest(bookRes.Message);
+            if (bookRes.IsFailure) {
+                return BadRequest(bookRes.Error);
             }
             var res = await _metaDbContext.Create(bookRes.Data);
             return Ok(res);
@@ -81,7 +78,7 @@ namespace Cloudea.Web.Controllers
         {
             var user = await _currentUser.GetUserIdAsync();
             var bookRes = await _bookDomainService.DeleteMetaAsync(id, user);
-            if (bookRes.IsFailure()) {
+            if (bookRes.IsFailure) {
                 return NotFound();
             }
             var res = await _metaDbContext.Update(bookRes.Data);

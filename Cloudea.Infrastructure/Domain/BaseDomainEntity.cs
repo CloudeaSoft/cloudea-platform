@@ -1,16 +1,11 @@
 ﻿using Cloudea.Infrastructure.Database;
 using FreeSql.DataAnnotations;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Cloudea.Infrastructure.Domain
 {
-    public record BaseDomainEntity : BaseDataEntity, IDomainEvents, IHasTimeProperty
+    public record BaseDomainEntity : BaseDataEntity, IDomainEvent, IHasTimeProperty
     {
         /// <summary>
         /// 领域事件

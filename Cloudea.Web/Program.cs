@@ -13,19 +13,16 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
-namespace Cloudea.Web
-{
+namespace Cloudea.Web {
     /// <summary>
     /// 主程序
     /// </summary>
-    public class Program
-    {
+    public class Program {
         /// <summary>
         /// 主程序入口
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args)
-        {
+        public static void Main(string[] args) {
             // Init Builder
             var builder = WebApplication.CreateBuilder(args);
 

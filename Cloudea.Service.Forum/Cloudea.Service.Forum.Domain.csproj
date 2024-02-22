@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstractions\" />
+  </ItemGroup>
+
 </Project>

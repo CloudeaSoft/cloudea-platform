@@ -2,13 +2,11 @@
 using System.Net;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
-namespace Cloudea.Web.Middlewares
-{
+namespace Cloudea.Web.Middlewares {
     /// <summary>
     /// 全局错误捕获
     /// </summary>
-    public class GlobalExceptionHandlingMiddleware : IMiddleware
-    {
+    public class GlobalExceptionHandlingMiddleware : IMiddleware {
         private readonly ILogger<GlobalExceptionHandlingMiddleware> _logger;
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMiddleware> logger)
@@ -23,8 +21,7 @@ namespace Cloudea.Web.Middlewares
         /// <param name="context"></param>
         /// <param name="next"></param>
         /// <returns></returns>
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-        {
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
             try {
                 await next(context);
             }
@@ -39,8 +36,7 @@ namespace Cloudea.Web.Middlewares
         /// <param name="context"></param>
         /// <param name="exception"></param>
         /// <returns></returns>
-        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
-        {
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception) {
             var response = context.Response;
 
             response.ContentType = "application/json";

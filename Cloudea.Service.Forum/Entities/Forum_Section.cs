@@ -1,4 +1,5 @@
 ﻿using Cloudea.Infrastructure.Database;
+using Cloudea.Service.Forum.Domain.Models;
 using MySqlX.XDevAPI.CRUD;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace Cloudea.Entity.Forum {
         /// <summary>
         /// 板块主题帖数
         /// </summary>
-        public long TopicCount { get; set; }
+        public long TopicCount { get; private set; }
 
         /// <summary>
         /// 实例化
@@ -42,8 +43,8 @@ namespace Cloudea.Entity.Forum {
         /// <param name="statement">简介</param>
         /// <returns></returns>
         public static Forum_Section? Create(string name, Guid masterId, string? statement = null) {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("主题名不可为空");
-            if (masterId == Guid.Empty) throw new ArgumentNullException("人员Id不可为空");
+            if (string.IsNullOrEmpty(name)) return null;
+            if (masterId == Guid.Empty) return null;
             return new Forum_Section() {
                 Id = Guid.NewGuid(),
                 Name = name,
@@ -52,6 +53,33 @@ namespace Cloudea.Entity.Forum {
                 ClickCount = 0,
                 TopicCount = 0
             };
+        }
+
+        public Forum_Section UpdateSection(UpdateSectionRequest request) {
+            if (Id != request.Id) {
+                return this;
+            }
+            if (request.Name != null) {
+                Name = request.Name;
+            }
+            if (request.Statement != null) {
+                Statement = request.Statement;
+            }
+            if (request.MasterId != Guid.Empty) {
+                MasterId = request.MasterId;
+            }
+            return this;
+        }
+
+        public void IncreaseTopicCount(int num = 1) {
+            TopicCount += num;
+        }
+
+        public void DecreaseTopicCount(int num = 1) {
+            TopicCount -= num;
+            if (TopicCount < 0) {
+                TopicCount = 0;
+            }
         }
     }
 }

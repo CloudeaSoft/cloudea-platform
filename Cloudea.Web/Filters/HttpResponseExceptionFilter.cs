@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Cloudea.Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
-using Cloudea.Infrastructure.Models;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Cloudea.Web.Filters;
 

@@ -1,13 +1,11 @@
-﻿using Cloudea.Infrastructure.Utils;
-using Cloudea.Infrastructure;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Cloudea.Infrastructure.Database;
-using Microsoft.AspNetCore.Authorization;
+﻿using Cloudea.Infrastructure;
 using Cloudea.Infrastructure.API;
+using Cloudea.Infrastructure.Database;
+using Cloudea.Infrastructure.Utils;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Cloudea.Web.Controllers
-{
+namespace Cloudea.Web.Controllers {
     /*[Authorize]*/
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class DevController : ApiControllerBase
@@ -33,8 +31,7 @@ namespace Cloudea.Web.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Login(string password)
-        {
+        public IActionResult Login(string password) {
             if (password != "jst@123456") {
                 return Unauthorized("密码错误");
             }
@@ -51,8 +48,7 @@ namespace Cloudea.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult SyncDatabase()
-        {
+        public IActionResult SyncDatabase() {
 
             try {
                 // 扫描所有dll

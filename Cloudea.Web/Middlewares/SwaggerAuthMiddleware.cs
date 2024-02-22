@@ -1,5 +1,5 @@
-﻿using System.Net.Http.Headers;
-using System.Net;
+﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace Cloudea.Web.Middlewares;
@@ -7,8 +7,7 @@ namespace Cloudea.Web.Middlewares;
 /// <summary>
 /// Swagger账号密码
 /// </summary>
-public class SwaggerAuthMiddleware
-{
+public class SwaggerAuthMiddleware {
     private readonly RequestDelegate next;
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public SwaggerAuthMiddleware(RequestDelegate next)
@@ -25,8 +24,7 @@ public class SwaggerAuthMiddleware
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public async Task InvokeAsync(HttpContext context)
-    {
+    public async Task InvokeAsync(HttpContext context) {
         if (context.Request.Path.StartsWithSegments(swaggerPath)) {
             // 获取Authorization头
             string? authHeader = context.Request.Headers[authorizationHeader];

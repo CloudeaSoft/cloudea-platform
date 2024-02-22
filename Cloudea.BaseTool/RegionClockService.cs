@@ -17,7 +17,7 @@ namespace Cloudea.Service.Base {
                 timeStamp = dateTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds.ToString("F0");
             }
             catch (Exception ex) {
-                return Result.Fail("出错了：", ex);
+                return Result.Failure(new Error("出错了：" + ex));
             }
             return Result.Success(timeStamp);
         }
@@ -28,7 +28,7 @@ namespace Cloudea.Service.Base {
                 dateTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(timeStamp)).DateTime.ToLocalTime();
             }
             catch (Exception ex) {
-                return Result.Fail("出错了：", ex);
+                return Result.Failure(new Error("出错了：" + ex));
             }
             return Result.Success(dateTime);
         }

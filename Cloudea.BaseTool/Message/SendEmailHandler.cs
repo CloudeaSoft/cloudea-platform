@@ -66,7 +66,7 @@ public class SendEmailHandler : IRequestHandler<SendEmailRequest, Result>
         }
         catch (Exception ex) {
             _logger.LogInformation(ex, ex.ToString());
-            return Result.Fail(ex.Message);
+            return Result.Failure(new Error(ex.Message));
         }
         finally {
             foreach (var attch in request.Attachments) {

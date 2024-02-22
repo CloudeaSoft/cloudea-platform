@@ -112,13 +112,13 @@ namespace Cloudea.Service.Auth.Domain
         {
             var user = await _database.Select<User>().Where(t => t.Id == userId).FirstAsync();
             if (user == null) {
-                return Result.Fail("用户不存在");
+                return Result.Failure(new Error("用户不存在"));
             }
             if (string.IsNullOrEmpty(newPassword)) {
-                return Result.Fail("密码不能为空");
+                return Result.Failure(new Error("密码不能为空"));
             }
             if (newPassword.Length < 6) {
-                return Result.Fail("密码不能小于6位");
+                return Result.Failure(new Error("密码不能小于6位"));
             }
 
             user.Salt = Guid.NewGuid().ToString("N");

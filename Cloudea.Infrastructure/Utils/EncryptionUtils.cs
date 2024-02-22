@@ -130,10 +130,7 @@ namespace Cloudea.Infrastructure.Utils
             catch (Exception)
             {
                 return null;
-
             }
         }
-
-
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Service.Forum.Domain
+namespace Cloudea.Service.Forum.Domain.Repositories
 {
     /// <summary>
     /// Forum_Section仓储
@@ -18,20 +18,34 @@ namespace Cloudea.Service.Forum.Domain
         /// </summary>
         /// <param name="sectionId"></param>
         /// <returns></returns>
-        Task<Result<Forum_Section>> ReadSection(Guid sectionId);
+        Task<Result<Forum_Section>> Read(Guid sectionId);
+
+        /// <summary>
+        /// 读取Section列表
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<Result<PageResponse<Forum_Section>>> List(PageRequest request);
 
         /// <summary>
         /// 读取Section列表
         /// </summary>
         /// <returns></returns>
-        Task<Result<List<Forum_Section>>> ListSection();
+        Task<Result<List<Forum_Section>>> List(List<Guid> idList);
 
         /// <summary>
         /// 创建Section
         /// </summary>
         /// <param name="newSection"></param>
         /// <returns></returns>
-        Task<Result<long>> CreateSection(Forum_Section newSection);
+        Task<Result<long>> Save(Forum_Section newSection);
+
+        /// <summary>
+        /// 更新Section
+        /// </summary>
+        /// <param name="newSection"></param>
+        /// <returns></returns>
+        Task<Result<List<Forum_Section>>> Update(List<Forum_Section> newSection);
 
         /// <summary>
         /// 增加Section的帖子计数

@@ -1,18 +1,16 @@
-﻿using Cloudea.Infrastructure.Models;
+﻿using Cloudea.Infrastructure.API;
+using Cloudea.Infrastructure.Models;
 using Cloudea.MyService;
-using Microsoft.AspNetCore.Mvc;
-using MediatR;
-using Cloudea.Service.Base.Message;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Diagnostics;
-using Cloudea.Infrastructure.API;
-using Cloudea.Service.Auth.Domain.Abstractions;
 using Cloudea.Service.Auth.Domain.Attributes;
 using Cloudea.Service.Auth.Domain.Entities;
+using Cloudea.Service.Base.Message;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
-namespace Cloudea.Web.Controllers
-{
+namespace Cloudea.Web.Controllers {
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class TestController : ApiControllerBase
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
@@ -37,8 +35,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="b"></param>
         /// <returns></returns>
         [HttpGet("{a}/{b}")]
-        public ActionResult<int> Add(int a, int b)
-        {
+        public ActionResult<int> Add(int a, int b) {
             return Ok(a + b);
         }
 
@@ -48,8 +45,7 @@ namespace Cloudea.Web.Controllers
         /// <returns></returns>
         [HasPermission(Permission.AccessMember)]
         [HttpGet]
-        public Result Send()
-        {
+        public Result Send() {
             return testService.Send();
         }
 
@@ -57,8 +53,7 @@ namespace Cloudea.Web.Controllers
         /// 测试Logger生效情况
         /// </summary>
         [HttpGet]
-        public void LoggerTest()
-        {
+        public void LoggerTest() {
             testService.LoggerTest();
         }
 
@@ -67,8 +62,7 @@ namespace Cloudea.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPut]
-        public string TestPut()
-        {
+        public string TestPut() {
             return "put";
         }
 
@@ -113,8 +107,7 @@ namespace Cloudea.Web.Controllers
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public IActionResult HandleErrorDevelopment(
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
-            [FromServices] IHostEnvironment hostEnvironment)
-        {
+            [FromServices] IHostEnvironment hostEnvironment) {
             if (!hostEnvironment.IsDevelopment()) {
                 return NotFound();
             }

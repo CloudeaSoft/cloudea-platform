@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Cloudea.Infrastructure.API;
 using Cloudea.Infrastructure.Models;
 using Cloudea.Service.Base;
-using Cloudea.Infrastructure.API;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Cloudea.Web.Controllers
-{
+namespace Cloudea.Web.Controllers {
     /// <summary>
     /// 时间相关工具接口集
     /// </summary>
-    public class RegionClockController : ApiControllerBase
-    {
+    public class RegionClockController : ApiControllerBase {
 
         private readonly RegionClockService regionClock;
 
@@ -25,8 +23,7 @@ namespace Cloudea.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public DateTime getTime()
-        {
+        public DateTime getTime() {
             return regionClock.getDate();
         }
 
@@ -36,8 +33,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="dateTime"></param>
         /// <returns></returns>
         [HttpGet]
-        public Result getTimeToUnix(DateTime dateTime)
-        {
+        public Result getTimeToUnix(DateTime dateTime) {
             return regionClock.getTimeToUnix(dateTime);
         }
 
@@ -47,8 +43,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="timeStamp"></param>
         /// <returns></returns>
         [HttpGet]
-        public Result getUnixToTime(string timeStamp)
-        {
+        public Result getUnixToTime(string timeStamp) {
             return regionClock.getUnixToTime(timeStamp);
         }
     }
