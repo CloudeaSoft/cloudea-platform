@@ -21,5 +21,5 @@ public class ForumPostRepository(ApplicationDbContext dbContext) : IForumPostRep
     public async Task<PageResponse<ForumPost>> GetWithPageRequestAsync(
         PageRequest request,
         CancellationToken cancellationToken = default) =>
-        await _dbContext.Set<ForumPost>().ToPageListAsync(request, cancellationToken);
+        await _dbContext.Set<ForumPost>().OrderBy(x => x.CreatedOnUtc).ToPageListAsync(request, cancellationToken);
 }

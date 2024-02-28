@@ -2,19 +2,18 @@
 
 public class JwtOptions
 {
-    public const string SectionName = "Jwt";
     /// <summary>
     /// 密钥
     /// </summary>
-    public string Secret { get; init; }
+    public string Secret { get; init; } = string.Empty;
     /// <summary>
     /// 发行人
     /// </summary>
-    public string Issuer { get; init; }
+    public string Issuer { get; init; } = string.Empty;
     /// <summary>
     /// 接受人
     /// </summary>
-    public string Audience { get; init; }
+    public string Audience { get; init; } = string.Empty;
     /// <summary>
     /// 过期时间
     /// </summary>

@@ -9,24 +9,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MySqlX.XDevAPI.Common;
 using System.Threading;
+using static FreeSql.Internal.GlobalFilter;
 
 
 namespace Cloudea.Web.Controllers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     [Authorize]
     public class ForumController : ApiControllerBase
     {
         private readonly ForumService _forumService;
         private readonly ICurrentUser _currentUser;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="currentUser"></param>
-        /// <param name="forumService"></param>
         public ForumController(ICurrentUser currentUser, ForumService forumService)
         {
             _currentUser = currentUser;
@@ -34,16 +27,34 @@ namespace Cloudea.Web.Controllers
         }
 
         /// <summary>
-        /// 新增Section
+        /// Creates a ForumSection
         /// </summary>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>A newly created ForumSection</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/Forum/Section
+        ///     {
+        ///        "SectionName": "Section #1",
+        ///        "MasterId": "00000000-0000-0000-0000-00000000",
+        ///        "Statement": "Section statements."
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Section([FromBody] CreateSectionRequest request, CancellationToken cancellationToken)
         {
             var res = await _forumService.PostSectionAsync(request, cancellationToken);
-            return Ok(res);
+            if (res.IsFailure) {
+                return HandleFailure(res);
+            }
+            return CreatedAtAction(nameof(Section), new { id = res.Data }, res.Data);
         }
 
         /// <summary>

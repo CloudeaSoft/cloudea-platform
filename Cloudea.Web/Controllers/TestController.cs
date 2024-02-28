@@ -44,7 +44,6 @@ namespace Cloudea.Web.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        [HasPermission(Permission.AccessMember)]
         [HttpGet]
         public Result Send() {
             return testService.Send();

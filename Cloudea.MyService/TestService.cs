@@ -4,7 +4,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Cloudea.MyService
 {
-    public class TestService {
+    public class TestService
+    {
 
         private readonly ILogger<TestService> _logger;
 
@@ -13,9 +14,10 @@ namespace Cloudea.MyService
             _logger = logger;
         }
 
-        public Result Send() {
-            var b = new int();
-            return Result.Success(b);
+        public Result Send()
+        {
+            throw new Exception("xxx");
+            return Result.Success("xxx");
         }
 
         public void LoggerTest()

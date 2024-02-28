@@ -3,8 +3,10 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+        <!--XML注释，用于自动生成API文档-->
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<UserSecretsId>c341397e-d2ca-430c-a6fc-fec80d1e71ac</UserSecretsId><!--xml注释-->
+        <NoWarn>$(NoWarn);1591</NoWarn>
+		<UserSecretsId>c341397e-d2ca-430c-a6fc-fec80d1e71ac</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>

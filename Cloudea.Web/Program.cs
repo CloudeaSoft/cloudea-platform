@@ -4,12 +4,11 @@ using Cloudea.Infrastructure.Repositories;
 using Cloudea.Persistence;
 using Cloudea.Persistence.BackgroundJobs;
 using Cloudea.Service.HubTest;
-using Cloudea.Web.Filters;
+using Cloudea.Web.Infrastructure;
 using Cloudea.Web.Middlewares;
 using Cloudea.Web.OptionsSetup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -39,13 +38,21 @@ namespace Cloudea.Web
             // 在控制台打印图标
             OutputFile.outputTxt(builder.Configuration);
 
-            #region 依赖注入 Add services to the container. Use Configuration to config the services.
+            #region Add services to the container. Use Configuration to config the services.
+            // Appsettings.json to Configurations
+            builder.Services.ConfigureOptions<DatabaseOptionsSetup>();
+            builder.Services.ConfigureOptions<JwtOptionsSetup>();
+            builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
+            builder.Services.ConfigureOptions<MailOptionsSetup>();
+
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
 
             // 控制器
-            builder.Services.AddControllers(options => {
-                // 添加过滤器
-                options.Filters.Add<HttpResponseExceptionFilter>();
-            })
+            builder.Services
+                .AddControllers(options => {
+                    // 添加过滤器
+                })
                 .AddJsonOptions(options => {
                     options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -54,6 +61,7 @@ namespace Cloudea.Web
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
+            // Swagger接口文档
             builder.Services.AddSwaggerGen(options => {
                 // 描述文档
                 options.SwaggerDoc("v1", new OpenApiInfo {
@@ -71,12 +79,12 @@ namespace Cloudea.Web
                     }
                 });
 
-                // 自动生成接口注释文档
+                // using System.Reflection, 自动生成接口注释文档
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
                 // 验证
-                #region 启用swagger验证功能
+                #region 启用验证功能，并添加鉴权的描述
                 var openApiSecurity = new OpenApiSecurityScheme {
                     Name = "Authorization", //jwt 默认参数名称
                     Description = "JWT认证授权，使用直接在下框中输入Bearer {token}（注意两者之间是一个空格）\"",
@@ -98,17 +106,19 @@ namespace Cloudea.Web
                 #endregion
             });
 
+            // MVC的相关服务
             builder.Services.AddMvc();
 
+            // WebSocket服务 - SignalR
             builder.Services.AddSignalR();
 
-            // 身份认证
+            // 接口鉴权授权服务
             builder.Services
                 .AddAuthentication(x => {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
-                .AddJwtBearer(options => {
+                .AddJwtBearer((options) => {
                     options.RequireHttpsMetadata = false;
                     options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters {
@@ -139,6 +149,7 @@ namespace Cloudea.Web
             // Http客户端
             builder.Services.AddHttpClient();
 
+            // 内存缓存服务
             builder.Services.AddMemoryCache();
 
             // MediatR
@@ -146,10 +157,10 @@ namespace Cloudea.Web
                 cfg.RegisterServicesFromAssemblies(AssemblyLoader.GetAllAssemblies());
             });
 
-            // 跨域配置
+            // CORS配置
             builder.Services.AddCors(opt => {
                 opt.AddDefaultPolicy(b => {
-                    b.WithOrigins(["http://localhost:5173"])
+                    b.WithOrigins("http://localhost:5173")
                     //.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
@@ -157,7 +168,7 @@ namespace Cloudea.Web
                 });
             });
 
-            // Module 中的服务类
+            // 注入各类库的服务
             builder.Services.RunModuleInitializers();
 
             // Serilog配置
@@ -169,9 +180,7 @@ namespace Cloudea.Web
                     FreeSql.DataType.MySql,
                     "Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;");
 
-            // Persistence - Efcore
-            builder.Services.ConfigureOptions<DatabaseOptionsSetup>();
-
+            // 持久化 - Efcore
             builder.Services.AddDbContext<ApplicationDbContext>(
                 (IServiceProvider serviceProvider, DbContextOptionsBuilder dbContextOptionsBuilder) => {
                     var databaseOptions = serviceProvider.GetService<IOptions<DatabaseOptions>>()!.Value;
@@ -186,7 +195,7 @@ namespace Cloudea.Web
                     dbContextOptionsBuilder.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging);
                 });
 
-            // Quartz
+            // 定时服务 - Quartz
             builder.Services.AddQuartz(configure => {
                 var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
 
@@ -200,16 +209,7 @@ namespace Cloudea.Web
                                         schedule.WithIntervalInSeconds(10)
                                             .RepeatForever()));
             });
-
             builder.Services.AddQuartzHostedService();
-
-            builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
-
-            {
-                builder.Services.ConfigureOptions<JwtOptionsSetup>();
-                builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
-                builder.Services.ConfigureOptions<MailOptionsSetup>();
-            }
             #endregion
 
             //Build Webapplication.
@@ -219,17 +219,15 @@ namespace Cloudea.Web
             app.Logger.LogInformation("系统开始运行...");
 
 #if DEBUG
-            if (app.Environment.IsDevelopment()) {
-                // 错误处理
-                app.UseExceptionHandler("/error-development");
+            // 接口文档
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
-                // 接口文档
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-            else {
-                app.UseExceptionHandler("/error");
-            }
+            // 重定向
+            app.UseHttpsRedirection();
+
+            // 错误处理
+            app.UseExceptionHandler();
 #else
             // 接口文档
             app.UseMiddleware<SwaggerAuthMiddleware>();
@@ -264,7 +262,7 @@ namespace Cloudea.Web
             app.UseStaticFiles();
             #endregion
 
-            //Run webapplication.
+            //Run WebApplication.
             app.Run();
         }
     }

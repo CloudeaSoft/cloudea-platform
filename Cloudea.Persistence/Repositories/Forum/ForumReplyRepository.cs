@@ -26,5 +26,6 @@ public class ForumReplyRepository(ApplicationDbContext context) : IForumReplyRep
         CancellationToken cancellationToken = default) =>
         await _dbContext.Set<ForumReply>()
                         .Where(x => x.ParentPostId == topicId)
+                        .OrderBy(x => x.CreatedOnUtc)
                         .ToPageListAsync(request, cancellationToken);
 }

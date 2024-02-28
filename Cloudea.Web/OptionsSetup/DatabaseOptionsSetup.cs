@@ -6,6 +6,7 @@ namespace Cloudea.Web.OptionsSetup;
 public class DatabaseOptionsSetup : IConfigureOptions<DatabaseOptions>
 {
     private const string ConfigurationSectionName = "DatabaseOptions";
+
     private readonly IConfiguration _configuration;
 
     public DatabaseOptionsSetup(IConfiguration configuration)
