@@ -1,10 +1,5 @@
-﻿using Cloudea;
-using Cloudea.Infrastructure.Domain;
-using Cloudea.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
+﻿using Cloudea.Infrastructure.Shared;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Cloudea.Infrastructure.Database
 {
@@ -27,7 +22,7 @@ namespace Cloudea.Infrastructure.Database
         public virtual async Task<Result<long>> Create(TEntity entity)
         {
             if (!CheckModel(entity, out Error errMsg)) {
-                return errMsg;
+                return Result.Failure<long>(errMsg);
             }
             long id = await _database.Insert(entity).ExecuteIdentityAsync();
             return id;

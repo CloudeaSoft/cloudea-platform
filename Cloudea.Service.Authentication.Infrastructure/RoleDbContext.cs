@@ -1,5 +1,5 @@
 ﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Models;
+using Cloudea.Infrastructure.Shared;
 using Cloudea.Service.Auth.Domain.Entities;
 using System;
 using System.Collections.Generic;

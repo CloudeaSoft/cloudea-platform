@@ -1,10 +1,5 @@
 ﻿using Cloudea.GameHelper.Models.ArkNights;
-using Cloudea.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cloudea.Infrastructure.Shared;
 
 namespace Cloudea.Service.GameHelper.Abstractions;
 

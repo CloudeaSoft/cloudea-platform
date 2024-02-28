@@ -1,13 +1,17 @@
-﻿namespace Cloudea.Infrastructure.Primitives;
+﻿using Cloudea.Infrastructure.Database;
 
-public abstract class Entity : IEquatable<Entity>
+namespace Cloudea.Infrastructure.Primitives;
+
+public abstract class Entity : BaseDataEntity, IEquatable<Entity>
 {
     protected Entity(Guid id)
     {
         Id = id;
     }
 
-    public Guid Id { get; private init; }
+    protected Entity() { }
+
+    public new Guid Id { get; private init; }
 
     public static bool operator ==(Entity? first, Entity? second)
     {

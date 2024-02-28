@@ -1,28 +1,38 @@
 using Cloudea.Infrastructure;
 using Cloudea.Infrastructure.Database;
+using Cloudea.Infrastructure.Repositories;
+using Cloudea.Persistence;
+using Cloudea.Persistence.BackgroundJobs;
 using Cloudea.Service.HubTest;
 using Cloudea.Web.Filters;
 using Cloudea.Web.Middlewares;
 using Cloudea.Web.OptionsSetup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Quartz;
 using Serilog;
 using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
-namespace Cloudea.Web {
+namespace Cloudea.Web
+{
     /// <summary>
     /// 主程序
     /// </summary>
-    public class Program {
+    public class Program
+    {
         /// <summary>
         /// 主程序入口
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args) {
+        public static void Main(string[] args)
+        {
             // Init Builder
             var builder = WebApplication.CreateBuilder(args);
 
@@ -101,7 +111,6 @@ namespace Cloudea.Web {
                 .AddJwtBearer(options => {
                     options.RequireHttpsMetadata = false;
                     options.SaveToken = true;
-#pragma warning disable CS8604 // 引用类型参数可能为 null。
                     options.TokenValidationParameters = new TokenValidationParameters {
                         //NameClaimType = JwtClaimTypes.Name,
                         //RoleClaimType = JwtClaimTypes.Role,
@@ -121,7 +130,6 @@ namespace Cloudea.Web {
                         // 密钥生存周期
                         ValidateLifetime = true
                     };
-#pragma warning restore CS8604 // 引用类型参数可能为 null。
                 });
             builder.Services.AddAuthorization();
 
@@ -132,6 +140,11 @@ namespace Cloudea.Web {
             builder.Services.AddHttpClient();
 
             builder.Services.AddMemoryCache();
+
+            // MediatR
+            builder.Services.AddMediatR(cfg => {
+                cfg.RegisterServicesFromAssemblies(AssemblyLoader.GetAllAssemblies());
+            });
 
             // 跨域配置
             builder.Services.AddCors(opt => {
@@ -144,10 +157,6 @@ namespace Cloudea.Web {
                 });
             });
 
-            builder.Services.AddMediatR(cfg => {
-                cfg.RegisterServicesFromAssemblies(AssemblyLoader.GetAllAssemblies());
-            });
-
             // Module 中的服务类
             builder.Services.RunModuleInitializers();
 
@@ -156,10 +165,43 @@ namespace Cloudea.Web {
                 configuration.ReadFrom.Configuration(context.Configuration));
 
             // Freesql
-            DatabaseOptions dataBase = new("LocalTest", builder.Configuration);
             builder.Services.AddDataBaseDefault(
-                    dataBase.Type,
-                    dataBase.ConnectionString);
+                    FreeSql.DataType.MySql,
+                    "Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;");
+
+            // Persistence - Efcore
+            builder.Services.ConfigureOptions<DatabaseOptionsSetup>();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(
+                (IServiceProvider serviceProvider, DbContextOptionsBuilder dbContextOptionsBuilder) => {
+                    var databaseOptions = serviceProvider.GetService<IOptions<DatabaseOptions>>()!.Value;
+
+                    dbContextOptionsBuilder.UseMySql(databaseOptions.ConnectionString, ServerVersion.Parse("8.0.26"), mysqlAction => {
+                        mysqlAction.EnableRetryOnFailure(databaseOptions.MaxRetryCount);
+                        mysqlAction.CommandTimeout(databaseOptions.CommandTimeout);
+                    });
+
+                    dbContextOptionsBuilder.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
+
+                    dbContextOptionsBuilder.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging);
+                });
+
+            // Quartz
+            builder.Services.AddQuartz(configure => {
+                var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+
+                configure
+                    .AddJob<ProcessOutboxMessagesJob>(jobKey)
+                    .AddTrigger(
+                        trigger =>
+                            trigger.ForJob(jobKey)
+                                .WithSimpleSchedule(
+                                    schedule =>
+                                        schedule.WithIntervalInSeconds(10)
+                                            .RepeatForever()));
+            });
+
+            builder.Services.AddQuartzHostedService();
 
             builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 

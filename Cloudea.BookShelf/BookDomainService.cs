@@ -1,4 +1,4 @@
-﻿using Cloudea.Infrastructure.Models;
+﻿using Cloudea.Infrastructure.Shared;
 using Cloudea.Service.Book.Domain.Abstractions;
 using Cloudea.Service.Book.Domain.Entities;
 using Microsoft.VisualBasic;

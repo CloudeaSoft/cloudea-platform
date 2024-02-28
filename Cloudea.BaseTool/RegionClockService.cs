@@ -1,11 +1,7 @@
-﻿using Cloudea.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cloudea.Infrastructure.Shared;
 
-namespace Cloudea.Service.Base {
+namespace Cloudea.Service.Base
+{
     public class RegionClockService {
         public DateTime getDate() {
             return DateTime.Now;

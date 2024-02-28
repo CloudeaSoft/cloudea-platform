@@ -1,4 +1,4 @@
-﻿using Cloudea.Infrastructure.Models;
+﻿using Cloudea.Infrastructure.Shared;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

@@ -7,11 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
+    <Compile Remove="Abstractions\**" />
+    <EmbeddedResource Remove="Abstractions\**" />
+    <None Remove="Abstractions\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\" />
+    <ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
+    <ProjectReference Include="..\Cloudea.Service.Authentication.Domain\Cloudea.Service.Auth.Domain.csproj" />
   </ItemGroup>
 
 </Project>

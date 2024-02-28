@@ -10,10 +10,15 @@
 	<ItemGroup>
 		<PackageReference Include="MediatR" Version="12.2.0" />
 		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.12.0.78982">
+		<PackageReference Include="Quartz.Extensions.Hosting" Version="3.8.1" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.20.0.85982">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -21,10 +26,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Cloudea.Application\Cloudea.Application.csproj" />
 		<ProjectReference Include="..\Cloudea.BaseTool\Cloudea.Service.Base.csproj" />
 		<ProjectReference Include="..\Cloudea.GameHelper\Cloudea.Service.GameHelper.csproj" />
 		<ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
 		<ProjectReference Include="..\Cloudea.MyService\Cloudea.Service.TestService.csproj" />
+		<ProjectReference Include="..\Cloudea.Persistence\Cloudea.Persistence.csproj" />
 		<ProjectReference Include="..\Cloudea.Service.Authentication.Infrastructure\Cloudea.Service.Auth.Infrastructure.csproj" />
 		<ProjectReference Include="..\Cloudea.Service.Book.Infrastructure\Cloudea.Service.Book.Infrastructure.csproj" />
 		<ProjectReference Include="..\Cloudea.Service.File.Infrastructure\Cloudea.Service.File.Infrastructure.csproj" />
@@ -53,6 +60,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Logs\" />
 	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 

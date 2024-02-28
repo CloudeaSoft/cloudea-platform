@@ -1,25 +1,24 @@
-﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Cloudea.Infrastructure.Primitives;
 
-namespace Cloudea.Infrastructure.Primitives
+public abstract class AggregateRoot : Entity
 {
-    public abstract class AggregateRoot
+    private readonly List<IDomainEvent> _domainEvents = [];
+
+    protected AggregateRoot(Guid id)
+        : base(id) { }
+
+    protected AggregateRoot() { }
+
+    public IReadOnlyCollection<IDomainEvent> GetDomainEvents() => _domainEvents.ToList();
+
+    public void ClearDomainEvents() => _domainEvents.Clear();
+
+    protected void RaiseDomainEvent(IDomainEvent domainEvent) => _domainEvents.Add(domainEvent);
+
+    protected void RaiseDomainEventIfAbsent(IDomainEvent eventItem)
     {
-        private readonly List<IDomainEvent> _domainEvents = [];
-
-        protected AggregateRoot(Guid id)
-        {
-
-        }
-
-        protected void RaiseDomainEvent(IDomainEvent domainEvent)
-        {
-            _domainEvents.Add(domainEvent);
+        if (!_domainEvents.Contains(eventItem)) {
+            _domainEvents.Add(eventItem);
         }
     }
 }

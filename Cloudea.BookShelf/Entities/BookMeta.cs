@@ -1,5 +1,4 @@
 ﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Domain;
 using FreeSql.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,7 +6,7 @@ namespace Cloudea.Service.Book.Domain.Entities;
 
 [AutoGenerateTable]
 [Table(Name = "book_meta")]
-public record BookMeta : BaseDomainEntity, ISoftDelete
+public class BookMeta : BaseEntity, ISoftDelete
 {
     /// <summary>
     /// 书名

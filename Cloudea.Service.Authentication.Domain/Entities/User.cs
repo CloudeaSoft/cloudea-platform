@@ -2,7 +2,6 @@
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
-using Cloudea.Infrastructure.Domain;
 using FreeSql.DataAnnotations;
 using MySqlX.XDevAPI.Relational;
 
@@ -13,7 +12,7 @@ namespace Cloudea.Service.Auth.Domain.Entities;
 /// </summary>
 [AutoGenerateTable]
 [Table(Name = "auth_user")]
-public record User : BaseDomainEntity, ISoftDelete
+public class User : BaseEntity, ISoftDelete
 {
     /// <summary>
     /// 用户名

@@ -1,8 +1,8 @@
 ﻿using MimeKit;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Cloudea.Infrastructure.Models;
 using Microsoft.Extensions.Options;
+using Cloudea.Infrastructure.Shared;
 
 namespace Cloudea.Service.Base.Message;
 

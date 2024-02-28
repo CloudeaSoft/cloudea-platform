@@ -1,5 +1,4 @@
-﻿using Cloudea.Infrastructure.Domain;
-using FreeSql;
+﻿using FreeSql;
 using FreeSql.Aop;
 using FreeSql.Internal;
 using Microsoft.Extensions.DependencyInjection;

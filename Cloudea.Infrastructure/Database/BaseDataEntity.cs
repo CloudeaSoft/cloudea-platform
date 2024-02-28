@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Cloudea.Infrastructure.Database
 {
-    public record BaseDataEntity
+    public abstract class BaseDataEntity
     {
         /// <summary>
         /// 物理主键

@@ -1,5 +1,4 @@
-﻿using Cloudea.Infrastructure.Models;
-using FreeSql.Internal.Model;
+﻿using FreeSql.Internal.Model;
 using FreeSql;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Domain;
+using Cloudea.Infrastructure.Shared;
 
 namespace Cloudea
 {
@@ -104,7 +103,7 @@ namespace Cloudea
         /// <returns></returns>
         public static async Task<PageResponse<T>> ToPageListAsync<T>(this ISelect<T> select, PageRequest request)
         {
-            return await select.ToPageList(request.Page, request.Limit);
+            return await select.ToPageList(request.PageIndex, request.PageSize);
         }
 
         /// <summary>
@@ -114,7 +113,7 @@ namespace Cloudea
         /// <param name="select"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<T> FindByIdAsync<T>(this ISelect<T> select, Guid id) where T : BaseDomainEntity
+        public static async Task<T> FindByIdAsync<T>(this ISelect<T> select, Guid id) where T : BaseEntity
         {
             return await select.Where(t => t.Id == id).FirstAsync();
         }

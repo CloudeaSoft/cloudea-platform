@@ -1,5 +1,5 @@
 ﻿using Cloudea.Infrastructure.API;
-using Cloudea.Infrastructure.Models;
+using Cloudea.Infrastructure.Shared;
 using Cloudea.MyService;
 using Cloudea.Service.Auth.Domain.Attributes;
 using Cloudea.Service.Auth.Domain.Entities;
@@ -10,7 +10,8 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace Cloudea.Web.Controllers {
+namespace Cloudea.Web.Controllers
+{
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class TestController : ApiControllerBase
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释

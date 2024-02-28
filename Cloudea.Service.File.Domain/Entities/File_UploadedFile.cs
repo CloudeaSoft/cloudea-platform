@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Domain;
+﻿using Cloudea.Infrastructure.Database;
 using FreeSql.DataAnnotations;
-using BaseDomainEntity = Cloudea.Infrastructure.Domain.BaseDomainEntity;
+using BaseEntity = Cloudea.Infrastructure.Database.BaseEntity;
 
 namespace Cloudea.Service.File.Domain.Entities
 {
     [AutoGenerateTable]
     [Table(Name = "file_uploadedfile")]
-    public record File_UploadedFile : BaseDomainEntity
+    public class File_UploadedFile : BaseEntity
     {
         /// <summary>
         /// 文件大小（尺寸为字节）

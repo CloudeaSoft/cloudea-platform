@@ -1,5 +1,4 @@
 ﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Domain;
 using FreeSql.DataAnnotations;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ namespace Cloudea.Service.Auth.Domain.Entities
     /// </summary>
     [AutoGenerateTable]
     [Table(Name = "auth_user_vercode")]
-    public record UserVercode : BaseDomainEntity
+    public class UserVercode : BaseEntity
     {
         /// <summary>
         /// 邮箱

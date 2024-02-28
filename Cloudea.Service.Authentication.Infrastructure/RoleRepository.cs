@@ -1,6 +1,6 @@
-﻿using Cloudea.Infrastructure.Models;
-using Cloudea.Service.Auth.Domain.Abstractions;
+﻿using Cloudea.Infrastructure.Shared;
 using Cloudea.Service.Auth.Domain.Entities;
+using Cloudea.Service.Auth.Domain.Repositories;
 
 namespace Cloudea.Service.Auth.Infrastructure
 {

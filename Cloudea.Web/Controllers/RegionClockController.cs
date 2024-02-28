@@ -1,9 +1,10 @@
 ﻿using Cloudea.Infrastructure.API;
-using Cloudea.Infrastructure.Models;
+using Cloudea.Infrastructure.Shared;
 using Cloudea.Service.Base;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cloudea.Web.Controllers {
+namespace Cloudea.Web.Controllers
+{
     /// <summary>
     /// 时间相关工具接口集
     /// </summary>

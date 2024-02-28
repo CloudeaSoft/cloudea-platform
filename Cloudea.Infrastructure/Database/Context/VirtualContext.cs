@@ -1,5 +1,7 @@
 ﻿using Cloudea.Infrastructure.Database;
+using Cloudea.Infrastructure.Repositories;
 using FreeSql;
+using IUnitOfWork = FreeSql.IUnitOfWork;
 
 namespace Cloudea
 {

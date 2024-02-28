@@ -1,8 +1,9 @@
-﻿using Cloudea.Infrastructure.Models;
+﻿using Cloudea.Infrastructure.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Cloudea.MyService {
+namespace Cloudea.MyService
+{
     public class TestService {
 
         private readonly ILogger<TestService> _logger;

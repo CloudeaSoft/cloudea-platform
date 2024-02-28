@@ -1,6 +1,5 @@
-﻿using Cloudea.Entity.Primitives;
-using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Models;
+﻿using Cloudea.Infrastructure.Database;
+using Cloudea.Infrastructure.Shared;
 using FreeSql.DataAnnotations;
 
 namespace Cloudea.Service.Auth.Domain.Entities;

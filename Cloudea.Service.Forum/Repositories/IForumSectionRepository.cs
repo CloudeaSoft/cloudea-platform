@@ -1,10 +1,5 @@
-﻿using Cloudea.Entity.Forum;
-using Cloudea.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cloudea.Infrastructure.Shared;
+using Cloudea.Service.Forum.Domain.Entities;
 
 namespace Cloudea.Service.Forum.Domain.Repositories
 {
@@ -18,49 +13,33 @@ namespace Cloudea.Service.Forum.Domain.Repositories
         /// </summary>
         /// <param name="sectionId"></param>
         /// <returns></returns>
-        Task<Result<Forum_Section>> Read(Guid sectionId);
+        Task<ForumSection?> GetByIdAsync(Guid sectionId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 读取Section列表
+        /// </summary>
+        /// <returns></returns>
+        Task<List<ForumSection>> GetByIdListAsync(List<Guid> idList, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 读取Section列表
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<Result<PageResponse<Forum_Section>>> List(PageRequest request);
-
-        /// <summary>
-        /// 读取Section列表
-        /// </summary>
-        /// <returns></returns>
-        Task<Result<List<Forum_Section>>> List(List<Guid> idList);
+        Task<PageResponse<ForumSection>> GetWithPageRequestAsync(PageRequest request, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 创建Section
         /// </summary>
         /// <param name="newSection"></param>
         /// <returns></returns>
-        Task<Result<long>> Save(Forum_Section newSection);
+        void Add(ForumSection newSection);
 
         /// <summary>
         /// 更新Section
         /// </summary>
         /// <param name="newSection"></param>
         /// <returns></returns>
-        Task<Result<List<Forum_Section>>> Update(List<Forum_Section> newSection);
-
-        /// <summary>
-        /// 增加Section的帖子计数
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        Task<Result> IncreaseTopicCount(Guid id);
-
-        /// <summary>
-        /// 减少Section的帖子计数
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        Task<Result> DecreaseTopicCount(Guid id);
+        void Update(ForumSection newSection);
     }
 }

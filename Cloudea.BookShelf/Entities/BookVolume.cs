@@ -1,12 +1,11 @@
 ﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Domain;
 using FreeSql.DataAnnotations;
 
 namespace Cloudea.Service.Book.Domain.Entities;
 
 [AutoGenerateTable]
 [Table(Name = "book_volume")]
-public record BookVolume : BaseDataEntity, ISoftDelete
+public class BookVolume : BaseDataEntity, ISoftDelete
 {
     /// <summary>
     /// 书号

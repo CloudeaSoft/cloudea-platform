@@ -3,6 +3,7 @@ using Cloudea.Service.Auth.Domain;
 using Cloudea.Service.Auth.Domain.Abstractions;
 using Cloudea.Service.Auth.Domain.Applications;
 using Cloudea.Service.Auth.Domain.Overrides;
+using Cloudea.Service.Auth.Domain.Repositories;
 using Cloudea.Service.Auth.Domain.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;

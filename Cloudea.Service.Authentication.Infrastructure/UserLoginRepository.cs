@@ -1,6 +1,6 @@
-﻿using Cloudea.Service.Auth.Domain.Abstractions;
-using Cloudea.Service.Auth.Domain.Entities;
+﻿using Cloudea.Service.Auth.Domain.Entities;
 using Cloudea.Service.Auth.Domain.Models;
+using Cloudea.Service.Auth.Domain.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;

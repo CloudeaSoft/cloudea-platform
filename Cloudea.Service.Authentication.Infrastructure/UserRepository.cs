@@ -1,11 +1,11 @@
 ﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Models;
 using Microsoft.Extensions.Logging;
 using Cloudea.Infrastructure.Utils;
 using Cloudea.Service.Auth.Domain.Models;
 using Cloudea.Service.Auth.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
-using Cloudea.Service.Auth.Domain.Abstractions;
+using Cloudea.Infrastructure.Shared;
+using Cloudea.Service.Auth.Domain.Repositories;
 
 namespace Cloudea.Service.Auth.Domain
 {

@@ -10,7 +10,7 @@ namespace Cloudea.Service.Book.Domain.Entities;
 
 [AutoGenerateTable]
 [Table(Name = "book_content")]
-public record BookContent : BaseDataEntity
+public class BookContent : BaseDataEntity
 {
     [Column(DbType = "varchar(10000)")]
     public string Content { get; set; }

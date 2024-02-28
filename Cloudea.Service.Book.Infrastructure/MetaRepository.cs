@@ -1,9 +1,7 @@
-﻿using Cloudea.Infrastructure.Models;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
-using Cloudea.Service.Book.Domain.Entities;
-using Cloudea.Infrastructure.Database;
+﻿using Cloudea.Infrastructure.Database;
 using Cloudea.Service.Book.Domain.Abstractions;
+using Cloudea.Service.Book.Domain.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace Cloudea.Service.Book.Infrastructure
 {
