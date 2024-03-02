@@ -9,6 +9,6 @@ namespace Cloudea.Service.Auth.Domain.Repositories
 {
     public interface IUserRoleRepository
     {
-        Task<Result<List<int>>> ReadByUserId(Guid userId);
+        Task<List<int>> GetRoleListByUserId(Guid userId);
     }
 }

@@ -1,72 +1,73 @@
-﻿using Cloudea.Infrastructure.API;
-using Cloudea.Service.Auth.Domain;
+﻿using Cloudea.Application.Identity;
+using Cloudea.Infrastructure.API;
 using Cloudea.Service.Auth.Domain.Abstractions;
 using Cloudea.Service.Auth.Domain.Entities;
 using Cloudea.Service.Auth.Domain.Models;
 using Cloudea.Service.Auth.Domain.Utils;
-using Cloudea.Service.Auth.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers
 {
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class IdentityController : ApiControllerBase
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     {
-        private readonly UserDbContext _userDbContext;
-        private readonly UserDomainService authUserService;
+        private readonly UserService authUserService;
         private readonly VerificationCodeService verificationCodeService;
         private readonly ICurrentUser _currentUser;
 
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
-        public IdentityController(UserDomainService authUserService, VerificationCodeService verificationCodeService, UserDbContext userDbContext, ICurrentUser currentUser)
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
+        public IdentityController(UserService authUserService, VerificationCodeService verificationCodeService, ICurrentUser currentUser)
         {
             this.authUserService = authUserService;
             this.verificationCodeService = verificationCodeService;
-            _userDbContext = userDbContext;
             _currentUser = currentUser;
         }
 
+        /// <summary>
+        /// 获取注册Token
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="verCode"></param>
+        /// <returns></returns>
         [HttpPost]
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public async Task<IActionResult> RegisterToken(string email, string verCode)
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             var res = await authUserService.StartRegister(email, verCode);
             if (res.IsFailure) {
-                return BadRequest(res);
+                return HandleFailure(res);
             }
             return Ok(res);
         }
 
+        /// <summary>
+        /// 注册
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPost]
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
-        public async Task<IActionResult> Register([FromBody] UserRegisterRequest user)
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
+        public async Task<IActionResult> User([FromBody] UserRegisterRequest user)
         {
-            var userRes = await authUserService.Register(user.RegisterToken, user.UserName, user.Password);
-            if (userRes.IsFailure) {
-                return BadRequest(userRes);
+            var res = await authUserService.RegisterAsync(user.RegisterToken, user.UserName, user.Password);
+            if (res.IsFailure) {
+                return HandleFailure(res);
             }
-            var createRes = await _userDbContext.Create(userRes.Data);
-            return Ok(createRes);
+            return Ok(res);
         }
 
+        /// <summary>
+        /// 登录
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
-        public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
+        public async Task<IActionResult> Session([FromBody] UserLoginRequest request)
         {
             // 数据校验
             if (request == null) {
                 return BadRequest();
             }
-#pragma warning disable CS0472 // 由于此类型的值永不等于 "null"，该表达式的结果始终相同
+
             if (request.LoginType == null) {
                 return BadRequest();
             }
-#pragma warning restore CS0472 // 由于此类型的值永不等于 "null"，该表达式的结果始终相同
 
             var tokenRes = await authUserService.Login(request);
             if (tokenRes.IsFailure) {
@@ -75,40 +76,14 @@ namespace Cloudea.Web.Controllers
             return Ok(tokenRes);
         }
 
-        [HttpPut]
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
-        public async Task<IActionResult> Password(string newPassword)
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-        {
-            return Ok();
-        }
-
-        [HttpGet]
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
-        public async Task<IActionResult> UserProfile(long userId)
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-        {
-            return Ok();
-        }
-
-        [HttpPut]
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-        public async Task<IActionResult> UserProfile(UserProfile userProfile)
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
-        {
-            return Ok();
-        }
-
+        /// <summary>
+        /// 获取验证码
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="codeType"></param>
+        /// <returns></returns>
         [HttpPost]
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public async Task<IActionResult> VerificationCode(string email, VerificationCodeType codeType)
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             var res = await verificationCodeService.SendVerCodeEmail(email, codeType);
             if (res.IsFailure) {
@@ -117,10 +92,12 @@ namespace Cloudea.Web.Controllers
             return Ok(res);
         }
 
+        /// <summary>
+        /// 获取当前账户信息
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public async Task<IActionResult> SelfInfo()
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             var info = await _currentUser.GetUserInfoAsync();
             if (info == null) {

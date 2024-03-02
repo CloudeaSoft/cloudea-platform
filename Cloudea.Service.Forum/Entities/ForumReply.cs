@@ -1,20 +1,20 @@
 ﻿using Cloudea.Infrastructure.Database;
 using Cloudea.Infrastructure.Primitives;
-using Microsoft.IdentityModel.Tokens;
+using Cloudea.Service.Forum.DomainEvents;
 
 namespace Cloudea.Service.Forum.Domain.Entities
 {
     /// <summary>
     /// 论坛回复帖
     /// </summary>
-    public sealed class ForumReply : BaseDataEntity, IAuditableEntity
+    public sealed class ForumReply : AggregateRoot, IAuditableEntity
     {
         private ForumReply(
+            Guid id,
             Guid userId,
             Guid postId,
-            string content)
+            string content) : base(id)
         {
-            Id = Guid.NewGuid();
             ParentPostId = postId;
             OwnerUserId = userId;
             Content = content;
@@ -39,7 +39,14 @@ namespace Cloudea.Service.Forum.Domain.Entities
                 return null;
             }
 
-            return new(userId, post.Id, content);
+            var res = new ForumReply(Guid.NewGuid(), userId, post.Id, content);
+
+            res.RaiseDomainEvent(new ReplyCreatedDomainEvent(
+                Guid.NewGuid(),
+                res.Id,
+                res.ParentPostId));
+
+            return res;
         }
 
 

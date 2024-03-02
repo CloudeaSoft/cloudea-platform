@@ -5,9 +5,14 @@ namespace Cloudea.Service.Auth.Domain.Repositories
 {
     public interface IRoleRepository
     {
-        Task<Result<Role>> GetRole(int roleId);
-        Task<Result<Role>> GetRole(string roleName);
-        Task<Result<List<Role>>> GetRoleList();
-        Task<Result> SetRolePermission(Role role);
+        void Add(Role role);
+
+        void Update(Role role);
+
+        Task<Role?> GetByIdAsync(int roleId, CancellationToken cancellationToken = default);
+
+        Task<Role?> GetByNameAsync(string roleName, CancellationToken cancellationToken = default);
+
+        Task<PageResponse<Role>> GetPageAsync(PageRequest request, CancellationToken cancellationToken = default);
     }
 }

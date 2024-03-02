@@ -1,7 +1,5 @@
-﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Primitives;
+﻿using Cloudea.Infrastructure.Primitives;
 using Cloudea.Service.Forum.Domain.DomainEvents;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Cloudea.Service.Forum.Domain.Entities;
 

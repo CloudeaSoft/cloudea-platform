@@ -1,13 +1,14 @@
 ﻿using Cloudea.Infrastructure.Database;
-using FreeSql.DataAnnotations;
-using BaseEntity = Cloudea.Infrastructure.Database.BaseEntity;
 
 namespace Cloudea.Service.File.Domain.Entities
 {
-    [AutoGenerateTable]
-    [Table(Name = "file_uploadedfile")]
-    public class File_UploadedFile : BaseEntity
+    public class File_UploadedFile : BaseDataEntity
     {
+        private File_UploadedFile()
+        {
+
+        }
+
         /// <summary>
         /// 文件大小（尺寸为字节）
         /// </summary>
@@ -27,14 +28,12 @@ namespace Cloudea.Service.File.Domain.Entities
         /// 备份文件路径，因为可能会更换文件存储系统或者云存储供应商，因此系统会保存一份自有的路径。
         /// 备份文件一般放到内网的高速、稳定设备上，比如NAS等。
         /// </summary>
-        [Column(MapType = typeof(string), StringLength = -1)]
         public Uri BackupUrl { get; private set; }
 
 
         /// <summary>
         /// 上传的文件的供外部访问者访问的路径
         /// </summary>
-        [Column(MapType = typeof(string), StringLength = -1)]
         public Uri RemoteUrl { get; private set; }
 
         /// <summary>

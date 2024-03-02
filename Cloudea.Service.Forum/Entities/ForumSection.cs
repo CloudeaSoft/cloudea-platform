@@ -1,8 +1,6 @@
 ﻿using Cloudea.Infrastructure.Database;
 using Cloudea.Infrastructure.Primitives;
 using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Auth.Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Cloudea.Service.Forum.Domain.Entities;
 
@@ -40,10 +38,10 @@ public sealed class ForumSection : BaseDataEntity, IAuditableEntity
     /// <param name="masterId">板块管理人id</param>
     /// <param name="statement">简介</param>
     /// <returns></returns>
-    public static ForumSection? Create(string name, User master, string statement = "")
+    public static ForumSection? Create(string name, Guid master, string statement = "")
     {
         if (string.IsNullOrEmpty(name)) return null;
-        return new ForumSection(name, master.Id, statement);
+        return new ForumSection(name, master, statement);
     }
 
     public void Update(string sectionName, string statement, Guid? masterId)

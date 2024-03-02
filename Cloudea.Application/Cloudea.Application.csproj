@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cloudea.Service.Forum\Cloudea.Service.Forum.Domain.csproj" />
+    <ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
+    <ProjectReference Include="..\Cloudea.Service.Authentication.Domain\Cloudea.Service.Auth.csproj" />
+    <ProjectReference Include="..\Cloudea.Service.File.Domain\Cloudea.Service.File.csproj" />
+    <ProjectReference Include="..\Cloudea.Service.Forum\Cloudea.Service.Forum.csproj" />
   </ItemGroup>
 
 </Project>

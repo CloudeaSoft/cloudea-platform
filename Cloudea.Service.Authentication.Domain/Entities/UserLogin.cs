@@ -1,5 +1,4 @@
 ﻿using Cloudea.Infrastructure.Database;
-using FreeSql.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cloudea.Service.Auth.Domain.Entities;
@@ -7,16 +6,8 @@ namespace Cloudea.Service.Auth.Domain.Entities;
 /// <summary>
 /// 用户登录
 /// </summary>
-[AutoGenerateTable]
-[Table(Name = "auth_user_login")]
-public class UserLogin
+public class UserLogin : BaseDataEntity
 {
-    /// <summary>
-    /// 主键ID
-    /// </summary>
-    [Column(IsIdentity = true, IsPrimary = true)]
-    public long Id { get; set; }
-
     /// <summary>
     /// 日期 (2021-10-25) DateTime.ToString("yyyy-MM-dd")
     /// </summary>

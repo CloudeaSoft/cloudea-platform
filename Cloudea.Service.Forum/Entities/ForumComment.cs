@@ -1,6 +1,5 @@
 ﻿using Cloudea.Infrastructure.Database;
 using Cloudea.Infrastructure.Primitives;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Cloudea.Service.Forum.Domain.Entities;
 
@@ -12,7 +11,7 @@ public sealed class ForumComment : BaseDataEntity, IAuditableEntity
     private ForumComment(
         Guid parentReplyId,
         Guid ownerUserId,
-        Guid targetUserId,
+        Guid? targetUserId,
         string content)
     {
         Id = Guid.NewGuid();
@@ -38,12 +37,12 @@ public sealed class ForumComment : BaseDataEntity, IAuditableEntity
     public DateTime CreatedOnUtc { get; set; }
     public DateTime? ModifiedOnUtc { get; set; }
 
-    public static ForumComment? Create(Guid ownerUser, ForumReply reply, Guid targetUser, string content)
+    public static ForumComment? Create(ForumReply reply, Guid ownerUser, Guid? targetUser, string content)
     {
         if (string.IsNullOrEmpty(content)) {
             return null;
         }
-        return new(ownerUser, reply.Id, targetUser, content);
+        return new(reply.Id, ownerUser, targetUser, content);
     }
 
 

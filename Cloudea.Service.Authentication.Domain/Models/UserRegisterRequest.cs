@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cloudea.Service.Auth.Domain.Models
+﻿namespace Cloudea.Service.Auth.Domain.Models
 {
     /// <summary>
     /// 注册账号

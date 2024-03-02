@@ -3,6 +3,7 @@ using System;
 using Cloudea.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -18,6 +19,8 @@ namespace Cloudea.Persistence.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("Cloudea.Persistence.Outbox.OutboxMessage", b =>
                 {
@@ -47,11 +50,209 @@ namespace Cloudea.Persistence.Migrations
                     b.ToTable("outbox_messages", (string)null);
                 });
 
+            modelBuilder.Entity("Cloudea.Service.Auth.Domain.Entities.Role", b =>
+                {
+                    b.Property<int>("Value")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Value"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Permissions")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Value");
+
+                    b.ToTable("u_role", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Value = 2,
+                            Name = "Admin",
+                            Permissions = "[]"
+                        },
+                        new
+                        {
+                            Value = 3,
+                            Name = "SubAdmin",
+                            Permissions = "[]"
+                        },
+                        new
+                        {
+                            Value = 1,
+                            Name = "User",
+                            Permissions = "[]"
+                        });
+                });
+
+            modelBuilder.Entity("Cloudea.Service.Auth.Domain.Entities.User", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<byte[]>("Avatar")
+                        .HasMaxLength(500)
+                        .HasColumnType("varbinary(500)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("ModificationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("NickName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("u_user", (string)null);
+                });
+
+            modelBuilder.Entity("Cloudea.Service.Auth.Domain.Entities.UserLogin", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<string>("Hour")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("u_user_login", (string)null);
+                });
+
+            modelBuilder.Entity("Cloudea.Service.Auth.Domain.Entities.UserRole", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("ModificationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("u_user_role", (string)null);
+                });
+
+            modelBuilder.Entity("Cloudea.Service.Auth.Domain.Entities.VerificationCode", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("ModificationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("VerCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("VerCodeType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("VerCodeValidTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("u_verification_code", (string)null);
+                });
+
             modelBuilder.Entity("Cloudea.Service.Forum.Domain.Entities.ForumComment", b =>
                 {
                     b.Property<long>("AutoIncId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -88,6 +289,8 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<long>("AutoIncId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
 
                     b.Property<long>("ClickCount")
                         .HasColumnType("bigint");
@@ -132,6 +335,8 @@ namespace Cloudea.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -167,6 +372,8 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<long>("AutoIncId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
 
                     b.Property<long>("ClickCount")
                         .HasColumnType("bigint");

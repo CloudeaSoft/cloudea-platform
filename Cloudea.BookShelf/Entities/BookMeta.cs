@@ -1,28 +1,21 @@
 ﻿using Cloudea.Infrastructure.Database;
-using FreeSql.DataAnnotations;
-using System.ComponentModel.DataAnnotations;
+using Cloudea.Infrastructure.Primitives;
 
 namespace Cloudea.Service.Book.Domain.Entities;
 
-[AutoGenerateTable]
-[Table(Name = "book_meta")]
-public class BookMeta : BaseEntity, ISoftDelete
+public sealed class BookMeta : BaseDataEntity, IAuditableEntity, ISoftDelete
 {
     /// <summary>
     /// 书名
     /// </summary>
-    [Column(DbType = "varchar(128)")]
     public string Title { get; set; }
     /// <summary>
     /// 作者
     /// </summary>
-    [Column(DbType = "varchar(16)")]
     public string Author { get; set; }
     /// <summary>
     /// 简介
     /// </summary>
-    [StringLength(255)]
-    [Column(DbType = "varchar(255)")]
     public string? Description { get; set; }
     /// <summary>
     /// 创建者
@@ -39,12 +32,15 @@ public class BookMeta : BaseEntity, ISoftDelete
     /// <summary>
     /// 源链接
     /// </summary>
-    [Url]
     public string? Source_Link { get; set; }
 
     public bool IsDeleted { get; private set; }
 
     public DateTime? DeletionTime { get; private set; }
+
+    public DateTime CreatedOnUtc { get; private set; }
+
+    public DateTime? ModifiedOnUtc { get; private set; }
 
     /// <summary>
     /// 简单创建

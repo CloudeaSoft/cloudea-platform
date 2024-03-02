@@ -2,6 +2,9 @@
 using Cloudea.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
+using Cloudea.Application.Identity;
+using Cloudea.Service.Auth.Domain.Abstractions;
+using Cloudea.Service.Auth.Domain.Utils;
 
 namespace Cloudea.Application
 {
@@ -10,6 +13,11 @@ namespace Cloudea.Application
         public void Initialize(IServiceCollection services)
         {
             services.AddScoped<ForumService>();
+            services.AddScoped<AuthService>();
+
+            services.AddScoped<UserService>();
+            services.AddScoped<ICurrentUser, CurrentUser>();
+            services.AddScoped<VerificationCodeService>();
         }
     }
 }

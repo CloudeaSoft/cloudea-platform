@@ -114,17 +114,17 @@ namespace Cloudea.Web.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Topic([FromBody] CreateTopicRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post([FromBody] CreateTopicRequest request, CancellationToken cancellationToken)
         {
             var userId = await _currentUser.GetUserIdAsync();
-            var res = await _forumService.PostTopicAsync(userId, request, cancellationToken);
+            var res = await _forumService.PostPostAsync(userId, request, cancellationToken);
 
             if (res.IsFailure) {
                 return HandleFailure(res);
             }
 
             return CreatedAtAction(
-                nameof(Topic),
+                nameof(Post),
                 new { id = res.Data },
                 res.Data);
         }
@@ -136,7 +136,7 @@ namespace Cloudea.Web.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         [HttpPatch]
-        public async Task<IActionResult> Topic([FromBody] string test)
+        public async Task<IActionResult> Post([FromBody] string test)
         {
             throw new NotImplementedException();
         }
@@ -148,9 +148,9 @@ namespace Cloudea.Web.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpGet(ID)]
-        public async Task<IActionResult> Topic(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post(Guid id, CancellationToken cancellationToken)
         {
-            var res = await _forumService.GetTopicAsync(id, cancellationToken);
+            var res = await _forumService.GetPostAsync(id, cancellationToken);
 
             return res.IsSuccess ? Ok(res) : NotFound(res.Error);
         }
@@ -163,7 +163,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpGet(PageRequest)]
-        public async Task<IActionResult> Topic(
+        public async Task<IActionResult> Post(
             int page,
             int limit,
             CancellationToken cancellationToken)
@@ -176,6 +176,61 @@ namespace Cloudea.Web.Controllers
             var res = await _forumService.ListTopicAsync(request, cancellationToken);
 
             return res.IsSuccess ? Ok(res) : NotFound(res.Error);
+        }
+
+        /// <summary>
+        /// 获取主题帖一页内容
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet(ID)]
+        public async Task<IActionResult> PostDetail(
+            Guid id, int pageIndex, CancellationToken cancellationToken)
+        {
+            var res = await _forumService.GetPostDetailAsync(id, pageIndex, cancellationToken);
+
+            return res.IsSuccess ? Ok(res) : NotFound(res.Error);
+        }
+
+        /// <summary>
+        /// 创建回复
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="content"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Reply(Guid id, string content, CancellationToken cancellationToken)
+        {
+            var res = await _forumService.PostReplyAsync(id, content, cancellationToken);
+
+            if (res.IsFailure) {
+                return HandleFailure(res);
+            }
+
+            return Ok(res);
+        }
+
+        /// <summary>
+        /// 创建评论
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="content"></param>
+        /// <param name="targetUserId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Comment(Guid id, string content, Guid? targetUserId, CancellationToken cancellationToken)
+        {
+            var res = await _forumService.PostCommentAsync(id, targetUserId, content, cancellationToken);
+
+            if (res.IsFailure) {
+                return HandleFailure(res);
+            }
+
+            return Ok(res);
         }
     }
 }

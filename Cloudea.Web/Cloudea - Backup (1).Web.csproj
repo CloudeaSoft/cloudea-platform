@@ -1,0 +1,69 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+        <!--XML注释，用于自动生成API文档-->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+		<UserSecretsId>c341397e-d2ca-430c-a6fc-fec80d1e71ac</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MediatR" Version="12.2.0" />
+		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Quartz.Extensions.Hosting" Version="3.8.1" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.20.0.85982">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Cloudea.Application\Cloudea.Application.csproj" />
+		<ProjectReference Include="..\Cloudea.BaseTool\Cloudea.Service.Base.csproj" />
+		<ProjectReference Include="..\Cloudea.GameHelper\Cloudea.Service.GameHelper.csproj" />
+		<ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
+		<ProjectReference Include="..\Cloudea.MyService\Cloudea.Service.TestService.csproj" />
+		<ProjectReference Include="..\Cloudea.Persistence\Cloudea.Persistence.csproj" />
+		<ProjectReference Include="..\Cloudea.Service.Authentication.Infrastructure\Cloudea.Service.Auth.Infrastructure.csproj" />
+		<ProjectReference Include="..\Cloudea.Service.Book.Infrastructure\Cloudea.Service.Book.Infrastructure.csproj" />
+		<ProjectReference Include="..\Cloudea.Service.File.Infrastructure\Cloudea.Service.File.Infrastructure.csproj" />
+		<ProjectReference Include="..\Cloudea.Service.Forum.Infrastruction\Cloudea.Service.Forum.Infrastruction.csproj" />
+		<ProjectReference Include="..\Cloudea.Service.Hub\Cloudea.Service.HubTest.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Program.cs">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="appsettings.Development.json">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EditorConfigFiles Remove="C:\Users\20251\source\repos\CloudeaSoft\cloudea-platform\Cloudea.Web\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="C:\Users\20251\source\repos\CloudeaSoft\cloudea-platform\Cloudea.Web\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Logs\" />
+	  <Folder Include="wwwroot\" />
+	</ItemGroup>
+
+</Project>

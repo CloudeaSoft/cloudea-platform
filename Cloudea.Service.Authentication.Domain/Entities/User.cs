@@ -1,19 +1,36 @@
 ﻿using Cloudea.Infrastructure.Database;
-using System.Text.Json.Serialization;
+using Cloudea.Infrastructure.Primitives;
+using Cloudea.Infrastructure.Shared;
+using Cloudea.Infrastructure.Utils;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
-using FreeSql.DataAnnotations;
-using MySqlX.XDevAPI.Relational;
+using System.Text.Json.Serialization;
 
 namespace Cloudea.Service.Auth.Domain.Entities;
 
 /// <summary>
 /// 用户信息
 /// </summary>
-[AutoGenerateTable]
-[Table(Name = "auth_user")]
-public class User : BaseEntity, ISoftDelete
+public class User : Entity, ISoftDelete
 {
+    private User(
+        Guid id,
+        string userName,
+        string nickName,
+        string email,
+        string passwordHash,
+        string salt,
+        bool enable) : base(id)
+    {
+        UserName = userName;
+        NickName = nickName;
+        Email = email;
+        PasswordHash = passwordHash;
+        Salt = salt;
+        Enable = enable;
+    }
+
+    private User() { }
+
     /// <summary>
     /// 用户名
     /// </summary>
@@ -70,15 +87,67 @@ public class User : BaseEntity, ISoftDelete
         this.DeletionTime = DateTime.Now;
     }
 
-    public static User Create(string userName, string nickName, string email, string passwordHash, string salt, bool enable)
+    public static User Create(
+        string userName,
+        string nickName,
+        string email,
+        string password,
+        string salt,
+        bool enable)
     {
-        return new User() {
-            UserName = userName,
-            NickName = nickName,
-            Email = email,
-            PasswordHash = passwordHash,
-            Salt = salt,
-            Enable = enable,
-        };
+        return new User(
+            Guid.NewGuid(),
+            userName,
+            nickName,
+            email,
+            HashPassword(password, salt),
+            salt,
+            enable);
+    }
+
+    public void Update()
+    {
+
+    }
+
+    public Result SetPassword(string newPassword)
+    {
+        if (string.IsNullOrEmpty(newPassword)) {
+            return new Error("密码不能为空");
+        }
+        if (newPassword.Length < 6) {
+            return new Error("密码不能小于6位");
+        }
+        Salt = Guid.NewGuid().ToString("N");
+        PasswordHash = HashPassword(newPassword, Salt);
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// 检查密码是否正确
+    /// </summary>
+    /// <param name="password"></param>
+    /// <returns></returns>
+    public bool CheckPassword(string password)
+    {
+        if (HashPassword(password, Salt) != PasswordHash) {
+            return false;
+        }
+        return true;
+    }
+
+    private static string HashPassword(string password, string salt)
+    {
+        return EncryptionUtils.EncryptMD5("Cloudea" + password + "system" + salt);
+    }
+
+    public void EnableMe()
+    {
+        Enable = true;
+    }
+
+    public void DisableMe()
+    {
+        Enable = false;
     }
 }

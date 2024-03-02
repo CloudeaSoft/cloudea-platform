@@ -3,11 +3,11 @@
 namespace Cloudea.Service.Base
 {
     public class RegionClockService {
-        public DateTime getDate() {
+        public DateTime GetDate() {
             return DateTime.Now;
         }
 
-        public Result getTimeToUnix(DateTime dateTime) {
+        public Result GetTimeToUnix(DateTime dateTime) {
             string timeStamp;
             try {
                 timeStamp = dateTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds.ToString("F0");
@@ -18,7 +18,7 @@ namespace Cloudea.Service.Base
             return Result.Success(timeStamp);
         }
 
-        public Result getUnixToTime(string timeStamp) {
+        public Result GetUnixToTime(string timeStamp) {
             DateTime dateTime;
             try {
                 dateTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(timeStamp)).DateTime.ToLocalTime();

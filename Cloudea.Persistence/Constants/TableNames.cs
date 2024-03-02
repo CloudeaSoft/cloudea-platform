@@ -14,4 +14,14 @@ internal static class TableNames
     internal const string ForumComment = "forum_comment";
 
     internal const string OutboxMessages = "outbox_messages";
+
+    internal const string User = "u_user";
+
+    internal const string UserRole = "u_user_role";
+
+    internal const string Role = "u_role";
+
+    internal const string UserLogin = "u_user_login";
+
+    internal const string VerificationCode = "u_verification_code";
 }

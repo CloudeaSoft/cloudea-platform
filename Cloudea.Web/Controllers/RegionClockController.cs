@@ -25,7 +25,7 @@ namespace Cloudea.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         public DateTime getTime() {
-            return regionClock.getDate();
+            return regionClock.GetDate();
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Cloudea.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         public Result getTimeToUnix(DateTime dateTime) {
-            return regionClock.getTimeToUnix(dateTime);
+            return regionClock.GetTimeToUnix(dateTime);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Cloudea.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         public Result getUnixToTime(string timeStamp) {
-            return regionClock.getUnixToTime(timeStamp);
+            return regionClock.GetUnixToTime(timeStamp);
         }
     }
 }

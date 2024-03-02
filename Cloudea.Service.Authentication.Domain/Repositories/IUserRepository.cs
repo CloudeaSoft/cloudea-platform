@@ -6,12 +6,29 @@ namespace Cloudea.Service.Auth.Domain.Repositories
 {
     public interface IUserRepository
     {
-        Task<bool> CheckUserRegisteredAsync([EmailAddress] string email);
+        void Add(User user);
 
-        Task<bool> CheckPassword(Guid id, string password);
-        Task<Guid> GetUserIdByUserName(string username);
-        Task<Guid> GetUserIdByEmail([EmailAddress] string email);
-        Task<Result<User>> GetUser(Guid id);
-        Task<bool> CheckUserUnenableOrDeleted(Guid id);
+        void Update(User user);
+
+        /// <summary>
+        /// 查询用户 使用UserId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 查询用户 使用Email
+        /// </summary>
+        /// <param name="Email"></param>
+        /// <returns></returns>
+        Task<User?> GetByEmailAsync(string Email, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 查询用户 使用Username
+        /// </summary>
+        /// <param name="UserName"></param>
+        /// <returns></returns>
+        Task<User?> GetByUserNameAsync(string UserName, CancellationToken cancellationToken = default);
     }
 }

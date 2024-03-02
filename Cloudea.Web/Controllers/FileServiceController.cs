@@ -7,10 +7,10 @@ namespace Cloudea.Web.Controllers {
     public class FileServiceController : ApiControllerBase
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     {
-        private readonly FSDomainService _domainService;
+        private readonly FileService _domainService;
 
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
-        public FileServiceController(FSDomainService domainService)
+        public FileServiceController(FileService domainService)
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             _domainService = domainService;
