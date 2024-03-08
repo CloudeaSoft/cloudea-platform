@@ -1,4 +1,4 @@
-﻿using Cloudea.Service.Auth.Domain.Entities;
+﻿using Cloudea.Domain.Identity.Entities;
 
 namespace Cloudea.Service.Auth.Domain.Abstractions;
 
@@ -19,5 +19,5 @@ public interface ICurrentUser
     /// 获得用户信息
     /// </summary>
     /// <returns></returns>
-    Task<User> GetUserInfoAsync();
+    Task<User?> GetUserInfoAsync();
 }

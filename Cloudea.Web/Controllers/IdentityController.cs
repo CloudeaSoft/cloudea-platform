@@ -1,7 +1,7 @@
 ﻿using Cloudea.Application.Identity;
+using Cloudea.Domain.Identity.Enums;
 using Cloudea.Infrastructure.API;
 using Cloudea.Service.Auth.Domain.Abstractions;
-using Cloudea.Service.Auth.Domain.Entities;
 using Cloudea.Service.Auth.Domain.Models;
 using Cloudea.Service.Auth.Domain.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +30,7 @@ namespace Cloudea.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterToken(string email, string verCode)
         {
-            var res = await authUserService.StartRegister(email, verCode);
+            var res = await authUserService.GetRegisterTokenAsync(email, verCode);
             if (res.IsFailure) {
                 return HandleFailure(res);
             }
@@ -43,7 +43,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> User([FromBody] UserRegisterRequest user)
+        public new async Task<IActionResult> User([FromBody] UserRegisterRequest user)
         {
             var res = await authUserService.RegisterAsync(user.RegisterToken, user.UserName, user.Password);
             if (res.IsFailure) {
@@ -65,11 +65,7 @@ namespace Cloudea.Web.Controllers
                 return BadRequest();
             }
 
-            if (request.LoginType == null) {
-                return BadRequest();
-            }
-
-            var tokenRes = await authUserService.Login(request);
+            var tokenRes = await authUserService.LoginAsync(request);
             if (tokenRes.IsFailure) {
                 return NotFound();
             }

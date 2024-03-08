@@ -1,11 +1,12 @@
 ﻿using Cloudea.Infrastructure;
 using Cloudea.Infrastructure.API;
-using Cloudea.Infrastructure.Database;
+using Cloudea.Infrastructure.Freesql;
 using Cloudea.Infrastructure.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cloudea.Web.Controllers {
+namespace Cloudea.Web.Controllers
+{
     /*[Authorize]*/
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class DevController : ApiControllerBase

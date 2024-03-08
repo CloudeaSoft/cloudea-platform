@@ -22,35 +22,7 @@ namespace Cloudea.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("Cloudea.Persistence.Outbox.OutboxMessage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Error")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("OccurredOnUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("ProcessedOnUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("outbox_messages", (string)null);
-                });
-
-            modelBuilder.Entity("Cloudea.Service.Auth.Domain.Entities.Role", b =>
+            modelBuilder.Entity("Cloudea.Domain.Identity.Entities.Role", b =>
                 {
                     b.Property<int>("Value")
                         .ValueGeneratedOnAdd()
@@ -91,7 +63,7 @@ namespace Cloudea.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Cloudea.Service.Auth.Domain.Entities.User", b =>
+            modelBuilder.Entity("Cloudea.Domain.Identity.Entities.User", b =>
                 {
                     b.Property<long>("AutoIncId")
                         .ValueGeneratedOnAdd()
@@ -103,16 +75,12 @@ namespace Cloudea.Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varbinary(500)");
 
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("Enable")
                         .HasColumnType("tinyint(1)");
@@ -123,35 +91,28 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("ModificationTime")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("NickName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Salt")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("AutoIncId");
 
                     b.ToTable("u_user", (string)null);
                 });
 
-            modelBuilder.Entity("Cloudea.Service.Auth.Domain.Entities.UserLogin", b =>
+            modelBuilder.Entity("Cloudea.Domain.Identity.Entities.UserLogin", b =>
                 {
                     b.Property<long>("AutoIncId")
                         .ValueGeneratedOnAdd()
@@ -180,7 +141,7 @@ namespace Cloudea.Persistence.Migrations
                     b.ToTable("u_user_login", (string)null);
                 });
 
-            modelBuilder.Entity("Cloudea.Service.Auth.Domain.Entities.UserRole", b =>
+            modelBuilder.Entity("Cloudea.Domain.Identity.Entities.UserRole", b =>
                 {
                     b.Property<long>("AutoIncId")
                         .ValueGeneratedOnAdd()
@@ -188,14 +149,8 @@ namespace Cloudea.Persistence.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
 
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("ModificationTime")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
@@ -208,7 +163,7 @@ namespace Cloudea.Persistence.Migrations
                     b.ToTable("u_user_role", (string)null);
                 });
 
-            modelBuilder.Entity("Cloudea.Service.Auth.Domain.Entities.VerificationCode", b =>
+            modelBuilder.Entity("Cloudea.Domain.Identity.Entities.VerificationCode", b =>
                 {
                     b.Property<long>("AutoIncId")
                         .ValueGeneratedOnAdd()
@@ -216,7 +171,7 @@ namespace Cloudea.Persistence.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
 
-                    b.Property<DateTime>("CreationTime")
+                    b.Property<DateTime>("CreatedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -227,7 +182,7 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("ModificationTime")
+                    b.Property<DateTime?>("ModifiedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("VerCode")
@@ -244,6 +199,34 @@ namespace Cloudea.Persistence.Migrations
                     b.HasKey("AutoIncId");
 
                     b.ToTable("u_verification_code", (string)null);
+                });
+
+            modelBuilder.Entity("Cloudea.Persistence.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("OccurredOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("ProcessedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("outbox_messages", (string)null);
                 });
 
             modelBuilder.Entity("Cloudea.Service.Forum.Domain.Entities.ForumComment", b =>

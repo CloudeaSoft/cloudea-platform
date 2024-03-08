@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
+    <ProjectReference Include="..\Cloudea.Service.Authentication.Domain\Cloudea.Service.Auth.csproj" />
+    <ProjectReference Include="..\Cloudea.Service.File.Domain\Cloudea.Service.File.csproj" />
+    <ProjectReference Include="..\Cloudea.Service.Forum\Cloudea.Service.Forum.csproj" />
+  </ItemGroup>
+
+</Project>

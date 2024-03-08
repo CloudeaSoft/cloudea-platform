@@ -7,11 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cloudea.BookShelf\Cloudea.Service.Book.csproj" />
-    <ProjectReference Include="..\Cloudea.Infrastructure\Cloudea.Infrastructure.csproj" />
-    <ProjectReference Include="..\Cloudea.Service.Authentication.Domain\Cloudea.Service.Auth.csproj" />
-    <ProjectReference Include="..\Cloudea.Service.File.Domain\Cloudea.Service.File.csproj" />
-    <ProjectReference Include="..\Cloudea.Service.Forum\Cloudea.Service.Forum.csproj" />
+    <ProjectReference Include="..\Cloudea.Domain.Book\Cloudea.Domain.Book.csproj" />
+    <ProjectReference Include="..\Cloudea.Domain.File\Cloudea.Domain.File.csproj" />
+    <ProjectReference Include="..\Cloudea.Domain.Forum\Cloudea.Domain.Forum.csproj" />
+    <ProjectReference Include="..\Cloudea.Domain.Identity\Cloudea.Domain.Identity.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +24,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.1" />
-    <PackageReference Include="Quartz" Version="3.8.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,5 @@
 using Cloudea.Infrastructure;
-using Cloudea.Infrastructure.Database;
+using Cloudea.Infrastructure.Freesql;
 using Cloudea.Infrastructure.Repositories;
 using Cloudea.Persistence;
 using Cloudea.Persistence.BackgroundJobs;
@@ -36,7 +36,7 @@ namespace Cloudea.Web
             var builder = WebApplication.CreateBuilder(args);
 
             // 在控制台打印图标
-            OutputFile.outputTxt(builder.Configuration);
+            OutputFile.OutputTxt(builder.Configuration);
 
             #region Add services to the container. Use Configuration to config the services.
             // Appsettings.json to Configurations

@@ -1,5 +1,6 @@
 ﻿using Cloudea.Application.Identity;
 using Cloudea.Service.Auth.Domain.Models;
+using System.Security.Claims;
 
 namespace Cloudea.Web.Middlewares
 {
@@ -22,18 +23,17 @@ namespace Cloudea.Web.Middlewares
 
             // 检查 user login guid
             if (req.Headers.TryGetValue("Authorization", out _)) {
-                var userIdClaim = context.User.Claims.FirstOrDefault(t => t.Type == JwtClaims.USER_ID);
-                string userId = userIdClaim?.Value;
+                Claim? userIdClaim = context.User.Claims.FirstOrDefault(t => t.Type == JwtClaims.USER_ID);
+                string userId = userIdClaim!.Value;
 
-                Console.WriteLine("userid:" + userId);
+                // Console.WriteLine("userid:" + userId);
 
                 var userGuidClaim = context.User.Claims.FirstOrDefault(t => t.Type == JwtClaims.USER_LOGIN_GUID);
-                string guid = userGuidClaim?.Value;
+                string guid = userGuidClaim!.Value;
 
+                // Console.WriteLine("guid:" + guid);
 
-                Console.WriteLine("guid:" + guid);
-
-                if (string.IsNullOrWhiteSpace(userId) == false && string.IsNullOrWhiteSpace(guid) == false) {
+                if (string.IsNullOrWhiteSpace(userId) is false && string.IsNullOrWhiteSpace(guid) is false) {
                     // 两个不为空的时候判断只能有同一个人同时登录
                     var savedGuid = authUserService.GetUserLoginGuid(userId);
                     Console.WriteLine("savedGuid:" + savedGuid);
@@ -44,7 +44,7 @@ namespace Cloudea.Web.Middlewares
                     else {
                         // 不为空 如果不相等说明不是当前登录的用户 返回409 Conflict
                         if (savedGuid != guid) {
-                            context.Response.Headers.Add("CLOUDEA-USER-LOGOUT", "ONE-USER-LIMIT");
+                            context.Response.Headers.Append("CLOUDEA-USER-LOGOUT", "ONE-USER-LIMIT");
                             context.Response.StatusCode = 409;// Conflict
                             return;
                         }

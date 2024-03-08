@@ -1,4 +1,5 @@
 ﻿using Cloudea.Application.Contracts;
+using Cloudea.Domain.Common.Shared;
 using Cloudea.Infrastructure.Repositories;
 using Cloudea.Infrastructure.Shared;
 using Cloudea.Service.Auth.Domain.Abstractions;

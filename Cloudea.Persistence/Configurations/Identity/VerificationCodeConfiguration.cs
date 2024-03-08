@@ -1,12 +1,7 @@
-﻿using Cloudea.Persistence.Constants;
-using Cloudea.Service.Auth.Domain.Entities;
+﻿using Cloudea.Domain.Identity.Entities;
+using Cloudea.Persistence.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cloudea.Persistence.Configurations.Identity
 {

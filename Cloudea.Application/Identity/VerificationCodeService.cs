@@ -1,10 +1,11 @@
-﻿using Cloudea.Infrastructure.Repositories;
+﻿using Cloudea.Application.Utils;
+using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Identity.Entities;
+using Cloudea.Domain.Identity.Enums;
+using Cloudea.Infrastructure.Repositories;
 using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Auth.Domain.Entities;
 using Cloudea.Service.Auth.Domain.Repositories;
-using Cloudea.Service.Base.Message;
 using MediatR;
-using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 
 namespace Cloudea.Service.Auth.Domain.Utils
@@ -108,8 +109,6 @@ namespace Cloudea.Service.Auth.Domain.Utils
                 entity.SetValidTime(EXPIRE_TIME);
                 _verificationCodeRepository.Update(entity);
             }
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
             // 生成邮件
             var codeEmail = new SendEmailRequest() {
                 To = new() { email },
@@ -123,6 +122,7 @@ namespace Cloudea.Service.Auth.Domain.Utils
                 return res;
             }
 
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }
 

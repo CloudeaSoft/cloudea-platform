@@ -1,11 +1,14 @@
-﻿using Cloudea.Infrastructure.Repositories;
+﻿using Cloudea.Application.Utils;
+using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Identity.Entities;
+using Cloudea.Domain.Identity.Enums;
+using Cloudea.Domain.Identity.ValueObjects;
+using Cloudea.Infrastructure.Repositories;
 using Cloudea.Infrastructure.Shared;
 using Cloudea.Infrastructure.Utils;
-using Cloudea.Service.Auth.Domain.Entities;
 using Cloudea.Service.Auth.Domain.Models;
 using Cloudea.Service.Auth.Domain.Repositories;
 using Cloudea.Service.Auth.Domain.Utils;
-using Cloudea.Service.Base.Jwt;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +19,7 @@ namespace Cloudea.Application.Identity
     public class UserService
     {
         private readonly VerificationCodeService _userVerificationCodeService;
-        private readonly JwtTokenService _jwtTokenService;
+        private readonly IJwtTokenService _jwtTokenService;
         private readonly IUserRepository _userRepository;
         private readonly IMemoryCache _memoryCache;
         private readonly IUserRoleRepository _userRoleRepository;
@@ -29,7 +32,7 @@ namespace Cloudea.Application.Identity
             IConfiguration configuration,
             IMemoryCache memoryCache,
             VerificationCodeService userVerificationCodeService,
-            JwtTokenService jwtTokenService,
+            IJwtTokenService jwtTokenService,
             IUserRoleRepository userRoleRepository,
             IRoleRepository roleRepository,
             IUnitOfWork unitOfWork)
@@ -54,13 +57,10 @@ namespace Cloudea.Application.Identity
         /// </summary>
         /// <param name="email">邮箱</param>
         /// <returns></returns>
-        private async Task<bool> CheckUserRegistered([EmailAddress] string email)
+        private async Task<bool> CheckUserRegisteredAsync([EmailAddress] string email)
         {
-            var userExist = await _userRepository.GetByEmailAsync(email);
-            if (userExist == null) {
-                return false;
-            }
-            return true;
+            var user = await _userRepository.GetByEmailAsync(email);
+            return user is not null;
         }
 
         /// 注册流程
@@ -74,16 +74,16 @@ namespace Cloudea.Application.Identity
         /// <param name="email">邮箱</param>
         /// <param name="verCode">验证码</param>
         /// <returns></returns>
-        public async Task<Result<string>> StartRegister(string email, string verCode)
+        public async Task<Result<string>> GetRegisterTokenAsync(string email, string verCode)
         {
             // 检查用户是否已经注册过了
-            if (await CheckUserRegistered(email)) {
+            if (await CheckUserRegisteredAsync(email)) {
                 return new Error("该邮箱已被注册");
             }
 
             // 检查验证码有效性
             var checkRes = await _userVerificationCodeService.CheckVerCodeEmail(email, VerificationCodeType.RegisterByEmail, verCode);
-            if (checkRes.Status is false) {
+            if (checkRes.IsFailure) {
                 return checkRes.Error;
             }
 
@@ -116,8 +116,7 @@ namespace Cloudea.Application.Identity
                 userEmail = tokenData.Split(",")[0];
             }
             catch (Exception ex) {
-                //_logger.LogError(ex, message: "FinishRegister:" + ex.Message);
-                return new Error("token 解析错误");
+                return new Error("UserToken.InvalidParam", ex.ToString());
             }
 
             // 验证信息合法性
@@ -132,19 +131,34 @@ namespace Cloudea.Application.Identity
                 return new Error("名称不能为空");
             }
 
-            if (await CheckUserRegistered(userEmail)) {
+            if (await CheckUserRegisteredAsync(userEmail)) {
                 return new Error("该邮箱已被注册");
             }
 
             // 创建新用户信息
             var nickName = "新用户";
-            var salt = Guid.NewGuid().ToString("N");// 生成Salt
+            var passwordRes = Password.Create(password);
+            if (passwordRes.IsFailure) {
+                return passwordRes.Error;
+            }
+
+            var saltRes = Salt.Create(Guid.NewGuid().ToString("N"));// 生成Salt
+            if (saltRes.IsFailure) {
+                return saltRes.Error;
+            }
+
+            var passwordHashRes = PasswordHash.Create(HashPassword(passwordRes.Data, saltRes.Data));
+            if (passwordHashRes.IsFailure) {
+                return passwordHashRes.Error;
+            }
+
+
             var newUser = User.Create(
                 userName,
                 nickName,
                 userEmail,
-                password,
-                salt,
+                passwordHashRes.Data,
+                saltRes.Data,
                 true);
 
             _userRepository.Add(newUser);
@@ -152,6 +166,11 @@ namespace Cloudea.Application.Identity
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             // 返回登录token
             return newUser.Id;
+        }
+
+        private static string HashPassword(Password password, Salt salt)
+        {
+            return EncryptionUtils.EncryptMD5("Cloudea" + password.Value + "System" + salt.Value);
         }
 
         /// <summary>
@@ -170,7 +189,7 @@ namespace Cloudea.Application.Identity
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<Result<string>> Login(UserLoginRequest request)
+        public async Task<Result<string>> LoginAsync(UserLoginRequest request)
         {
             User? user;
             // 邮箱+验证码登录
@@ -215,11 +234,27 @@ namespace Cloudea.Application.Identity
             if (request.LoginType == LoginType.EmailVercode) {
                 return HandleLoginFailure();
             }
-            else if (user.CheckPassword(request.Password) is false) {
+            else if (CheckPassword(request.Password!, user) is false) {
                 return HandleLoginFailure();
             }
 
-            return await GenerateUserLoginToken(user.Id);
+            return await GenerateUserLoginTokenAsync(user.Id);
+        }
+
+        private static bool CheckPassword(string password, User user)
+        {
+            if (string.IsNullOrWhiteSpace(password)) {
+                return false;
+            }
+            var pwdRes = Password.Create(password);
+            if (pwdRes.IsFailure) {
+                return false;
+            }
+            var saltRes = Salt.Create(user.Salt);
+            if (!HashPassword(pwdRes.Data, saltRes.Data).Equals(user.PasswordHash)) {
+                return false;
+            }
+            return true;
         }
 
         private static Result<string> HandleLoginFailure()
@@ -232,10 +267,10 @@ namespace Cloudea.Application.Identity
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<Result<string>> GenerateUserLoginToken(Guid userId)
+        public async Task<Result<string>> GenerateUserLoginTokenAsync(Guid userId)
         {
             // 用户接口权限
-            List<Claim> claims = new List<Claim>();
+            List<Claim> claims = [];
             HashSet<string> permissions = await GetPermissionsAsync(userId).ConfigureAwait(true);
             foreach (var permission in permissions) {
                 claims.Add(new(JwtClaims.USER_PERMISSIONS, permission));
@@ -296,9 +331,9 @@ namespace Cloudea.Application.Identity
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public string GetUserLoginGuid(string userId)
+        public string? GetUserLoginGuid(string userId)
         {
-            if (_memoryCache.TryGetValue(CACHE_USER_LOGIN_GUID_KEY + userId, out string guid)) {
+            if (_memoryCache.TryGetValue(CACHE_USER_LOGIN_GUID_KEY + userId, out string? guid)) {
                 return guid;
             }
             return "";

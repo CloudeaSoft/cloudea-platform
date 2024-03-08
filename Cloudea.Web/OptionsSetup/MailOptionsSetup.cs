@@ -1,7 +1,8 @@
-﻿using Cloudea.Service.Base.Message;
+﻿using Cloudea.Infrastructure.Message;
 using Microsoft.Extensions.Options;
 
-namespace Cloudea.Web.OptionsSetup {
+namespace Cloudea.Web.OptionsSetup
+{
     public class MailOptionsSetup : IConfigureOptions<MailOptions>
     {
         private readonly IConfiguration _configuration;

@@ -1,4 +1,4 @@
-﻿using Cloudea.Service.Auth.Domain.Entities;
+﻿using Cloudea.Domain.Identity.Entities;
 using Cloudea.Service.Auth.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
