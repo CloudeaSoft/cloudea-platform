@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Service.Forum.Domain.Models;
+namespace Cloudea.Application.Forum.Contracts;
 
 public sealed record CreateTopicRequest(Guid SectionId, string Title, string Content);

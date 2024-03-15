@@ -8,7 +8,7 @@ namespace Cloudea.Service.Forum.Domain.Entities;
 /// </summary>
 public sealed class ForumPost : AggregateRoot, IAuditableEntity
 {
-    private ForumPost(
+    private ForumPost( 
         Guid id,
         Guid userId,
         Guid sectionId,
@@ -32,6 +32,9 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
     public string Title { get; set; }
     public string Content { get; set; }
     public long ClickCount { get; set; }
+
+    public long LikeCount {  get; set; }
+    public long DislikeCount { get; set; }
 
     public DateTime LastClickTime { get; set; }
     public DateTime LastEditTime { get; set; }

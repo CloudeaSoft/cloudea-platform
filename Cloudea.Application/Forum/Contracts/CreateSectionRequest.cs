@@ -1,4 +1,4 @@
-﻿namespace Cloudea.Service.Forum.Domain.Models;
+﻿namespace Cloudea.Application.Forum.Contracts;
 
 public sealed record CreateSectionRequest(string SectionName, Guid MasterId, string Statement);
 

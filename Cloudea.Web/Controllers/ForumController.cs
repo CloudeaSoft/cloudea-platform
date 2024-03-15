@@ -1,10 +1,9 @@
-﻿using Cloudea.Application.Contracts;
-using Cloudea.Application.Forum;
+﻿using Cloudea.Application.Forum;
+using Cloudea.Application.Forum.Contracts;
 using Cloudea.Infrastructure.API;
 using Cloudea.Infrastructure.Shared;
 using Cloudea.Service.Auth.Domain.Abstractions;
 using Cloudea.Service.Forum.Domain.Entities;
-using Cloudea.Service.Forum.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MySqlX.XDevAPI.Common;
@@ -182,14 +181,14 @@ namespace Cloudea.Web.Controllers
         /// 获取主题帖一页内容
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="pageIndex"></param>
+        /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [HttpGet(ID)]
-        public async Task<IActionResult> PostDetail(
-            Guid id, int pageIndex, CancellationToken cancellationToken)
+        [HttpPost(ID + "/Detail")]
+        public async Task<IActionResult> PostInfo(
+            Guid id, PageRequest request, CancellationToken cancellationToken)
         {
-            var res = await _forumService.GetPostDetailAsync(id, pageIndex, cancellationToken);
+            var res = await _forumService.GetPostInfoAsync(id, request, cancellationToken);
 
             return res.IsSuccess ? Ok(res) : NotFound(res.Error);
         }

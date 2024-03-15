@@ -10,6 +10,6 @@
         /// <summary>
         /// 数据
         /// </summary>
-        public List<T> Rows { get; set; }
+        public List<T> Rows { get; set; } = default!;
     }
 }

@@ -27,13 +27,15 @@ public sealed class ForumComment : BaseDataEntity, IAuditableEntity
 
     }
 
+    // 关系信息
     public Guid ParentReplyId { get; set; }
     public Guid OwnerUserId { get; set; }
     public Guid? TargetUserId { get; set; }
-
+    // 内容信息
     public string Content { get; set; }
     public long LikeCount { get; set; }
-
+    public long DislikeCount {  get; set; }
+    // 时间信息
     public DateTime CreatedOnUtc { get; set; }
     public DateTime? ModifiedOnUtc { get; set; }
 

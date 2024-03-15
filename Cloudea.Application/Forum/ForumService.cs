@@ -1,11 +1,10 @@
-﻿using Cloudea.Application.Contracts;
+﻿using Cloudea.Application.Forum.Contracts;
 using Cloudea.Domain.Common.Shared;
 using Cloudea.Infrastructure.Repositories;
 using Cloudea.Infrastructure.Shared;
 using Cloudea.Service.Auth.Domain.Abstractions;
 using Cloudea.Service.Auth.Domain.Repositories;
 using Cloudea.Service.Forum.Domain.Entities;
-using Cloudea.Service.Forum.Domain.Models;
 using Cloudea.Service.Forum.Domain.Repositories;
 
 namespace Cloudea.Application.Forum
@@ -181,44 +180,45 @@ namespace Cloudea.Application.Forum
         /// <param name="postId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Result<GetPostDetailResponse>> GetPostDetailAsync(
+        public async Task<Result<GetPostInfoResponse>> GetPostInfoAsync(
             Guid postId,
-            int pageIndex,
+            PageRequest request,
             CancellationToken cancellationToken = default)
         {
-            var post = await _forumPostRepository.GetByIdAsync(postId);
+            // 获取Post
+            var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
             if (post is null) {
                 return new Error("ForumTopic.NotFound");
             }
 
-            GetPostDetailResponse response = new();
-            response.Post = post;
+            // 创建返回结果
+            var postInfo = PostInfo.Create(post);
+            var response = GetPostInfoResponse.Create(postInfo);
 
-            var replys = await _forumReplyRepository.GetByTopicIdWithPageRequestAsync(
-                postId, new PageRequest {
-                    PageIndex = pageIndex,
-                    PageSize = 10,
-                });
+            // 获取Reply
+            var replys = await _forumReplyRepository.GetByTopicIdWithPageRequestAsync(postId, request, cancellationToken);
             if (replys is null) {
                 return response;
             }
 
+            // 获取Comments
+            var replyIds = replys.Rows.Select(x => x.Id).ToList();
+            var comments = await _forumCommentRepository.ListByReplyIdsAsync(replyIds, cancellationToken);
+
+            // 填充Reply结果
+            PageResponse<ReplyInfo> replyInfos = new() {
+                Total = replys.Total,
+                Rows = []
+            };
             foreach (var reply in replys.Rows) {
-                response.Replys.Add(GetPostDetailResponse.ReplyDetail.Create(reply));
+                var commentInfos = new List<CommentInfo>();
+                foreach (var comment in comments.Where(x => x.ParentReplyId == reply.Id)) {
+                    commentInfos.Add(CommentInfo.Create(comment));
+                }
+                replyInfos.Rows.Add(ReplyInfo.Create(reply, commentInfos));
             }
 
-            foreach (var reply in response.Replys) {
-                var comments = await _forumCommentRepository.GetByReplyIdAndPageRequestAsync(
-                    reply.Reply.Id,
-                    new PageRequest() {
-                        PageIndex = 1,
-                        PageSize = 2
-                    },
-                    cancellationToken);
-                reply.Comments = comments.Rows;
-            }
-
-            return response;
+            return GetPostInfoResponse.Create(postInfo, replyInfos);
         }
 
         /// <summary>
