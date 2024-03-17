@@ -1,13 +1,12 @@
 ﻿using Cloudea.Application.Utils;
 using Cloudea.Domain.Common.Shared;
-using Cloudea.Infrastructure.Shared;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Cloudea.Service.Base.Jwt;
+namespace Cloudea.Infrastructure.Jwt;
 
 public class JwtTokenService : IJwtTokenService
 {

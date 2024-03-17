@@ -1,4 +1,4 @@
-﻿namespace Cloudea.Service.Auth.Domain.Models
+﻿namespace Cloudea.Domain.Identity.Models
 {
     /// <summary>
     /// 注册账号

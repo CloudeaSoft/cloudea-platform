@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Infrastructure.Database
+namespace Cloudea.Domain.Common.Database
 {
     public interface IHasCreationTime
     {

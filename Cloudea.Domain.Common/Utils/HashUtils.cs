@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Infrastructure.Utils
+namespace Cloudea.Domain.Common.Utils
 {
     public class HashUtils
     {

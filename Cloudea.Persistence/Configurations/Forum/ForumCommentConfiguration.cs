@@ -1,5 +1,5 @@
-﻿using Cloudea.Persistence.Constants;
-using Cloudea.Service.Forum.Domain.Entities;
+﻿using Cloudea.Domain.Forum.Entities;
+using Cloudea.Persistence.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

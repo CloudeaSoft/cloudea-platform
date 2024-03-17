@@ -1,4 +1,4 @@
-﻿namespace Cloudea.Service.Base.Jwt;
+﻿namespace Cloudea.Infrastructure.Jwt;
 
 public class JwtOptions
 {

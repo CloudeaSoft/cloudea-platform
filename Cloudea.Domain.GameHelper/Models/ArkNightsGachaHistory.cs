@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.GameHelper.Models.ArkNights;
+namespace Cloudea.Domain.GameHelper.Models;
 
 /// <summary>
 /// 寻访记录信息 - 全部

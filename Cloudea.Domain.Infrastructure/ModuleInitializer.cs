@@ -1,11 +1,11 @@
 ﻿using Cloudea.Application.Utils;
-using Cloudea.Domain.Infrastructure.FileStorageClients;
-using Cloudea.Infrastructure;
-using Cloudea.Service.Base.Jwt;
-using Cloudea.Service.File.Infrastructure;
+using Cloudea.Domain.Common;
+using Cloudea.Domain.File.Infrastructure;
+using Cloudea.Infrastructure.FileStorageClients;
+using Cloudea.Infrastructure.Jwt;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cloudea.Domain.Infrastructure;
+namespace Cloudea.Infrastructure;
 
 internal class ModuleInitializer : IModuleInitializer
 {

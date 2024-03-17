@@ -1,19 +1,28 @@
 ﻿using Cloudea.Application.Abstractions.Messaging;
-using Cloudea.Service.Forum.DomainEvents;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cloudea.Domain.Forum.DomainEvents;
+using Cloudea.Domain.Forum.Repositories;
 
 namespace Cloudea.Application.Forum.Events
 {
     public class ReplyCreatedDomainEventHandler
         : IDomainEventHandler<ReplyCreatedDomainEvent>
     {
+        private readonly IForumPostRepository _forumPostRepository;
+
+        public ReplyCreatedDomainEventHandler(IForumPostRepository forumPostRepository)
+        {
+            _forumPostRepository = forumPostRepository;
+        }
+
         public async Task Handle(ReplyCreatedDomainEvent notification, CancellationToken cancellationToken)
         {
-            Console.WriteLine("未完成的Handler");
+            var post = await _forumPostRepository.GetByIdAsync(notification.PostId, cancellationToken);
+            if(post is null) {
+                return;
+            }
+
+            // 添加回复帖后对主题帖的影响
+            _forumPostRepository.Update(post);
         }
     }
 }

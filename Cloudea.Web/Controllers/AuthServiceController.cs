@@ -1,6 +1,6 @@
 ﻿using Cloudea.Application.Identity;
+using Cloudea.Domain.Common.API;
 using Cloudea.Domain.Identity.Entities;
-using Cloudea.Infrastructure.API;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers

@@ -1,10 +1,8 @@
 ﻿using Cloudea.Domain.Book.Entities;
+using Cloudea.Domain.Book.Repositories;
 using Cloudea.Domain.Common.Shared;
-using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Book.Domain.Abstractions;
-using Cloudea.Service.Book.Domain.Entities;
 
-namespace Cloudea.Service.Book.Domain
+namespace Cloudea.Domain.Book
 {
     public class BookDomainService
     {
@@ -29,7 +27,7 @@ namespace Cloudea.Service.Book.Domain
             }
 
             Guid metaId = Guid.NewGuid();
-            var meta = BookMeta.QuickCreate(metaId, title, author, creatorId);
+            var meta = BookMeta.Create(metaId, title, author, creatorId);
             return meta;
         }
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Cloudea.Infrastructure
+namespace Cloudea.Domain.Common
 {
     public interface IModuleInitializer
     {

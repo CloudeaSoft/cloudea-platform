@@ -1,10 +1,11 @@
-﻿using Cloudea.Service.Base.Jwt;
+﻿using Cloudea.Infrastructure.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Cloudea.Web.OptionsSetup {
+namespace Cloudea.Web.OptionsSetup
+{
     public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
     {
         private readonly JwtOptions _jwtOptions;

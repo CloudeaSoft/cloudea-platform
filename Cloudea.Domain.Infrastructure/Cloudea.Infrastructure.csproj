@@ -9,10 +9,13 @@
   <ItemGroup>
     <PackageReference Include="MailKit" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+    <PackageReference Include="Quartz" Version="3.8.1" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.8.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Cloudea.Application\Cloudea.Application.csproj" />
+    <ProjectReference Include="..\Cloudea.Persistence\Cloudea.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

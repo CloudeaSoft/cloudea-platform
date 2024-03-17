@@ -1,5 +1,5 @@
-﻿using Cloudea.Infrastructure.API;
-using Cloudea.Service.GameHelper.Abstractions;
+﻿using Cloudea.Domain.Common.API;
+using Cloudea.Domain.GameHelper.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers.GameHelper

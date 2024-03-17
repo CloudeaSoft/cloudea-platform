@@ -1,7 +1,7 @@
-﻿using Cloudea.Domain.Identity.Entities;
-using Cloudea.Service.Auth.Domain.Abstractions;
-using Cloudea.Service.Auth.Domain.Models;
-using Cloudea.Service.Auth.Domain.Repositories;
+﻿using Cloudea.Application.Abstractions;
+using Cloudea.Domain.Identity.Entities;
+using Cloudea.Domain.Identity.Models;
+using Cloudea.Domain.Identity.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 

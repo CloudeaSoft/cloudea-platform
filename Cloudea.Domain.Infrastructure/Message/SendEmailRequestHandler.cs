@@ -1,11 +1,9 @@
-﻿using MimeKit;
+﻿using Cloudea.Application.Utils;
+using Cloudea.Domain.Common.Shared;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Cloudea.Infrastructure.Shared;
-using Cloudea.Domain.Common.Shared;
-using Cloudea.Application.Utils;
-using Cloudea.Service.Base.Message;
+using MimeKit;
 
 namespace Cloudea.Infrastructure.Message;
 

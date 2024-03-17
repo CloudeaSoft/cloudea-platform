@@ -1,5 +1,5 @@
-﻿using Cloudea.Service.File.Domain.Abstractions;
-using Cloudea.Service.File.Domain.Entities;
+﻿using Cloudea.Domain.File.Entities;
+using Cloudea.Domain.File.Repositories;
 
 namespace Cloudea.Persistence.Repositories.File
 {

@@ -1,10 +1,10 @@
-﻿using Cloudea.Infrastructure.Utils;
-using Cloudea.Service.File.Domain.Abstractions;
-using Cloudea.Service.File.Domain.Entities;
-using Cloudea.Service.File.Domain.Enums;
-using Cloudea.Service.File.Infrastructure;
+﻿using Cloudea.Domain.Common.Utils;
+using Cloudea.Domain.File.Entities;
+using Cloudea.Domain.File.Enums;
+using Cloudea.Domain.File.Infrastructure;
+using Cloudea.Domain.File.Repositories;
 
-namespace Cloudea.Service.File.Domain.Applications;
+namespace Cloudea.Application.File;
 
 public class FileService
 {
@@ -35,14 +35,13 @@ public class FileService
     {
         string hash = HashUtils.ComputeMd5Hash(stream);
         long fileSize = stream.Length;
-        DateTime today = DateTime.Now;
+        DateTimeOffset today = DateTimeOffset.Now;
         // 命名规则
         string key = $"{today.Year}/{today.Month}/{today.Day}/{hash}/{fileName}";
 
         // 文件查重
         var oldUploadItem = await _fsRepository.FindFileAsync(fileSize, hash);
-        if (oldUploadItem != null)
-        {
+        if (oldUploadItem != null) {
             return oldUploadItem;
         }
         stream.Position = 0;

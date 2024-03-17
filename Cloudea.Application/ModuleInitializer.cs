@@ -1,10 +1,9 @@
 ﻿using Cloudea.Application.Forum;
-using Cloudea.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using Cloudea.Application.Identity;
-using Cloudea.Service.Auth.Domain.Abstractions;
-using Cloudea.Service.Auth.Domain.Utils;
+using Cloudea.Application.Abstractions;
+using Cloudea.Domain.Common;
 
 namespace Cloudea.Application
 {

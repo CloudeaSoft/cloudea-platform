@@ -1,11 +1,11 @@
-﻿using Cloudea.Infrastructure;
-using Cloudea.Infrastructure.Repositories;
+﻿using Cloudea.Domain.Common;
+using Cloudea.Domain.Common.Repositories;
+using Cloudea.Domain.File.Repositories;
+using Cloudea.Domain.Forum.Repositories;
+using Cloudea.Domain.Identity.Repositories;
 using Cloudea.Persistence.Repositories.File;
 using Cloudea.Persistence.Repositories.Forum;
 using Cloudea.Persistence.Repositories.Identity;
-using Cloudea.Service.Auth.Domain.Repositories;
-using Cloudea.Service.File.Domain.Abstractions;
-using Cloudea.Service.Forum.Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cloudea.Persistence

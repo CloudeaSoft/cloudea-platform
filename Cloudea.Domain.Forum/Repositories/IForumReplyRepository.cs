@@ -1,12 +1,7 @@
-﻿using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Forum.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Forum.Entities;
 
-namespace Cloudea.Service.Forum.Domain.Repositories
+namespace Cloudea.Domain.Forum.Repositories
 {
     public interface IForumReplyRepository
     {

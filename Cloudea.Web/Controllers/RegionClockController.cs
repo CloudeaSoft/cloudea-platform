@@ -1,6 +1,6 @@
-﻿using Cloudea.Infrastructure.API;
-using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Base;
+﻿using Cloudea.Domain.Common.API;
+using Cloudea.Domain.Common.Shared;
+using Cloudea.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers

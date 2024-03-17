@@ -1,4 +1,4 @@
-﻿namespace Cloudea.Service.Auth.Domain.Repositories
+﻿namespace Cloudea.Domain.Identity.Repositories
 {
     public interface IUserLoginRepository
     {

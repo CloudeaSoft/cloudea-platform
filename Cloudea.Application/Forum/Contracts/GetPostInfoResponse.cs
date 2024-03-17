@@ -1,5 +1,5 @@
-﻿using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Forum.Domain.Entities;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Forum.Entities;
 
 namespace Cloudea.Application.Forum.Contracts;
 

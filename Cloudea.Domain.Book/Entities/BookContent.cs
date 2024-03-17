@@ -1,6 +1,6 @@
-﻿using Cloudea.Infrastructure.Database;
+﻿using Cloudea.Domain.Common.Database;
 
-namespace Cloudea.Service.Book.Domain.Entities;
+namespace Cloudea.Domain.Book.Entities;
 
 public class BookContent : BaseDataEntity
 {

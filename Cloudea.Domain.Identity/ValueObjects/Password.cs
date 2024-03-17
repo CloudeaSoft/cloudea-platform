@@ -1,5 +1,5 @@
-﻿using Cloudea.Infrastructure.Primitives;
-using Cloudea.Infrastructure.Shared;
+﻿using Cloudea.Domain.Common.Primitives;
+using Cloudea.Domain.Common.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;

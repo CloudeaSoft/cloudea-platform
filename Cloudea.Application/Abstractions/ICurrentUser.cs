@@ -1,6 +1,6 @@
 ﻿using Cloudea.Domain.Identity.Entities;
 
-namespace Cloudea.Service.Auth.Domain.Abstractions;
+namespace Cloudea.Application.Abstractions;
 
 /// <summary>
 /// 当前登录的用户(scope)

@@ -1,4 +1,4 @@
-﻿namespace Cloudea.Service.Book.Domain.Models
+﻿namespace Cloudea.Domain.Book.Models
 {
     public class UpdateBookMetaRequest
     {

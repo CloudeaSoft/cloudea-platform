@@ -1,9 +1,8 @@
-﻿using Cloudea.Domain.Common.Shared;
-using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Shared;
+﻿using Cloudea.Domain.Common.Database;
+using Cloudea.Domain.Common.Shared;
 using System.Linq.Expressions;
 
-namespace Cloudea.Infrastructure.Freesql
+namespace Cloudea.Domain.Common.Freesql
 {
     public abstract class BaseRepository<TEntity>
         where TEntity : BaseDataEntity, new()
@@ -23,8 +22,7 @@ namespace Cloudea.Infrastructure.Freesql
         /// <returns></returns>
         public virtual async Task<Result<long>> Create(TEntity entity)
         {
-            if (!CheckModel(entity, out Error errMsg))
-            {
+            if (!CheckModel(entity, out Error errMsg)) {
                 return Result.Failure<long>(errMsg);
             }
             long id = await _database.Insert(entity).ExecuteIdentityAsync();
@@ -67,8 +65,7 @@ namespace Cloudea.Infrastructure.Freesql
         public virtual async Task<Result<TEntity>> Read(Guid id)
         {
             var entity = await _database.Select<TEntity>().Where(t => t.Id == id).FirstAsync();
-            if (entity == null)
-            {
+            if (entity == null) {
                 return BaseRepositoryErrors.IdNotExist;
             }
             return entity;
@@ -101,8 +98,7 @@ namespace Cloudea.Infrastructure.Freesql
         /// <returns></returns>
         public virtual bool CheckModel(TEntity entity, out Error error)
         {
-            if (entity == null)
-            {
+            if (entity == null) {
                 error = BaseRepositoryErrors.DataCannotBeEmpty;
                 return false;
             }
@@ -149,8 +145,7 @@ namespace Cloudea.Infrastructure.Freesql
         /// <returns></returns>
         public virtual async Task<Result<int>> Update(TEntity entity)
         {
-            if (!CheckModel(entity, out Error errMsg))
-            {
+            if (!CheckModel(entity, out Error errMsg)) {
                 return errMsg;
             }
             var res = await _database.Update<TEntity>().SetSource(entity).ExecuteAffrowsAsync();
@@ -166,13 +161,11 @@ namespace Cloudea.Infrastructure.Freesql
         /// <returns></returns>
         public virtual async Task<Result<int>> Delete(Guid id)
         {
-            if (await _database.Select<TEntity>().AnyAsync(t => t.Id == id))
-            {
+            if (await _database.Select<TEntity>().AnyAsync(t => t.Id == id)) {
                 var res = await _database.Select<TEntity>().Where(t => t.Id == id).ToDelete().ExecuteAffrowsAsync();
                 return res;
             }
-            else
-            {
+            else {
                 return BaseRepositoryErrors.DataNotExist;
             }
         }
@@ -185,8 +178,7 @@ namespace Cloudea.Infrastructure.Freesql
         public virtual async Task<Result<int>> DeleteList(List<Guid> idList)
         {
             // 合法性检查
-            if (idList == null || idList.Count == 0)
-            {
+            if (idList == null || idList.Count == 0) {
                 return BaseRepositoryErrors.DeleteNullData;
             }
             var res = await _database.Select<TEntity>().Where(t => idList.Contains(t.Id)).ToDelete().ExecuteAffrowsAsync();

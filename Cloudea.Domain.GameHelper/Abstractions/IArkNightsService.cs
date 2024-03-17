@@ -1,7 +1,7 @@
-﻿using Cloudea.GameHelper.Models.ArkNights;
-using Cloudea.Infrastructure.Shared;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.GameHelper.Models;
 
-namespace Cloudea.Service.GameHelper.Abstractions;
+namespace Cloudea.Domain.GameHelper.Abstractions;
 
 public interface IArkNightsService
 {

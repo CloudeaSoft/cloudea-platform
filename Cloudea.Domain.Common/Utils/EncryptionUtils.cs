@@ -1,9 +1,7 @@
-﻿using Quartz.Util;
-using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Cloudea.Infrastructure.Utils
+namespace Cloudea.Domain.Common.Utils
 {
     public static class EncryptionUtils
     {
@@ -39,7 +37,7 @@ namespace Cloudea.Infrastructure.Utils
                 throw new ArgumentException("secret is null or empty");
             }
             secret = secret ?? "";
-            var encoding = new System.Text.ASCIIEncoding();
+            var encoding = new ASCIIEncoding();
             byte[] keyByte = encoding.GetBytes(secret);
             byte[] messageBytes = encoding.GetBytes(message);
             using (var hmacsha256 = new HMACSHA256(keyByte)) {
@@ -62,15 +60,16 @@ namespace Cloudea.Infrastructure.Utils
             if (Key == null || Key.Length <= 0)
                 throw new ArgumentNullException(nameof(Key));
 
-            if (string.IsNullOrEmpty(plainText)) return null;
-            Byte[] toEncryptArray = Encoding.UTF8.GetBytes(plainText);
+            ArgumentException.ThrowIfNullOrEmpty(plainText);
+
+            byte[] toEncryptArray = Encoding.UTF8.GetBytes(plainText);
 
             using (Aes aesAlg = Aes.Create()) {
                 aesAlg.Key = Encoding.UTF8.GetBytes(Key);
                 aesAlg.Mode = CipherMode.ECB;
                 aesAlg.Padding = PaddingMode.PKCS7;
                 ICryptoTransform cTransform = aesAlg.CreateEncryptor();
-                Byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+                byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
 
                 return Convert.ToBase64String(resultArray, 0, resultArray.Length);
             }
@@ -96,15 +95,16 @@ namespace Cloudea.Infrastructure.Utils
         /// <returns></returns>
         public static string AESDecrypt(string encryptStr, string key)
         {
-            if (string.IsNullOrEmpty(encryptStr)) return null;
-            Byte[] toEncryptArray = Convert.FromBase64String(encryptStr);
+            ArgumentException.ThrowIfNullOrEmpty(nameof(encryptStr));
+
+            byte[] toEncryptArray = Convert.FromBase64String(encryptStr);
 
             using (Aes aesAlg = Aes.Create()) {
                 aesAlg.Key = Encoding.UTF8.GetBytes(key);
                 aesAlg.Mode = CipherMode.ECB;
                 aesAlg.Padding = PaddingMode.PKCS7;
                 ICryptoTransform cTransform = aesAlg.CreateDecryptor();
-                Byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+                byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
 
                 return Encoding.UTF8.GetString(resultArray);
             }

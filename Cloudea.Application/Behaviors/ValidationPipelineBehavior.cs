@@ -2,7 +2,7 @@
 using FluentValidation;
 using MediatR;
 
-namespace Cloudea.Infrastructure.Shared;
+namespace Cloudea.Application.Behaviors;
 
 public class ValidationPipelineBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
@@ -15,7 +15,7 @@ public class ValidationPipelineBehavior<TRequest, TResponse>
         _validators = validators;
 
     public async Task<TResponse> Handle(
-        TRequest request, 
+        TRequest request,
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {

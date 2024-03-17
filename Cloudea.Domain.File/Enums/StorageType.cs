@@ -1,4 +1,4 @@
-﻿namespace Cloudea.Service.File.Domain.Enums
+﻿namespace Cloudea.Domain.File.Enums
 {
     public enum StorageType
     {

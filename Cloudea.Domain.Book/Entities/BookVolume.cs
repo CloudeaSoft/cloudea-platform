@@ -1,4 +1,4 @@
-﻿using Cloudea.Infrastructure.Database;
+﻿using Cloudea.Domain.Common.Database;
 
 namespace Cloudea.Domain.Book.Entities;
 
@@ -35,11 +35,11 @@ public class BookVolume : BaseDataEntity, ISoftDelete
 
     public bool IsDeleted { get; private set; }
 
-    public DateTime? DeletionTime { get; set; }
+    public DateTimeOffset? DeletionTime { get; set; }
 
     public void SoftDelete()
     {
         IsDeleted = false;
-        DeletionTime = DateTime.Now;
+        DeletionTime = DateTimeOffset.Now;
     }
 }

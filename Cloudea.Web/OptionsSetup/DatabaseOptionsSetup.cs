@@ -1,4 +1,4 @@
-﻿using Cloudea.Infrastructure.Repositories;
+﻿using Cloudea.Domain.Common.Repositories;
 using Microsoft.Extensions.Options;
 
 namespace Cloudea.Web.OptionsSetup;

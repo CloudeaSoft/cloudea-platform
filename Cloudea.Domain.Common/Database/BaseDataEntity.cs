@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Cloudea.Infrastructure.Database
+namespace Cloudea.Domain.Common.Database
 {
     public abstract class BaseDataEntity
     {

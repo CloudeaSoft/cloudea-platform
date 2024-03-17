@@ -1,6 +1,6 @@
-﻿using Cloudea.Infrastructure.Database;
+﻿using Cloudea.Domain.Common.Database;
 
-namespace Cloudea.Infrastructure.Primitives;
+namespace Cloudea.Domain.Common.Primitives;
 
 public abstract class Entity : BaseDataEntity, IEquatable<Entity>
 {

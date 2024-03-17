@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Infrastructure
+namespace Cloudea.Domain.Common
 {
     public class OutputFile
     {

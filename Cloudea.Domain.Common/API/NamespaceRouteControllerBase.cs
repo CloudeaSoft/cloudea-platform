@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cloudea.Infrastructure.API
+namespace Cloudea.Domain.Common.API
 {
     /// <summary>
     /// 继承此控制器后，会自动根据命名空间结构修改Route增加前缀

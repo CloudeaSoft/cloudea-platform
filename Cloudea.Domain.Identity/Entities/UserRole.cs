@@ -1,4 +1,4 @@
-﻿using Cloudea.Infrastructure.Database;
+﻿using Cloudea.Domain.Common.Database;
 
 namespace Cloudea.Domain.Identity.Entities;
 

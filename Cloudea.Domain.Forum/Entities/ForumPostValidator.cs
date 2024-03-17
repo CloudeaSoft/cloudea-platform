@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Cloudea.Service.Forum.Domain.Entities;
+namespace Cloudea.Domain.Forum.Entities;
 /// <summary>
 /// ForumPost验证器
 /// </summary>

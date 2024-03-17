@@ -1,6 +1,6 @@
 ﻿using Cloudea.Application.Abstractions.Messaging;
-using Cloudea.Service.Forum.Domain.DomainEvents;
-using Cloudea.Service.Forum.Domain.Repositories;
+using Cloudea.Domain.Forum.DomainEvents;
+using Cloudea.Domain.Forum.Repositories;
 
 namespace Cloudea.Application.Forum.Events
 {
@@ -17,8 +17,11 @@ namespace Cloudea.Application.Forum.Events
         public async Task Handle(PostCreatedDomainEvent notification, CancellationToken cancellationToken)
         {
             var section = await _forumSectionRepository.GetByIdAsync(notification.SectionId, cancellationToken);
-            Console.WriteLine(section);
-            Console.WriteLine($"========发生了领域事件（{notification.Id}）：一个新的主题帖已被创建，编号为{notification.PostId}，其归属的主题编号为{notification.SectionId}");
+            if (section is null) {
+                return;
+            }
+            section.IncreaseTopicCount();
+            _forumSectionRepository.Update(section);
         }
     }
 }

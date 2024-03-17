@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Infrastructure.API
+namespace Cloudea.Domain.Common.API
 {
     /// <summary>
     /// 命名空间路由

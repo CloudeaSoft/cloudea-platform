@@ -1,4 +1,4 @@
-﻿namespace Cloudea.Infrastructure.Shared
+﻿namespace Cloudea.Domain.Common.Shared
 {
     public class PageRequest
     {

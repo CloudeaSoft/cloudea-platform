@@ -1,5 +1,5 @@
 ﻿using Cloudea.Application.Identity;
-using Cloudea.Service.Auth.Domain.Models;
+using Cloudea.Domain.Identity.Models;
 using System.Security.Claims;
 
 namespace Cloudea.Web.Middlewares
@@ -26,14 +26,10 @@ namespace Cloudea.Web.Middlewares
                 Claim? userIdClaim = context.User.Claims.FirstOrDefault(t => t.Type == JwtClaims.USER_ID);
                 string userId = userIdClaim!.Value;
 
-                // Console.WriteLine("userid:" + userId);
-
                 var userGuidClaim = context.User.Claims.FirstOrDefault(t => t.Type == JwtClaims.USER_LOGIN_GUID);
                 string guid = userGuidClaim!.Value;
 
-                // Console.WriteLine("guid:" + guid);
-
-                if (string.IsNullOrWhiteSpace(userId) is false && string.IsNullOrWhiteSpace(guid) is false) {
+                if (!string.IsNullOrWhiteSpace(userId) && !string.IsNullOrWhiteSpace(guid)) {
                     // 两个不为空的时候判断只能有同一个人同时登录
                     var savedGuid = authUserService.GetUserLoginGuid(userId);
                     Console.WriteLine("savedGuid:" + savedGuid);

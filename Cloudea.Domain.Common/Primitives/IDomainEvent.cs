@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Cloudea.Infrastructure.Primitives;
+namespace Cloudea.Domain.Common.Primitives;
 
 public interface IDomainEvent : INotification
 {

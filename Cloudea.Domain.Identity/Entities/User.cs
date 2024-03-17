@@ -1,9 +1,6 @@
-﻿using Cloudea.Domain.Common.Shared;
+﻿using Cloudea.Domain.Common.Database;
+using Cloudea.Domain.Common.Primitives;
 using Cloudea.Domain.Identity.ValueObjects;
-using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Primitives;
-using Cloudea.Infrastructure.Shared;
-using Cloudea.Infrastructure.Utils;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -76,12 +73,12 @@ public class User : Entity, ISoftDelete
     /// 删除时间
     /// </summary>
     [JsonIgnore]
-    public DateTime? DeletionTime { get; private set; }
+    public DateTimeOffset? DeletionTime { get; private set; }
 
     public void SoftDelete()
     {
         IsDeleted = true;
-        DeletionTime = DateTime.Now;
+        DeletionTime = DateTimeOffset.Now;
     }
 
     public static User Create(

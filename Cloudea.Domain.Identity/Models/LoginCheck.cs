@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Service.Auth.Domain.Models
+namespace Cloudea.Domain.Identity.Models
 {
     public class LoginCheck
     {

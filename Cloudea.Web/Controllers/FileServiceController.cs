@@ -1,8 +1,9 @@
-﻿using Cloudea.Infrastructure.API;
-using Cloudea.Service.File.Domain.Applications;
+﻿using Cloudea.Application.File;
+using Cloudea.Domain.Common.API;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cloudea.Web.Controllers {
+namespace Cloudea.Web.Controllers
+{
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
     public class FileServiceController : ApiControllerBase
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释

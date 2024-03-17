@@ -1,10 +1,12 @@
-﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Primitives;
+﻿using Cloudea.Domain.Common.Database;
+using Cloudea.Domain.Common.Primitives;
 
-namespace Cloudea.Service.Book.Domain.Entities;
+namespace Cloudea.Domain.Book.Entities;
 
 public sealed class BookMeta : BaseDataEntity, IAuditableEntity, ISoftDelete
 {
+    private BookMeta() { }
+
     /// <summary>
     /// 书名
     /// </summary>
@@ -36,11 +38,11 @@ public sealed class BookMeta : BaseDataEntity, IAuditableEntity, ISoftDelete
 
     public bool IsDeleted { get; private set; }
 
-    public DateTime? DeletionTime { get; private set; }
+    public DateTimeOffset? DeletionTime { get; private set; }
 
-    public DateTime CreatedOnUtc { get; private set; }
+    public DateTimeOffset CreatedOnUtc { get; private set; }
 
-    public DateTime? ModifiedOnUtc { get; private set; }
+    public DateTimeOffset? ModifiedOnUtc { get; private set; }
 
     /// <summary>
     /// 简单创建
@@ -49,13 +51,13 @@ public sealed class BookMeta : BaseDataEntity, IAuditableEntity, ISoftDelete
     /// <param name="author"></param>
     /// <param name="creator"></param>
     /// <returns></returns>
-    public static BookMeta QuickCreate(
+    public static BookMeta Create(
         Guid id,
         string title,
         string author,
         Guid creator)
     {
-        BookMeta bookMeta = new BookMeta() {
+        BookMeta bookMeta = new() {
             Id = id,
             Title = title,
             Author = author,
@@ -102,49 +104,49 @@ public sealed class BookMeta : BaseDataEntity, IAuditableEntity, ISoftDelete
 
     public BookMeta SetTitle(string title)
     {
-        this.Title = title;
+        Title = title;
         return this;
     }
 
     public BookMeta SetAuthor(string author)
     {
-        this.Author = author;
+        Author = author;
         return this;
     }
 
     public BookMeta SetCreator(Guid creator)
     {
-        this.Creator = creator;
+        Creator = creator;
         return this;
     }
 
     public BookMeta SetDescription(string description)
     {
-        this.Description = description;
+        Description = description;
         return this;
     }
 
     public BookMeta SetSourceTitle(string sourceTitle)
     {
-        this.Source_Title = sourceTitle;
+        Source_Title = sourceTitle;
         return this;
     }
 
     public BookMeta SetSourceLanguage(string sourceLanguage)
     {
-        this.Source_Language = sourceLanguage;
+        Source_Language = sourceLanguage;
         return this;
     }
 
     public BookMeta SetSourceLink(string sourceLink)
     {
-        this.Source_Link = sourceLink;
+        Source_Link = sourceLink;
         return this;
     }
 
     public void SoftDelete()
     {
-        this.IsDeleted = true;
-        this.DeletionTime = DateTime.Now;
+        IsDeleted = true;
+        DeletionTime = DateTime.Now;
     }
 }

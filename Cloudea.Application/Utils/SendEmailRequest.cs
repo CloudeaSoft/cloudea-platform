@@ -1,4 +1,4 @@
-﻿using Cloudea.Infrastructure.Shared;
+﻿using Cloudea.Domain.Common.Shared;
 using MediatR;
 using System.Net.Mail;
 

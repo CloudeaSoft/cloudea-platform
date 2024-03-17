@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Service.GameHelper.Abstractions
+namespace Cloudea.Domain.GameHelper.Abstractions
 {
     public interface IOsuService
     {

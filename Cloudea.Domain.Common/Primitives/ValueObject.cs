@@ -1,4 +1,4 @@
-﻿namespace Cloudea.Infrastructure.Primitives;
+﻿namespace Cloudea.Domain.Common.Primitives;
 
 public abstract class ValueObject : IEquatable<ValueObject>
 {

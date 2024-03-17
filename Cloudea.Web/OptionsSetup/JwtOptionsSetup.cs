@@ -1,4 +1,4 @@
-﻿using Cloudea.Service.Base.Jwt;
+﻿using Cloudea.Infrastructure.Jwt;
 using Microsoft.Extensions.Options;
 
 namespace Cloudea.Web.OptionsSetup;

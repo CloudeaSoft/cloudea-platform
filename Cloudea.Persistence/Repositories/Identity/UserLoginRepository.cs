@@ -1,5 +1,5 @@
 ﻿using Cloudea.Domain.Identity.Entities;
-using Cloudea.Service.Auth.Domain.Repositories;
+using Cloudea.Domain.Identity.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -13,7 +13,7 @@ public class UserLoginRepository : IUserLoginRepository
     private readonly IMemoryCache _memoryCache;
     private readonly ApplicationDbContext _dbContext;
 
-    private readonly Channel<UserLogin> waitForInsert = null;
+    private readonly Channel<UserLogin> waitForInsert = default!;
     private readonly ILogger<UserLoginRepository> _logger;
 
     public UserLoginRepository(IMemoryCache memoryCache, ApplicationDbContext dbContext, ILogger<UserLoginRepository> logger)

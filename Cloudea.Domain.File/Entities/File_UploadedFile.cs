@@ -1,6 +1,6 @@
-﻿using Cloudea.Infrastructure.Database;
+﻿using Cloudea.Domain.Common.Database;
 
-namespace Cloudea.Service.File.Domain.Entities
+namespace Cloudea.Domain.File.Entities
 {
     public class File_UploadedFile : BaseDataEntity
     {

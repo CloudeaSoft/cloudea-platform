@@ -1,8 +1,7 @@
-﻿using Cloudea.Infrastructure.Repositories;
-using FreeSql;
+﻿using FreeSql;
 using IUnitOfWork = FreeSql.IUnitOfWork;
 
-namespace Cloudea.Infrastructure.Freesql.Context
+namespace Cloudea.Domain.Common.Freesql.Context
 {
     public class VirtualContext : IDisposable
     {
@@ -16,10 +15,8 @@ namespace Cloudea.Infrastructure.Freesql.Context
 
         private bool _parentSubmited
         {
-            get
-            {
-                if (_parent == null)
-                {
+            get {
+                if (_parent == null) {
                     return false;
                 }
 
@@ -38,8 +35,7 @@ namespace Cloudea.Infrastructure.Freesql.Context
             Context = context;
             _isInherit = isInherit;
             _transactionId = transactionId;
-            if (isInherit)
-            {
+            if (isInherit) {
                 _parent = parent;
             }
         }
@@ -47,10 +43,8 @@ namespace Cloudea.Infrastructure.Freesql.Context
 
         public virtual async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            if (_isInherit)
-            {
-                if (_parentSubmited)
-                {
+            if (_isInherit) {
+                if (_parentSubmited) {
                     // 如果父级已经提交了 那这个事务就当作是新的一个事务了
                     int submitRes = await Context.SaveChangesAsync();
                     _transactionId.Value = null;
@@ -65,10 +59,8 @@ namespace Cloudea.Infrastructure.Freesql.Context
         public virtual int SaveChanges()
         {
             // 是被嵌套的
-            if (_isInherit)
-            {
-                if (_parentSubmited)
-                {
+            if (_isInherit) {
+                if (_parentSubmited) {
                     // 如果父级已经提交了 那这个事务就当作是新的一个事务了
                     int submitRes = Context.SaveChanges();
                     _transactionId.Value = null;
@@ -87,12 +79,10 @@ namespace Cloudea.Infrastructure.Freesql.Context
 
         public IUnitOfWork UnitOfWork
         {
-            get
-            {
+            get {
                 return Context.UnitOfWork;
             }
-            set
-            {
+            set {
                 Context.UnitOfWork = value;
             }
         }
@@ -108,12 +98,10 @@ namespace Cloudea.Infrastructure.Freesql.Context
         public void Dispose()
         {
 
-            if (_isInherit && _parentSubmited == false)
-            {
+            if (_isInherit && _parentSubmited == false) {
                 return;
             }
-            if (string.IsNullOrEmpty(_transactionId.Value) == false)
-            {
+            if (string.IsNullOrEmpty(_transactionId.Value) == false) {
                 releaseTransactionId();
             }
             Context.Dispose();

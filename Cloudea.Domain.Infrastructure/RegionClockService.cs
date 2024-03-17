@@ -1,14 +1,16 @@
 ﻿using Cloudea.Domain.Common.Shared;
-using Cloudea.Infrastructure.Shared;
 
-namespace Cloudea.Service.Base
+namespace Cloudea.Infrastructure
 {
-    public class RegionClockService {
-        public DateTime GetDate() {
+    public class RegionClockService
+    {
+        public DateTime GetDate()
+        {
             return DateTime.Now;
         }
 
-        public Result GetTimeToUnix(DateTime dateTime) {
+        public Result GetTimeToUnix(DateTime dateTime)
+        {
             string timeStamp;
             try {
                 timeStamp = dateTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds.ToString("F0");
@@ -19,7 +21,8 @@ namespace Cloudea.Service.Base
             return Result.Success(timeStamp);
         }
 
-        public Result GetUnixToTime(string timeStamp) {
+        public Result GetUnixToTime(string timeStamp)
+        {
             DateTime dateTime;
             try {
                 dateTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(timeStamp)).DateTime.ToLocalTime();

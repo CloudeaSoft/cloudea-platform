@@ -1,11 +1,10 @@
-﻿using Cloudea.Application.Forum.Contracts;
+﻿using Cloudea.Application.Abstractions;
+using Cloudea.Application.Forum.Contracts;
+using Cloudea.Domain.Common.Repositories;
 using Cloudea.Domain.Common.Shared;
-using Cloudea.Infrastructure.Repositories;
-using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Auth.Domain.Abstractions;
-using Cloudea.Service.Auth.Domain.Repositories;
-using Cloudea.Service.Forum.Domain.Entities;
-using Cloudea.Service.Forum.Domain.Repositories;
+using Cloudea.Domain.Forum.Entities;
+using Cloudea.Domain.Forum.Repositories;
+using Cloudea.Domain.Identity.Repositories;
 
 namespace Cloudea.Application.Forum
 {
@@ -120,40 +119,30 @@ namespace Cloudea.Application.Forum
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<Result<ForumPost?>> PostPostAsync(
+        public async Task<Result<Guid?>> PostPostAsync(
             Guid userId,
             CreateTopicRequest request,
             CancellationToken cancellationToken = default)
         {
-            var section = await _forumSectionRepository.GetByIdAsync(request.SectionId);
-
+            var section = await _forumSectionRepository.GetByIdAsync(request.SectionId, cancellationToken);
             if (section is null) {
                 return new Error("ForumSection.NotFound",
                     $"The forum_section with Id {request.SectionId} was not found");
             }
 
-            var newTopic = ForumPost.Create(
+            var newTopic = section.AddPost(
                 userId,
-                section,
                 request.Title,
                 request.Content);
-
             if (newTopic is null) {
                 return new Error("ForumTopic.InvaildParameter");
             }
 
-            // 先查询 逻辑修改
-            section.IncreaseTopicCount();
-
-            // 更新
             _forumPostRepository.Add(newTopic);
-            _forumSectionRepository.Update(section);
 
-            // 保存
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            // 返回结果
-            return await _forumPostRepository.GetByIdAsync(newTopic.Id, cancellationToken);
+            return newTopic.Id;
         }
 
         /// <summary>
@@ -246,7 +235,7 @@ namespace Cloudea.Application.Forum
                 return new Error("ForumPost.NotFound");
             }
 
-            var reply = ForumReply.Create(userId, post, content);
+            var reply = post.AddReply(userId, content);
             if (reply is null) {
                 return new Error("ForumReply.InvalidParam");
             }
@@ -267,7 +256,7 @@ namespace Cloudea.Application.Forum
                 return new Error("ForumReply.NotFound");
             }
 
-            var comment = ForumComment.Create(reply, ownerUserId, targetUserId, content);
+            var comment = reply.AddComment(ownerUserId, content, targetUserId);
             if (comment is null) {
                 return new Error("ForumComment.InvalidParam");
             }
@@ -275,6 +264,7 @@ namespace Cloudea.Application.Forum
             _forumCommentRepository.Add(comment);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
             return comment.Id;
         }
     }

@@ -1,8 +1,8 @@
-﻿using Cloudea.Service.Auth.Domain.Models;
+﻿using Cloudea.Domain.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cloudea.Service.Auth.Domain.Overrides;
+namespace Cloudea.Domain.Identity.Overrides;
 
 public class PermissionAuthorizationHandler
     : AuthorizationHandler<PermissionRequirement>

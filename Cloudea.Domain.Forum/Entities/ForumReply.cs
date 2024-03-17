@@ -1,8 +1,7 @@
-﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Primitives;
-using Cloudea.Service.Forum.DomainEvents;
+﻿using Cloudea.Domain.Common.Primitives;
+using Cloudea.Domain.Forum.DomainEvents;
 
-namespace Cloudea.Service.Forum.Domain.Entities;
+namespace Cloudea.Domain.Forum.Entities;
 
 /// <summary>
 /// 论坛回复帖
@@ -26,28 +25,24 @@ public sealed class ForumReply : AggregateRoot, IAuditableEntity
     public Guid ParentPostId { get; private set; }
     public Guid OwnerUserId { get; private set; }
 
-    public string? Title { get; private set; } = null;
-    public string Content { get; private set; }
+    public string? Title { get; private set; } = string.Empty;
+    public string Content { get; private set; } = string.Empty;
     public long LikeCount { get; private set; }
     public long DislikeCount { get; private set; }
 
-    public DateTime CreatedOnUtc { get; set; }
-    public DateTime? ModifiedOnUtc { get; set; }
+    public DateTimeOffset CreatedOnUtc { get; set; }
+    public DateTimeOffset? ModifiedOnUtc { get; set; }
 
-    public static ForumReply? Create(Guid userId, ForumPost post, string content)
+    internal static ForumReply? Create(Guid userId, ForumPost post, string content)
     {
+        if (userId == Guid.Empty) return null;
+        if (post is null || post.Id == Guid.Empty) return null;
         if (string.IsNullOrEmpty(content)) {
             return null;
         }
 
-        var res = new ForumReply(Guid.NewGuid(), userId, post.Id, content);
-
-        res.RaiseDomainEvent(new ReplyCreatedDomainEvent(
-            Guid.NewGuid(),
-            res.Id,
-            res.ParentPostId));
-
-        return res;
+        var replyId = Guid.NewGuid();
+        return new ForumReply(replyId, userId, post.Id, content);
     }
 
 
@@ -56,5 +51,18 @@ public sealed class ForumReply : AggregateRoot, IAuditableEntity
         if (!string.IsNullOrEmpty(content)) {
             Content = content;
         }
+    }
+
+    public ForumComment? AddComment(Guid ownerUserId, string content, Guid? targetUserId)
+    {
+        var comment = ForumComment.Create(this, ownerUserId, targetUserId, content);
+        if (comment is null) {
+            return null;
+        }
+
+        var eventId = Guid.NewGuid();
+        RaiseDomainEvent(new CommentCreatedDomainEvent(eventId, comment.Id, Id));
+
+        return comment;
     }
 }

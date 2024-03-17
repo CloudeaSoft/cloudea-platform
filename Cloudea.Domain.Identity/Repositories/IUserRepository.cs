@@ -1,8 +1,6 @@
 ﻿using Cloudea.Domain.Identity.Entities;
-using Cloudea.Infrastructure.Shared;
-using System.ComponentModel.DataAnnotations;
 
-namespace Cloudea.Service.Auth.Domain.Repositories
+namespace Cloudea.Domain.Identity.Repositories
 {
     public interface IUserRepository
     {

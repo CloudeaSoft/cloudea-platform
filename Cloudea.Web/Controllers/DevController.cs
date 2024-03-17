@@ -1,7 +1,7 @@
-﻿using Cloudea.Infrastructure;
-using Cloudea.Infrastructure.API;
-using Cloudea.Infrastructure.Freesql;
-using Cloudea.Infrastructure.Utils;
+﻿using Cloudea.Domain.Common;
+using Cloudea.Domain.Common.API;
+using Cloudea.Domain.Common.Freesql;
+using Cloudea.Domain.Common.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

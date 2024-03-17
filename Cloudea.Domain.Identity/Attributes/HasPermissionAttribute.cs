@@ -1,7 +1,7 @@
 ﻿using Cloudea.Domain.Identity.Entities;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cloudea.Service.Auth.Domain.Attributes;
+namespace Cloudea.Domain.Identity.Attributes;
 
 public sealed class HasPermissionAttribute : AuthorizeAttribute
 {

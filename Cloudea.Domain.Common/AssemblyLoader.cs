@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Cloudea.Infrastructure
+namespace Cloudea.Domain.Common
 {
     public static class AssemblyLoader
     {
@@ -13,7 +13,7 @@ namespace Cloudea.Infrastructure
         public static Assembly[] GetAllAssemblies()
         {
             var path = AppDomain.CurrentDomain.RelativeSearchPath ?? AppDomain.CurrentDomain.BaseDirectory;
-            var referencedAssemblies = System.IO.Directory.GetFiles(path, "Cloudea.*.dll").Select(Assembly.LoadFrom).ToArray();
+            var referencedAssemblies = Directory.GetFiles(path, "Cloudea.*.dll").Select(Assembly.LoadFrom).ToArray();
             return referencedAssemblies;
         }
     }

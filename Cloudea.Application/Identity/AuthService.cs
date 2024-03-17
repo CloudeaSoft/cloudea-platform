@@ -1,8 +1,7 @@
-﻿using Cloudea.Domain.Common.Shared;
+﻿using Cloudea.Domain.Common.Repositories;
+using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Identity.Entities;
-using Cloudea.Infrastructure.Repositories;
-using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Auth.Domain.Repositories;
+using Cloudea.Domain.Identity.Repositories;
 
 namespace Cloudea.Application.Identity
 {

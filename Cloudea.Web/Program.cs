@@ -1,8 +1,7 @@
-using Cloudea.Infrastructure;
-using Cloudea.Infrastructure.Freesql;
-using Cloudea.Infrastructure.Repositories;
+using Cloudea.Domain.Common;
+using Cloudea.Domain.Common.Repositories;
+using Cloudea.Infrastructure.BackgroundJobs;
 using Cloudea.Persistence;
-using Cloudea.Persistence.BackgroundJobs;
 using Cloudea.Service.HubTest;
 using Cloudea.Web.Infrastructure;
 using Cloudea.Web.Middlewares;
@@ -22,20 +21,20 @@ using System.Text.Unicode;
 namespace Cloudea.Web
 {
     /// <summary>
-    /// 主程序
+    /// Main Program
     /// </summary>
     public class Program
     {
         /// <summary>
-        /// 主程序入口
+        /// Main Program Entry
         /// </summary>
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            // Init Builder
+            // Create WebApplicationBuilder instance.
             var builder = WebApplication.CreateBuilder(args);
 
-            // 在控制台打印图标
+            // Print icon in console.
             OutputFile.OutputTxt(builder.Configuration);
 
             #region Add services to the container. Use Configuration to config the services.
@@ -48,11 +47,9 @@ namespace Cloudea.Web
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
 
-            // 控制器
+            // Controller / Controller json options.
             builder.Services
-                .AddControllers(options => {
-                    // 添加过滤器
-                })
+                .AddControllers()
                 .AddJsonOptions(options => {
                     options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -61,13 +58,13 @@ namespace Cloudea.Web
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
-            // Swagger接口文档
+            // Swagger API document options.
             builder.Services.AddSwaggerGen(options => {
-                // 描述文档
+                // Swagger Doc
                 options.SwaggerDoc("v1", new OpenApiInfo {
                     Version = "v1",
                     Title = "Cloudea API",
-                    Description = "施工中，还请耐心等候",
+                    Description = "Building...",
                     TermsOfService = new Uri("https://example.com/terms"),
                     Contact = new OpenApiContact {
                         Name = "Example Contact",
@@ -79,40 +76,36 @@ namespace Cloudea.Web
                     }
                 });
 
-                // using System.Reflection, 自动生成接口注释文档
+                // Using System.Reflection to create API document automaticly.
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
-                // 验证
-                #region 启用验证功能，并添加鉴权的描述
+                // Swagger authentication function options.
                 var openApiSecurity = new OpenApiSecurityScheme {
-                    Name = "Authorization", //jwt 默认参数名称
+                    Name = "Authorization",
                     Description = "JWT认证授权，使用直接在下框中输入Bearer {token}（注意两者之间是一个空格）\"",
                     Type = SecuritySchemeType.Http,
                     Scheme = "bearer",
                     BearerFormat = "JWT",
-                    In = ParameterLocation.Header,  //jwt默认存放Authorization信息的位置（请求头）
+                    In = ParameterLocation.Header,
                     Reference = new OpenApiReference {
                         Type = ReferenceType.SecurityScheme,
                         Id = JwtBearerDefaults.AuthenticationScheme
                     }
                 };
-
                 options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, openApiSecurity);
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                        {
-                            { openApiSecurity, Array.Empty<string>() }
-                        });
-                #endregion
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement{
+                     { openApiSecurity, Array.Empty<string>() }
+                });
             });
 
-            // MVC的相关服务
+            // MVC service
             builder.Services.AddMvc();
 
-            // WebSocket服务 - SignalR
+            // WebSocket service - SignalR
             builder.Services.AddSignalR();
 
-            // 接口鉴权授权服务
+            // API authentication service
             builder.Services
                 .AddAuthentication(x => {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -143,13 +136,13 @@ namespace Cloudea.Web
                 });
             builder.Services.AddAuthorization();
 
-            // Http请求
+            // Http context accessor service
             builder.Services.AddHttpContextAccessor();
 
-            // Http客户端
+            // Http client
             builder.Services.AddHttpClient();
 
-            // 内存缓存服务
+            // MemoryCache service
             builder.Services.AddMemoryCache();
 
             // MediatR
@@ -157,30 +150,24 @@ namespace Cloudea.Web
                 cfg.RegisterServicesFromAssemblies(AssemblyLoader.GetAllAssemblies());
             });
 
-            // CORS配置
+            // CORS
             builder.Services.AddCors(opt => {
                 opt.AddDefaultPolicy(b => {
                     b.WithOrigins("http://localhost:5173")
-                    //.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
                 });
             });
 
-            // 注入各类库的服务
+            // Auto inject services in other class library projects.
             builder.Services.RunModuleInitializers();
 
-            // Serilog配置
+            // Logservice - Serilog
             builder.Host.UseSerilog((context, configuration) =>
                 configuration.ReadFrom.Configuration(context.Configuration));
 
-            // Freesql
-            builder.Services.AddDataBaseDefault(
-                    FreeSql.DataType.MySql,
-                    "Server=localhost;Port=3306;Database=test;Uid=root;Pwd=123456;");
-
-            // 持久化 - Efcore
+            // Persistence - Efcore
             builder.Services.AddDbContext<ApplicationDbContext>(
                 (IServiceProvider serviceProvider, DbContextOptionsBuilder dbContextOptionsBuilder) => {
                     var databaseOptions = serviceProvider.GetService<IOptions<DatabaseOptions>>()!.Value;
@@ -195,10 +182,11 @@ namespace Cloudea.Web
                     dbContextOptionsBuilder.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging);
                 });
 
-            // 定时服务 - Quartz
+            // Scheduling framework - Quartz
             builder.Services.AddQuartz(configure => {
                 var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
 
+                // Configure options.
                 configure
                     .AddJob<ProcessOutboxMessagesJob>(jobKey)
                     .AddTrigger(
@@ -215,52 +203,48 @@ namespace Cloudea.Web
             //Build Webapplication.
             var app = builder.Build();
 
-            #region 装配中间件管道 Configure the HTTP request pipeline.
-            app.Logger.LogInformation("系统开始运行...");
+            #region Configure the HTTP request pipeline.
+            app.Logger.LogInformation("Start running...");
 
-#if DEBUG
-            // 接口文档
+            // Exception handler
+            app.UseExceptionHandler();
+#if !DEBUG
+            // Swagger lock
+            app.UseMiddleware<SwaggerAuthMiddleware>();
+#endif
+            // Api document
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            // 重定向
+            // Redirect to https
             app.UseHttpsRedirection();
 
-            // 错误处理
-            app.UseExceptionHandler();
-#else
-            // 接口文档
-            app.UseMiddleware<SwaggerAuthMiddleware>();
-            app.UseSwagger();
-            app.UseSwaggerUI();
-
-            // 全局错误捕获
-            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
-#endif
-            //允许X-HTTP-Method-Override属性
+            // Allow X-HTTP-Method-Override property on http request header.
             app.UseHttpMethodOverride();
 
-            // 路由
+            // Router
             app.UseRouting();
-            // 跨域
+            // Cors
             app.UseCors();
 
-            // 控制器
-            app.MapHub<ChatRoomHub>("/ChatRoomHub"); // Websocket服务器
+            // Websocket Endpoint
+            app.MapHub<ChatRoomHub>("/ChatRoomHub"); 
+
+            // Controller
             app.MapControllers();
 
-            // 接口请求日志
+            // Log API request
             app.UseSerilogRequestLogging();
 
-            // 认证与认证过滤器
+            // Authentication and authorization / Generate login id.
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<UserLoginGuidAuthenticationMiddleware>();
 
-            // 静态文件
+            // Static files
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            #endregion
+#endregion
 
             //Run WebApplication.
             app.Run();

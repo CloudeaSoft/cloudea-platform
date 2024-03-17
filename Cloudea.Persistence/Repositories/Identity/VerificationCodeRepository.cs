@@ -1,6 +1,6 @@
 ﻿using Cloudea.Domain.Identity.Entities;
 using Cloudea.Domain.Identity.Enums;
-using Cloudea.Service.Auth.Domain.Repositories;
+using Cloudea.Domain.Identity.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cloudea.Persistence.Repositories.Identity

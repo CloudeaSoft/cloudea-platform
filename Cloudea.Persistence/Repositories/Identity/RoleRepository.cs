@@ -1,7 +1,7 @@
-﻿using Cloudea.Domain.Identity.Entities;
-using Cloudea.Infrastructure.Shared;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Identity.Entities;
+using Cloudea.Domain.Identity.Repositories;
 using Cloudea.Persistence.Extensions;
-using Cloudea.Service.Auth.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cloudea.Persistence.Repositories.Identity

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Cloudea.Service.Auth.Domain.Overrides
+namespace Cloudea.Domain.Identity.Overrides
 {
     public class PermissionRequirement : IAuthorizationRequirement
     {

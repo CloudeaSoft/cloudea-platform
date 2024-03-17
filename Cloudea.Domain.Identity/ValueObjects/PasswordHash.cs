@@ -1,13 +1,5 @@
-﻿using Cloudea.Domain.Common.Shared;
-using Cloudea.Infrastructure.Primitives;
-using Cloudea.Infrastructure.Shared;
-using Cloudea.Infrastructure.Utils;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cloudea.Domain.Common.Primitives;
+using Cloudea.Domain.Common.Shared;
 
 namespace Cloudea.Domain.Identity.ValueObjects
 {

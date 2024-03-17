@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace Cloudea.Service.Auth.Domain.Overrides
+namespace Cloudea.Domain.Identity.Overrides
 {
     public class PermissionAuthorizationPolicyProvider
         : DefaultAuthorizationPolicyProvider

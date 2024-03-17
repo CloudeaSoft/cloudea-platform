@@ -1,16 +1,14 @@
-﻿using Cloudea.Infrastructure.Primitives;
-using Cloudea.Infrastructure.Repositories;
+﻿using Cloudea.Domain.Common.Primitives;
+using Cloudea.Domain.Common.Repositories;
 using Cloudea.Persistence.Outbox;
-using MediatR;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
 
 namespace Cloudea.Persistence;
 
-internal sealed class UnitOfWork(ApplicationDbContext dbContext, IPublisher publisher) : IUnitOfWork
+internal sealed class UnitOfWork(ApplicationDbContext dbContext) : IUnitOfWork
 {
     private readonly ApplicationDbContext _dbContext = dbContext;
-    private readonly IPublisher _publisher = publisher;
 
     public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -27,16 +25,14 @@ internal sealed class UnitOfWork(ApplicationDbContext dbContext, IPublisher publ
             .Select(x => x.Entity)
             .SelectMany(aggregateRoot => {
                 var domainEvents = aggregateRoot.GetDomainEvents();
-                foreach (var domainEvent in domainEvents) {
-                    _publisher.Publish(domainEvent);
-                }
+ 
                 aggregateRoot.ClearDomainEvents();
 
                 return domainEvents;
             })
             .Select(domainEvent => new OutboxMessage {
                 Id = Guid.NewGuid(),
-                OccurredOnUtc = DateTime.UtcNow,
+                OccurredOnUtc = DateTimeOffset.UtcNow,
                 Type = domainEvent.GetType().Name,
                 Content = JsonConvert.SerializeObject(
                     domainEvent,
@@ -58,11 +54,11 @@ internal sealed class UnitOfWork(ApplicationDbContext dbContext, IPublisher publ
 
         foreach (EntityEntry<IAuditableEntity> entityEntry in entries) {
             if (entityEntry.State == Microsoft.EntityFrameworkCore.EntityState.Added) {
-                entityEntry.Property(a => a.CreatedOnUtc).CurrentValue = DateTime.UtcNow;
+                entityEntry.Property(a => a.CreatedOnUtc).CurrentValue = DateTimeOffset.UtcNow;
             }
 
             if (entityEntry.State == Microsoft.EntityFrameworkCore.EntityState.Modified) {
-                entityEntry.Property(a => a.ModifiedOnUtc).CurrentValue = DateTime.UtcNow;
+                entityEntry.Property(a => a.ModifiedOnUtc).CurrentValue = DateTimeOffset.UtcNow;
             }
         }
     }

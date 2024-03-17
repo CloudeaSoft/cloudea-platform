@@ -1,8 +1,7 @@
-﻿using Cloudea;
-using Cloudea.Infrastructure.Shared;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Forum.Entities;
+using Cloudea.Domain.Forum.Repositories;
 using Cloudea.Persistence.Extensions;
-using Cloudea.Service.Forum.Domain.Entities;
-using Cloudea.Service.Forum.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cloudea.Persistence.Repositories.Forum;
@@ -12,6 +11,8 @@ public class ForumPostRepository(ApplicationDbContext dbContext) : IForumPostRep
     private readonly ApplicationDbContext _dbContext = dbContext;
 
     public void Add(ForumPost newTopic) => _dbContext.Set<ForumPost>().Add(newTopic);
+
+    public void Update(ForumPost newTopic)=>_dbContext.Set<ForumPost>().Update(newTopic);
 
     public async Task<ForumPost?> GetByIdAsync(
         Guid id,

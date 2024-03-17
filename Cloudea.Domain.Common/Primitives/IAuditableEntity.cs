@@ -1,8 +1,8 @@
-﻿namespace Cloudea.Infrastructure.Primitives;
+﻿namespace Cloudea.Domain.Common.Primitives;
 
 public interface IAuditableEntity
 {
-    DateTime CreatedOnUtc { get; }
+    DateTimeOffset CreatedOnUtc { get; }
 
-    DateTime? ModifiedOnUtc { get; }
+    DateTimeOffset? ModifiedOnUtc { get; }
 }

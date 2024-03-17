@@ -1,14 +1,14 @@
 ﻿using Cloudea.Application.Utils;
+using Cloudea.Domain.Common.Repositories;
 using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Identity.Entities;
 using Cloudea.Domain.Identity.Enums;
-using Cloudea.Infrastructure.Repositories;
-using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Auth.Domain.Repositories;
+using Cloudea.Domain.Identity.Repositories;
 using MediatR;
+using System;
 using System.Text.RegularExpressions;
 
-namespace Cloudea.Service.Auth.Domain.Utils
+namespace Cloudea.Application.Identity
 {
     public class VerificationCodeService
     {
@@ -59,7 +59,7 @@ namespace Cloudea.Service.Auth.Domain.Utils
             }
 
             if (entity.VerCode == code) {
-                if (entity.VerCodeValidTime >= DateTime.UtcNow) {
+                if (entity.VerCodeValidTime >= DateTimeOffset.UtcNow) {
                     if (delete) {
                         _verificationCodeRepository.Delete(entity);
                         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -100,7 +100,7 @@ namespace Cloudea.Service.Auth.Domain.Utils
             // Update
             else {
                 // 如果时间还没超过一分钟又要发了  退回
-                if (entity.VerCodeValidTime.AddMinutes(-1 * (EXPIRE_TIME - 1)) >= DateTime.UtcNow) {
+                if (entity.VerCodeValidTime.AddMinutes(-1 * (EXPIRE_TIME - 1)) >= DateTimeOffset.UtcNow) {
                     return new Error("VerificationCode.TooManyRequest", "请稍后再试");
                 }
 

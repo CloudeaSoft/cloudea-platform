@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Infrastructure.Freesql.Context
+namespace Cloudea.Domain.Common.Freesql.Context
 {
     /// <summary>
     /// 事务管理池
@@ -18,10 +18,9 @@ namespace Cloudea.Infrastructure.Freesql.Context
         private ConcurrentDictionary<string, VirtualContext> _pool = new ConcurrentDictionary<string, VirtualContext>();
 
 
-        public VirtualContext GetContext(string transactionId)
+        public VirtualContext? GetContext(string transactionId)
         {
-            if (_pool.TryGetValue(transactionId, out VirtualContext dbContext))
-            {
+            if (_pool.TryGetValue(transactionId, out VirtualContext? dbContext)) {
                 return dbContext;
             }
             return null;

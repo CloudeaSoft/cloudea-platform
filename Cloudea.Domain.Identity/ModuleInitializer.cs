@@ -1,9 +1,9 @@
-﻿using Cloudea.Infrastructure;
-using Cloudea.Service.Auth.Domain.Overrides;
+﻿using Cloudea.Domain.Common;
+using Cloudea.Domain.Identity.Overrides;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cloudea.Service.Auth.Domain
+namespace Cloudea.Domain.Identity
 {
     internal class ModuleInitializer : IModuleInitializer
     {

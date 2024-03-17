@@ -1,18 +1,16 @@
-﻿using Cloudea.Domain.Common.Shared;
-using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Primitives;
-using Cloudea.Infrastructure.Shared;
+﻿using Cloudea.Domain.Common.Primitives;
+using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Forum.DomainEvents;
 
-namespace Cloudea.Service.Forum.Domain.Entities;
+namespace Cloudea.Domain.Forum.Entities;
 
 /// <summary>
 /// 论坛板块
 /// </summary>
-public sealed class ForumSection : BaseDataEntity, IAuditableEntity
+public sealed class ForumSection : AggregateRoot, IAuditableEntity
 {
-    private ForumSection(string name, Guid masterId, string statement)
+    private ForumSection(Guid id, string name, Guid masterId, string statement) : base(id)
     {
-        Id = Guid.NewGuid();
         MasterUserId = masterId;
         Name = name;
         Statement = statement;
@@ -24,27 +22,40 @@ public sealed class ForumSection : BaseDataEntity, IAuditableEntity
 
     public Guid MasterUserId { get; private set; }
 
-    public string Name { get; private set; }
-    public string Statement { get; private set; }
+    public string Name { get; private set; } = string.Empty;
+    public string Statement { get; private set; } = string.Empty;
     public long ClickCount { get; private set; }
     public long TopicCount { get; private set; }
 
-    public DateTime CreatedOnUtc { get; set; }
-    public DateTime? ModifiedOnUtc { get; set; }
+    public DateTimeOffset CreatedOnUtc { get; set; }
+    public DateTimeOffset? ModifiedOnUtc { get; set; }
 
     /// <summary>
-    /// 实例化
+    /// Create Factory
     /// </summary>
     /// <param name="name">板块名字</param>
-    /// <param name="masterId">板块管理人id</param>
+    /// <param name="master">板块管理人id</param>
     /// <param name="statement">简介</param>
     /// <returns></returns>
     public static ForumSection? Create(string name, Guid master, string statement = "")
     {
-        if (string.IsNullOrEmpty(name)) return null;
-        return new ForumSection(name, master, statement);
+        if (string.IsNullOrEmpty(name)) {
+            return null;
+        }
+        if (master == Guid.Empty) {
+            return null;
+        }
+
+        var sectionId = Guid.NewGuid();
+        return new ForumSection(sectionId, name, master, statement);
     }
 
+    /// <summary>
+    /// Update
+    /// </summary>
+    /// <param name="sectionName"></param>
+    /// <param name="statement"></param>
+    /// <param name="masterId"></param>
     public void Update(string sectionName, string statement, Guid? masterId)
     {
         if (string.IsNullOrEmpty(sectionName)) {
@@ -78,6 +89,32 @@ public sealed class ForumSection : BaseDataEntity, IAuditableEntity
         if (TopicCount < 0) {
             TopicCount = 0;
         }
+    }
+
+    /// <summary>
+    /// Create a new post in this section
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="title"></param>
+    /// <param name="content"></param>
+    /// <returns></returns>
+    public ForumPost? AddPost(Guid userId, string title, string content)
+    {
+        var res = ForumPost.Create(
+            userId,
+            this,
+            title,
+            content);
+
+        if (res is null) {
+            return null;
+        }
+
+        var eventId = Guid.NewGuid();
+
+        RaiseDomainEvent(new PostCreatedDomainEvent(eventId, res.Id, Id));
+
+        return res;
     }
 }
 

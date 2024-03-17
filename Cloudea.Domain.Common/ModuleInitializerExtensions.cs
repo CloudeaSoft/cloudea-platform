@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cloudea.Infrastructure
+namespace Cloudea.Domain.Common
 {
     public static class ModuleInitializerExtensions
     {
@@ -15,20 +15,17 @@ namespace Cloudea.Infrastructure
             //IEnumerable<Assembly> assemblies
             )
         {
-             var assemblies = GetAllReferencedAssemblies();
+            var assemblies = GetAllReferencedAssemblies();
 
             //遍历给定的 Assembly集合
-            foreach (var asm in assemblies)
-            {
+            foreach (var asm in assemblies) {
                 //获取 assembly 的类型
                 Type[] types = asm.GetTypes();
                 //筛选 实现了 IModuleInitializer 接口的 类
                 var moduleInitializerTypes = types.Where(t => !t.IsAbstract && typeof(IModuleInitializer).IsAssignableFrom(t));
-                foreach (var implType in moduleInitializerTypes)
-                {
+                foreach (var implType in moduleInitializerTypes) {
                     var initializer = (IModuleInitializer?)Activator.CreateInstance(implType);
-                    if (initializer == null)
-                    {
+                    if (initializer == null) {
                         throw new ApplicationException($"Cannot create ${implType}");
                     }
                     initializer.Initialize(services);
@@ -44,7 +41,7 @@ namespace Cloudea.Infrastructure
         public static IEnumerable<Assembly> GetAllReferencedAssemblies()
         {
             var path = AppDomain.CurrentDomain.RelativeSearchPath ?? AppDomain.CurrentDomain.BaseDirectory;
-            var referencedAssemblies = System.IO.Directory.GetFiles(path, "Cloudea.*.dll").Select(Assembly.LoadFrom).ToList();
+            var referencedAssemblies = Directory.GetFiles(path, "Cloudea.*.dll").Select(Assembly.LoadFrom).ToList();
             return referencedAssemblies;
         }
     }

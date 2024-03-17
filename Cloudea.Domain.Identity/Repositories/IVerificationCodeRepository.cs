@@ -1,7 +1,7 @@
 ﻿using Cloudea.Domain.Identity.Entities;
 using Cloudea.Domain.Identity.Enums;
 
-namespace Cloudea.Service.Auth.Domain.Repositories
+namespace Cloudea.Domain.Identity.Repositories
 {
     public interface IVerificationCodeRepository
     {

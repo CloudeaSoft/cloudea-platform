@@ -75,7 +75,7 @@ namespace Cloudea.Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varbinary(500)");
 
-                    b.Property<DateTime?>("DeletionTime")
+                    b.Property<DateTimeOffset?>("DeletionTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -171,7 +171,7 @@ namespace Cloudea.Persistence.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
 
-                    b.Property<DateTime>("CreatedOnUtc")
+                    b.Property<DateTimeOffset>("CreatedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -182,7 +182,7 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime?>("ModifiedOnUtc")
+                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("VerCode")
@@ -193,7 +193,7 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<int>("VerCodeType")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("VerCodeValidTime")
+                    b.Property<DateTimeOffset>("VerCodeValidTime")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("AutoIncId");
@@ -214,10 +214,10 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<string>("Error")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("OccurredOnUtc")
+                    b.Property<DateTimeOffset>("OccurredOnUtc")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("ProcessedOnUtc")
+                    b.Property<DateTimeOffset?>("ProcessedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Type")
@@ -241,7 +241,7 @@ namespace Cloudea.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("CreatedOnUtc")
+                    b.Property<DateTimeOffset>("CreatedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<long>("DislikeCount")
@@ -253,7 +253,7 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<long>("LikeCount")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("ModifiedOnUtc")
+                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("OwnerUserId")
@@ -285,7 +285,7 @@ namespace Cloudea.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("CreatedOnUtc")
+                    b.Property<DateTimeOffset>("CreatedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<long>("DislikeCount")
@@ -294,16 +294,16 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("LastClickTime")
+                    b.Property<DateTimeOffset>("LastClickTime")
                         .HasColumnType("timestamp");
 
-                    b.Property<DateTime>("LastEditTime")
+                    b.Property<DateTimeOffset>("LastEditTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<long>("LikeCount")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("ModifiedOnUtc")
+                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("OwnerUserId")
@@ -333,7 +333,7 @@ namespace Cloudea.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("CreatedOnUtc")
+                    b.Property<DateTimeOffset>("CreatedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<long>("DislikeCount")
@@ -345,7 +345,7 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<long>("LikeCount")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("ModifiedOnUtc")
+                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("OwnerUserId")
@@ -373,7 +373,7 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<long>("ClickCount")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CreatedOnUtc")
+                    b.Property<DateTimeOffset>("CreatedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("Id")
@@ -382,7 +382,7 @@ namespace Cloudea.Persistence.Migrations
                     b.Property<Guid>("MasterUserId")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime?>("ModifiedOnUtc")
+                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")

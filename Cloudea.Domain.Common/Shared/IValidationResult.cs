@@ -1,6 +1,4 @@
-﻿using Cloudea.Domain.Common.Shared;
-
-namespace Cloudea.Infrastructure.Shared
+﻿namespace Cloudea.Domain.Common.Shared
 {
     public interface IValidationResult
     {

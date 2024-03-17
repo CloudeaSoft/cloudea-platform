@@ -1,20 +1,19 @@
-﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Primitives;
+﻿using Cloudea.Domain.Common.Primitives;
 
-namespace Cloudea.Service.Forum.Domain.Entities;
+namespace Cloudea.Domain.Forum.Entities;
 
 /// <summary>
 /// 论坛回复帖评论
 /// </summary>
-public sealed class ForumComment : BaseDataEntity, IAuditableEntity
+public sealed class ForumComment : Entity, IAuditableEntity
 {
     private ForumComment(
+        Guid id,
         Guid parentReplyId,
         Guid ownerUserId,
         Guid? targetUserId,
-        string content)
+        string content) : base(id)
     {
-        Id = Guid.NewGuid();
         ParentReplyId = parentReplyId;
         OwnerUserId = ownerUserId;
         TargetUserId = targetUserId;
@@ -22,10 +21,7 @@ public sealed class ForumComment : BaseDataEntity, IAuditableEntity
         LikeCount = 0;
     }
 
-    private ForumComment()
-    {
-
-    }
+    private ForumComment() { }
 
     // 关系信息
     public Guid ParentReplyId { get; set; }
@@ -34,17 +30,25 @@ public sealed class ForumComment : BaseDataEntity, IAuditableEntity
     // 内容信息
     public string Content { get; set; }
     public long LikeCount { get; set; }
-    public long DislikeCount {  get; set; }
+    public long DislikeCount { get; set; }
     // 时间信息
-    public DateTime CreatedOnUtc { get; set; }
-    public DateTime? ModifiedOnUtc { get; set; }
+    public DateTimeOffset CreatedOnUtc { get; set; }
+    public DateTimeOffset? ModifiedOnUtc { get; set; }
 
-    public static ForumComment? Create(ForumReply reply, Guid ownerUser, Guid? targetUser, string content)
+    internal static ForumComment? Create(ForumReply reply, Guid ownerUser, Guid? targetUser, string content)
     {
+        if (reply is null || reply.Id == Guid.Empty) {
+            return null;
+        }
+        if (ownerUser == Guid.Empty) {
+            return null;
+        }
         if (string.IsNullOrEmpty(content)) {
             return null;
         }
-        return new(reply.Id, ownerUser, targetUser, content);
+
+        var commentId = Guid.NewGuid();
+        return new(commentId, reply.Id, ownerUser, targetUser, content);
     }
 
 

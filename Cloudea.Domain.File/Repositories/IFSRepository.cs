@@ -1,6 +1,6 @@
-﻿using Cloudea.Service.File.Domain.Entities;
+﻿using Cloudea.Domain.File.Entities;
 
-namespace Cloudea.Service.File.Domain.Abstractions
+namespace Cloudea.Domain.File.Repositories
 {
     public interface IFSRepository
     {

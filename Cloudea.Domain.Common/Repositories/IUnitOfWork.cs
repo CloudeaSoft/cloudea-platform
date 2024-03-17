@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Infrastructure.Repositories
+namespace Cloudea.Domain.Common.Repositories
 {
     public interface IUnitOfWork
     {

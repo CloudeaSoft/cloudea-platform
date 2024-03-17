@@ -1,7 +1,7 @@
-﻿using Cloudea.Domain.Identity.Entities;
-using Cloudea.Infrastructure.Shared;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Identity.Entities;
 
-namespace Cloudea.Service.Auth.Domain.Repositories
+namespace Cloudea.Domain.Identity.Repositories
 {
     public interface IRoleRepository
     {

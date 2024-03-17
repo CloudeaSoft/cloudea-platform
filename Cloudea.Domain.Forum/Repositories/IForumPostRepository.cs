@@ -1,11 +1,13 @@
-﻿using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Forum.Domain.Entities;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Forum.Entities;
 
-namespace Cloudea.Service.Forum.Domain.Repositories
+namespace Cloudea.Domain.Forum.Repositories
 {
     public interface IForumPostRepository
     {
         void Add(ForumPost newTopic);
+
+        void Update(ForumPost newTopic);
 
         Task<ForumPost?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 

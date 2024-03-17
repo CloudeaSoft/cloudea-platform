@@ -1,14 +1,10 @@
-﻿using Cloudea.Application.Forum;
+﻿using Cloudea.Application.Abstractions;
+using Cloudea.Application.Forum;
 using Cloudea.Application.Forum.Contracts;
-using Cloudea.Infrastructure.API;
-using Cloudea.Infrastructure.Shared;
-using Cloudea.Service.Auth.Domain.Abstractions;
-using Cloudea.Service.Forum.Domain.Entities;
+using Cloudea.Domain.Common.API;
+using Cloudea.Domain.Common.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI.Common;
-using System.Threading;
-using static FreeSql.Internal.GlobalFilter;
 
 
 namespace Cloudea.Web.Controllers
@@ -129,18 +125,6 @@ namespace Cloudea.Web.Controllers
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="test"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        [HttpPatch]
-        public async Task<IActionResult> Post([FromBody] string test)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// 获取主题帖内容
         /// </summary>
         /// <param name="id"></param>
@@ -184,9 +168,9 @@ namespace Cloudea.Web.Controllers
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [HttpPost(ID + "/Detail")]
+        [HttpPost(ID)]
         public async Task<IActionResult> PostInfo(
-            Guid id, PageRequest request, CancellationToken cancellationToken)
+            Guid id, [FromBody] PageRequest request, CancellationToken cancellationToken)
         {
             var res = await _forumService.GetPostInfoAsync(id, request, cancellationToken);
 

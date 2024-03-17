@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Service.Book.Domain.Models
+namespace Cloudea.Domain.Book.Models
 {
     public class BookMetaListPageResponse
     {

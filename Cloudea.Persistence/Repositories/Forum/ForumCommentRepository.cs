@@ -1,7 +1,7 @@
-﻿using Cloudea.Infrastructure.Shared;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Forum.Entities;
+using Cloudea.Domain.Forum.Repositories;
 using Cloudea.Persistence.Extensions;
-using Cloudea.Service.Forum.Domain.Entities;
-using Cloudea.Service.Forum.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cloudea.Persistence.Repositories.Forum

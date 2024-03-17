@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Infrastructure.Freesql
+namespace Cloudea.Domain.Common.Freesql
 {
     /// <summary>
     /// 生成数据库标记

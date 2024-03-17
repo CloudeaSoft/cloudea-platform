@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Cloudea.Service.Auth.Domain.Models
+namespace Cloudea.Domain.Identity.Models
 {
     public class UserProfile
     {

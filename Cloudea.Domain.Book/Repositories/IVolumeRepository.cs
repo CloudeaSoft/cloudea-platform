@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Service.Book.Domain.Abstractions
+namespace Cloudea.Domain.Book.Repositories
 {
     public interface IVolumeRepository
     {

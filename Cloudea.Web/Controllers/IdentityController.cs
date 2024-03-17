@@ -1,9 +1,8 @@
-﻿using Cloudea.Application.Identity;
+﻿using Cloudea.Application.Abstractions;
+using Cloudea.Application.Identity;
+using Cloudea.Domain.Common.API;
 using Cloudea.Domain.Identity.Enums;
-using Cloudea.Infrastructure.API;
-using Cloudea.Service.Auth.Domain.Abstractions;
-using Cloudea.Service.Auth.Domain.Models;
-using Cloudea.Service.Auth.Domain.Utils;
+using Cloudea.Domain.Identity.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers

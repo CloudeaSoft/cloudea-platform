@@ -1,17 +1,11 @@
-﻿using Cloudea.Infrastructure.Database;
-using Cloudea.Infrastructure.Freesql.Context;
+﻿using Cloudea.Domain.Common.Database;
+using Cloudea.Domain.Common.Freesql.Context;
 using FreeSql;
 using FreeSql.Aop;
 using FreeSql.Internal;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Cloudea.Infrastructure.Freesql
+namespace Cloudea.Domain.Common.Freesql
 {
     public static class Extensions
     {
@@ -28,8 +22,7 @@ namespace Cloudea.Infrastructure.Freesql
             string connectionString
             )
         {
-            Func<IServiceProvider, IFreeSql> fsqlFactory = r =>
-            {
+            Func<IServiceProvider, IFreeSql> fsqlFactory = r => {
                 IFreeSql fsql = new FreeSqlBuilder()
                     .UseConnectionString(dataType, connectionString)
                     .UseMonitorCommand(cmd => Console.WriteLine($"Sql：{cmd.CommandText}"))//监听SQL语句
@@ -59,13 +52,11 @@ namespace Cloudea.Infrastructure.Freesql
             //Console.WriteLine(_updateProp);
 
             // 插入动作
-            if (propTypeName == _createProp && args.AuditValueType == AuditValueType.Insert)
-            {
+            if (propTypeName == _createProp && args.AuditValueType == AuditValueType.Insert) {
                 args.Value = DateTime.Now;
             }
             // 更新动作
-            else if (propTypeName == _updateProp && args.AuditValueType == AuditValueType.Update)
-            {
+            else if (propTypeName == _updateProp && args.AuditValueType == AuditValueType.Update) {
                 args.Value = DateTime.Now;
             }
         }
@@ -80,12 +71,10 @@ namespace Cloudea.Infrastructure.Freesql
         private static void Aop_CommandBefore<TOption>(object sender, CommandBeforeEventArgs e)
         {
 
-            if (string.IsNullOrEmpty(TransactionControl<TOption>.TransactionId.Value) == false && e.Command.Transaction == null)
-            {
+            if (string.IsNullOrEmpty(TransactionControl<TOption>.TransactionId.Value) == false && e.Command.Transaction == null) {
                 // 附上事务
                 var context = TransactionControlPool.Instance.GetContext(TransactionControl<TOption>.TransactionId.Value);
-                if (context != null)
-                {
+                if (context != null) {
                     e.Command.Transaction = context.UnitOfWork.GetOrBeginTransaction();
                     e.Command.Connection = e.Command.Transaction.Connection;
                 }
@@ -102,19 +91,16 @@ namespace Cloudea.Infrastructure.Freesql
         {
             var sqlService = services.FirstOrDefault(t => t.ServiceType == typeof(IFreeSql<TOption>));
 
-            if (sqlService == null)
-            {
+            if (sqlService == null) {
                 throw new Exception("默认数据库不存在");
             }
-            if (sqlService.ImplementationInstance == null)
-            {
+            if (sqlService.ImplementationInstance == null) {
                 throw new Exception("默认数据库未初始化");
             }
 
             services.AddSingleton(typeof(IFreeSql), sqlService.ImplementationInstance);
             // 设置默认 获得事务的方法
-            FreeSqlTransactionExtendsion.GetDefaultTransaction = (fsql) =>
-            {
+            FreeSqlTransactionExtendsion.GetDefaultTransaction = (fsql) => {
                 var instance = fsql as IFreeSql<TOption>;
                 return instance.BeginTransaction();
             };

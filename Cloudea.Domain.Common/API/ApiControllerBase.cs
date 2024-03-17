@@ -1,9 +1,8 @@
 ﻿using Cloudea.Domain.Common.Shared;
-using Cloudea.Infrastructure.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cloudea.Infrastructure.API
+namespace Cloudea.Domain.Common.API
 {
     [ApiController]
     [Route("api/[controller]/[action]")]

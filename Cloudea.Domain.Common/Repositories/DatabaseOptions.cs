@@ -1,4 +1,4 @@
-﻿namespace Cloudea.Infrastructure.Repositories
+﻿namespace Cloudea.Domain.Common.Repositories
 {
     public class DatabaseOptions
     {

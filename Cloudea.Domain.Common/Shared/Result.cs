@@ -1,7 +1,6 @@
-﻿using Cloudea.Domain.Common.Shared;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace Cloudea.Infrastructure.Shared;
+namespace Cloudea.Domain.Common.Shared;
 
 /// <summary>
 /// 返回结果
