@@ -1,6 +1,7 @@
 ﻿using Cloudea.Domain.Identity.Entities;
 using Cloudea.Domain.Identity.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto.Engines;
 
 namespace Cloudea.Persistence.Repositories.Identity
 {
@@ -36,6 +37,14 @@ namespace Cloudea.Persistence.Repositories.Identity
         public void Update(User user)
         {
             _dbContext.Set<User>().Update(user);
+        }
+
+        public async Task<List<Guid>> ListAllUserIdAsync()
+        {
+            return await _dbContext.Set<User>()
+                .Where(x => x.IsDeleted == false && x.Enable == true)
+                .Select(x => x.Id)
+                .ToListAsync();
         }
     }
 }

@@ -17,10 +17,257 @@ namespace Cloudea.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("Cloudea.Domain.Forum.Entities.ForumComment", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreatedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long>("DislikeCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<long>("LikeCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ParentReplyId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("TargetUserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("forum_comment", (string)null);
+                });
+
+            modelBuilder.Entity("Cloudea.Domain.Forum.Entities.ForumPost", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<long>("ClickCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreatedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long>("DislikeCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTimeOffset>("LastClickTime")
+                        .HasColumnType("timestamp");
+
+                    b.Property<DateTimeOffset>("LastEditTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long>("LikeCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ParentSectionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("forum_post", (string)null);
+                });
+
+            modelBuilder.Entity("Cloudea.Domain.Forum.Entities.ForumPostUserFavorite", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ParentPostId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("forum_post_user_favorite", (string)null);
+                });
+
+            modelBuilder.Entity("Cloudea.Domain.Forum.Entities.ForumPostUserHistory", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<DateTimeOffset>("CreatedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("forum_post_user_history", (string)null);
+                });
+
+            modelBuilder.Entity("Cloudea.Domain.Forum.Entities.ForumPostUserLike", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsLike")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ParentPostId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("forum_post_user_like", (string)null);
+                });
+
+            modelBuilder.Entity("Cloudea.Domain.Forum.Entities.ForumReply", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreatedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long>("DislikeCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<long>("LikeCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ParentPostId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("forum_reply", (string)null);
+                });
+
+            modelBuilder.Entity("Cloudea.Domain.Forum.Entities.ForumSection", b =>
+                {
+                    b.Property<long>("AutoIncId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
+
+                    b.Property<long>("ClickCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("CreatedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("MasterUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Statement")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<long>("TopicCount")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AutoIncId");
+
+                    b.ToTable("forum_section", (string)null);
+                });
 
             modelBuilder.Entity("Cloudea.Domain.Identity.Entities.Role", b =>
                 {
@@ -227,178 +474,6 @@ namespace Cloudea.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("outbox_messages", (string)null);
-                });
-
-            modelBuilder.Entity("Cloudea.Service.Forum.Domain.Entities.ForumComment", b =>
-                {
-                    b.Property<long>("AutoIncId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTimeOffset>("CreatedOnUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<long>("DislikeCount")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<long>("LikeCount")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("OwnerUserId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ParentReplyId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid?>("TargetUserId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("AutoIncId");
-
-                    b.ToTable("forum_comment", (string)null);
-                });
-
-            modelBuilder.Entity("Cloudea.Service.Forum.Domain.Entities.ForumPost", b =>
-                {
-                    b.Property<long>("AutoIncId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
-
-                    b.Property<long>("ClickCount")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTimeOffset>("CreatedOnUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<long>("DislikeCount")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTimeOffset>("LastClickTime")
-                        .HasColumnType("timestamp");
-
-                    b.Property<DateTimeOffset>("LastEditTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<long>("LikeCount")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("OwnerUserId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ParentSectionId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("AutoIncId");
-
-                    b.ToTable("forum_post", (string)null);
-                });
-
-            modelBuilder.Entity("Cloudea.Service.Forum.Domain.Entities.ForumReply", b =>
-                {
-                    b.Property<long>("AutoIncId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTimeOffset>("CreatedOnUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<long>("DislikeCount")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<long>("LikeCount")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("OwnerUserId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ParentPostId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("AutoIncId");
-
-                    b.ToTable("forum_reply", (string)null);
-                });
-
-            modelBuilder.Entity("Cloudea.Service.Forum.Domain.Entities.ForumSection", b =>
-                {
-                    b.Property<long>("AutoIncId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AutoIncId"));
-
-                    b.Property<long>("ClickCount")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTimeOffset>("CreatedOnUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("MasterUserId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTimeOffset?>("ModifiedOnUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Statement")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<long>("TopicCount")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("AutoIncId");
-
-                    b.ToTable("forum_section", (string)null);
                 });
 #pragma warning restore 612, 618
         }

@@ -72,7 +72,7 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
         }
     }
 
-    public ForumReply? AddReply(Guid userId, string content)
+    public ForumReply? CreateReply(Guid userId, string content)
     {
         var reply = ForumReply.Create(userId, this, content);
         if (reply is null) {
@@ -87,8 +87,21 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
 
     public ForumPostUserHistory? CreateHistory(Guid userId)
     {
-        LastClickTime = DateTimeOffset.Now;
+        return ForumPostUserHistory.Create(this, userId);
+    }
 
-        return ForumPostUserHistory.Create(userId, this);
+    public ForumPostUserLike? CreateLike(Guid userId)
+    {
+        return ForumPostUserLike.Create(this, userId);
+    }
+
+    public ForumPostUserLike? CreateDislike(Guid userId)
+    {
+        return ForumPostUserLike.Create(this, userId, false);
+    }
+
+    public ForumPostUserFavorite? CreateFavorite(Guid userId)
+    {
+        return ForumPostUserFavorite.Create(this, userId);
     }
 }

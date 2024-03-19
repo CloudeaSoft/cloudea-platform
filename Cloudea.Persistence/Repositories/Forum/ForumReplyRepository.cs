@@ -19,7 +19,7 @@ public class ForumReplyRepository(ApplicationDbContext context) : IForumReplyRep
                         .Where(x => x.Id == replyId)
                         .FirstOrDefaultAsync(cancellationToken);
 
-    public async Task<PageResponse<ForumReply>> GetByTopicIdWithPageRequestAsync(
+    public async Task<PageResponse<ForumReply>> GetByPostIdWithPageRequestAsync(
         Guid topicId,
         PageRequest request,
         CancellationToken cancellationToken = default) =>

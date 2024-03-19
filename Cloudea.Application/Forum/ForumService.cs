@@ -5,11 +5,13 @@ using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Forum.Entities;
 using Cloudea.Domain.Forum.Repositories;
 using Cloudea.Domain.Identity.Repositories;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Cloudea.Application.Forum
 {
     /// <summary>
-    /// Forum模块 的功能集合类
+    /// Forum模块
     /// </summary>
     public class ForumService(
         IForumPostRepository forumPostRepository,
@@ -18,18 +20,25 @@ namespace Cloudea.Application.Forum
         IForumReplyRepository forumReplyRepository,
         IUserRepository userRepository,
         ICurrentUser currentUser,
-        IForumCommentRepository forumCommentRepository)
+        IForumCommentRepository forumCommentRepository,
+        IForumPostUserHistoryRepository forumPostUserHistoryRepository,
+        ILogger<ForumService> logger,
+        IForumPostUserLikeRepository forumPostUserLikeRepository,
+        IForumPostUserFavoriteRepository forumPostUserFavoriteRepository)
     {
-        /// <summary>
-        /// Fields
-        /// </summary>
         private readonly IUserRepository _userRepository = userRepository;
         private readonly ICurrentUser _currentUser = currentUser;
 
         private readonly IForumPostRepository _forumPostRepository = forumPostRepository;
+        private readonly IForumPostUserHistoryRepository _forumPostUserHistoryRepository = forumPostUserHistoryRepository;
+        private readonly IForumPostUserLikeRepository _forumPostUserLikeRepository = forumPostUserLikeRepository;
+        private readonly IForumPostUserFavoriteRepository _forumPostUserFavoriteRepository = forumPostUserFavoriteRepository;
+
         private readonly IForumSectionRepository _forumSectionRepository = forumSectionRepository;
         private readonly IForumReplyRepository _forumReplyRepository = forumReplyRepository;
         private readonly IForumCommentRepository _forumCommentRepository = forumCommentRepository;
+
+        private readonly ILogger<ForumService> _logger = logger;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         /// <summary>
@@ -37,7 +46,7 @@ namespace Cloudea.Application.Forum
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<Result<Guid>> PostSectionAsync(
+        public async Task<Result<Guid>> CreateSectionAsync(
             CreateSectionRequest request,
             CancellationToken cancellationToken = default)
         {
@@ -73,19 +82,15 @@ namespace Cloudea.Application.Forum
             UpdateSectionRequest request,
             CancellationToken cancellationToken = default)
         {
-            // 1. 查询request对应的实体列表
             var section = await _forumSectionRepository.GetByIdAsync(id, cancellationToken);
             if (section is null) {
                 return new Error("ForumSection.NotFound");
             }
 
-            // 2. 根据request内容修改实体列表
             section.Update(request.Name, request.Statement, request.MasterId);
 
-            // 3. 调用Repository进行实体更新
             _forumSectionRepository.Update(section);
 
-            // 4. 保存修改
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }
@@ -95,11 +100,16 @@ namespace Cloudea.Application.Forum
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<Result<ForumSection?>> GetSectionAsync(
+        public async Task<Result<ForumSection>> GetSectionAsync(
             Guid id,
             CancellationToken cancellationToken = default)
         {
-            return await _forumSectionRepository.GetByIdAsync(id, cancellationToken);
+            var section = await _forumSectionRepository.GetByIdAsync(id, cancellationToken);
+            if (section is null) {
+                return new Error("ForumSection.NotFound");
+            }
+
+            return section;
         }
 
         /// <summary>
@@ -111,7 +121,12 @@ namespace Cloudea.Application.Forum
             PageRequest request,
             CancellationToken cancellationToken = default)
         {
-            return await _forumSectionRepository.GetWithPageRequestAsync(request, cancellationToken);
+            var pageResponse = await _forumSectionRepository.GetWithPageRequestAsync(request, cancellationToken);
+            if (pageResponse.Rows.Count <= 0) {
+                return new Error("ForumSection.NotFound");
+            }
+
+            return pageResponse;
         }
 
         /// <summary>
@@ -119,9 +134,9 @@ namespace Cloudea.Application.Forum
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<Result<Guid?>> PostPostAsync(
+        public async Task<Result<Guid?>> CreatePostAsync(
             Guid userId,
-            CreateTopicRequest request,
+            CreatePostRequest request,
             CancellationToken cancellationToken = default)
         {
             var section = await _forumSectionRepository.GetByIdAsync(request.SectionId, cancellationToken);
@@ -130,19 +145,19 @@ namespace Cloudea.Application.Forum
                     $"The forum_section with Id {request.SectionId} was not found");
             }
 
-            var newTopic = section.AddPost(
+            var newPost = section.AddPost(
                 userId,
                 request.Title,
                 request.Content);
-            if (newTopic is null) {
-                return new Error("ForumTopic.InvaildParameter");
+            if (newPost is null) {
+                return new Error("ForumPost.InvaildParameter");
             }
 
-            _forumPostRepository.Add(newTopic);
+            _forumPostRepository.Add(newPost);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return newTopic.Id;
+            return newPost.Id;
         }
 
         /// <summary>
@@ -157,7 +172,7 @@ namespace Cloudea.Application.Forum
             var res = await _forumPostRepository.GetByIdAsync(id, cancellationToken);
 
             if (res is null) {
-                return new Error("ForumTopic.NotFound");
+                return new Error("ForumPost.NotFound");
             }
 
             return res;
@@ -174,40 +189,158 @@ namespace Cloudea.Application.Forum
             PageRequest request,
             CancellationToken cancellationToken = default)
         {
-            // 获取Post
+            // Get Post / If null return error
             var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
             if (post is null) {
-                return new Error("ForumTopic.NotFound");
+                return new Error("ForumPost.NotFound");
             }
 
-            // 创建返回结果
-            var postInfo = PostInfo.Create(post);
-            var response = GetPostInfoResponse.Create(postInfo);
+            try {
+                // Create response instance
+                var postInfo = PostInfo.Create(post);
+                var response = GetPostInfoResponse.Create(postInfo);
 
-            // 获取Reply
-            var replys = await _forumReplyRepository.GetByTopicIdWithPageRequestAsync(postId, request, cancellationToken);
-            if (replys is null) {
-                return response;
-            }
-
-            // 获取Comments
-            var replyIds = replys.Rows.Select(x => x.Id).ToList();
-            var comments = await _forumCommentRepository.ListByReplyIdsAsync(replyIds, cancellationToken);
-
-            // 填充Reply结果
-            PageResponse<ReplyInfo> replyInfos = new() {
-                Total = replys.Total,
-                Rows = []
-            };
-            foreach (var reply in replys.Rows) {
-                var commentInfos = new List<CommentInfo>();
-                foreach (var comment in comments.Where(x => x.ParentReplyId == reply.Id)) {
-                    commentInfos.Add(CommentInfo.Create(comment));
+                // Get Replys
+                var replys = await _forumReplyRepository.GetByPostIdWithPageRequestAsync(postId, request, cancellationToken);
+                if (replys is null || replys.Rows.Count <= 0) {
+                    return response;
                 }
-                replyInfos.Rows.Add(ReplyInfo.Create(reply, commentInfos));
+
+                // Get Comments
+                var replyIds = replys.Rows.Select(x => x.Id).ToList();
+                var comments = await _forumCommentRepository.ListByReplyIdsAsync(replyIds, cancellationToken);
+
+                // Fill Replys with their Comments
+                PageResponse<ReplyInfo> replyInfos = new() {
+                    Total = replys.Total,
+                    Rows = []
+                };
+                foreach (var reply in replys.Rows) {
+                    var commentInfos = new List<CommentInfo>();
+                    foreach (var comment in comments.Where(x => x.ParentReplyId == reply.Id)) {
+                        commentInfos.Add(CommentInfo.Create(comment));
+                    }
+                    replyInfos.Rows.Add(ReplyInfo.Create(reply, commentInfos));
+                }
+
+                return GetPostInfoResponse.Create(postInfo, replyInfos);
+            }
+            catch (NullReferenceException ex) {
+                _logger.LogCritical(ex.ToString());
+                throw;
+            }
+            finally {
+                // Create user history before return
+                var userId = await _currentUser.GetUserIdAsync();
+                if (userId == Guid.Empty) {
+                    // Create guest history
+                }
+                else {
+                    var history = post.CreateHistory(userId)!;
+                    _forumPostUserHistoryRepository.Add(history);
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                }
+            }
+        }
+
+        public async Task<Result<Guid>> CreateLikeOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
+        {
+            // Get Post / If null return error
+            var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
+            if (post is null) {
+                return new Error("ForumPost.NotFound");
             }
 
-            return GetPostInfoResponse.Create(postInfo, replyInfos);
+            var userId = await _currentUser.GetUserIdAsync();
+
+            var like = await _forumPostUserLikeRepository.GetByUserIdPostIdAsync(userId, postId);
+            if (like is not null) {
+                return new Error("ForumPostUserLike.Exist");
+            }
+
+            var newLike = post.CreateLike(userId)!;
+            _forumPostUserLikeRepository.Add(newLike);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return newLike.Id;
+        }
+
+        public async Task<Result> DeleteLikeOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
+        {
+            // Get Post / If null return error
+            var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
+            if (post is null) {
+                return new Error("ForumPost.NotFound");
+            }
+
+            var userId = await _currentUser.GetUserIdAsync();
+
+            var like = await _forumPostUserLikeRepository.GetByUserIdPostIdAsync(userId, postId, cancellationToken);
+            if (like is null) {
+                return new Error("ForumPostUserLike.NotFound");
+            }
+
+            _forumPostUserLikeRepository.Delete(like);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return Result.Success();
+        }
+
+        public async Task<Result<Guid>> CreateDislikeOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
+        {
+            // Get Post / If null return error
+            var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
+            if (post is null) {
+                return new Error("ForumPost.NotFound");
+            }
+
+            var userId = await _currentUser.GetUserIdAsync();
+
+            var like = await _forumPostUserLikeRepository.GetByUserIdPostIdAsync(userId, postId, cancellationToken);
+            if (like is not null) {
+                return new Error("ForumPostUserLike.Exist");
+            }
+
+            var dislike = post.CreateDislike(userId)!;
+            _forumPostUserLikeRepository.Add(dislike);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return dislike.Id;
+        }
+
+        public async Task<Result<Guid>> CreateFavoriteOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
+        {
+            // Get Post / If null return error
+            var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
+            if (post is null) {
+                return new Error("ForumPost.NotFound");
+            }
+
+            var userId = await _currentUser.GetUserIdAsync();
+            var favorite = post.CreateFavorite(userId)!;
+            _forumPostUserFavoriteRepository.Add(favorite);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return favorite.Id;
+        }
+
+        public async Task<Result> DeleteFavoriteOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
+        {
+            // Get Post / If null return error
+            var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
+            if (post is null) {
+                return new Error("ForumPost.NotFound");
+            }
+
+            var userId = await _currentUser.GetUserIdAsync();
+
+            var favorite = await _forumPostUserFavoriteRepository.GetByUserIdPostIdAsync(userId, postId, cancellationToken);
+            if (favorite is null) {
+                return new Error("ForumPostUserLike.NotFound");
+            }
+
+            _forumPostUserFavoriteRepository.Delete(favorite);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return Result.Success();
         }
 
         /// <summary>
@@ -215,7 +348,7 @@ namespace Cloudea.Application.Forum
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<Result<PageResponse<ForumPost>>> ListTopicAsync(
+        public async Task<Result<PageResponse<ForumPost>>> ListPostAsync(
             PageRequest request,
             CancellationToken cancellationToken = default) =>
             await _forumPostRepository.GetWithPageRequestAsync(request, cancellationToken);
@@ -235,7 +368,7 @@ namespace Cloudea.Application.Forum
                 return new Error("ForumPost.NotFound");
             }
 
-            var reply = post.AddReply(userId, content);
+            var reply = post.CreateReply(userId, content);
             if (reply is null) {
                 return new Error("ForumReply.InvalidParam");
             }

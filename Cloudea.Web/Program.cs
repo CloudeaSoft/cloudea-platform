@@ -1,6 +1,7 @@
 using Cloudea.Domain.Common;
 using Cloudea.Domain.Common.Repositories;
 using Cloudea.Infrastructure.BackgroundJobs;
+using Cloudea.Infrastructure.BackgroundJobs.ForumPostRecommendSystem;
 using Cloudea.Persistence;
 using Cloudea.Service.HubTest;
 using Cloudea.Web.Infrastructure;
@@ -184,18 +185,28 @@ namespace Cloudea.Web
 
             // Scheduling framework - Quartz
             builder.Services.AddQuartz(configure => {
-                var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
-
-                // Configure options.
+                // ProcessOutboxMessagesJob
+                var processOutboxMessagesJobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
                 configure
-                    .AddJob<ProcessOutboxMessagesJob>(jobKey)
+                    .AddJob<ProcessOutboxMessagesJob>(processOutboxMessagesJobKey)
                     .AddTrigger(
                         trigger =>
-                            trigger.ForJob(jobKey)
+                            trigger.ForJob(processOutboxMessagesJobKey)
                                 .WithSimpleSchedule(
                                     schedule =>
                                         schedule.WithIntervalInSeconds(10)
                                             .RepeatForever()));
+
+                // CalculateUserPostInterestJob
+                var calculateUserPostInterestJobKey = new JobKey(nameof(CalculateUserPostInterestJob));
+                configure
+                    .AddJob<CalculateUserPostInterestJob>(calculateUserPostInterestJobKey)
+                    .AddTrigger(
+                        trigger =>
+                            trigger.ForJob(calculateUserPostInterestJobKey)
+                                .WithSimpleSchedule(
+                                    schedule => schedule.WithIntervalInHours(24)
+                                        .RepeatForever()));
             });
             builder.Services.AddQuartzHostedService();
             #endregion
@@ -228,7 +239,7 @@ namespace Cloudea.Web
             app.UseCors();
 
             // Websocket Endpoint
-            app.MapHub<ChatRoomHub>("/ChatRoomHub"); 
+            app.MapHub<ChatRoomHub>("/ChatRoomHub");
 
             // Controller
             app.MapControllers();
@@ -244,7 +255,7 @@ namespace Cloudea.Web
             // Static files
             app.UseDefaultFiles();
             app.UseStaticFiles();
-#endregion
+            #endregion
 
             //Run WebApplication.
             app.Run();

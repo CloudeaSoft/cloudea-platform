@@ -9,7 +9,7 @@ public class ForumCommentConfiguration : IEntityTypeConfiguration<ForumComment>
 {
     public void Configure(EntityTypeBuilder<ForumComment> builder)
     {
-        builder.ToTable(TableNames.ForumComment);
+        builder.ToTable(TableNames.ForumRecommendUserPostInterest);
 
         builder.HasKey(x => x.AutoIncId);
     }

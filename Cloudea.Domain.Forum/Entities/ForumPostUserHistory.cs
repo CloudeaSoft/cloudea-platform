@@ -20,12 +20,9 @@ namespace Cloudea.Domain.Forum.Entities
 
         public DateTimeOffset? ModifiedOnUtc { get; set; }
 
-        internal static ForumPostUserHistory? Create(Guid userId, ForumPost post)
+        internal static ForumPostUserHistory? Create(ForumPost post, Guid userId)
         {
             if (userId == Guid.Empty) {
-                return null;
-            }
-            if (post is null) {
                 return null;
             }
 

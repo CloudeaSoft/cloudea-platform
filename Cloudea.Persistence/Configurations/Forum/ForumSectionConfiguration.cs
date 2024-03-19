@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cloudea.Persistence.Configurations.Forum;
 
-public class ForumSectionConfiguration : IEntityTypeConfiguration<ForumSection>
+internal class ForumSectionConfiguration : IEntityTypeConfiguration<ForumSection>
 {
     public void Configure(EntityTypeBuilder<ForumSection> builder)
     {

@@ -28,5 +28,11 @@ namespace Cloudea.Domain.Identity.Repositories
         /// <param name="UserName"></param>
         /// <returns></returns>
         Task<User?> GetByUserNameAsync(string UserName, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 查询全部用户
+        /// </summary>
+        /// <returns></returns>
+        Task<List<Guid>> ListAllUserIdAsync();
     }
 }

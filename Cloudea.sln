@@ -25,9 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Domain.Book", "Clou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Domain.Common", "Cloudea.Domain.Common\Cloudea.Domain.Common.csproj", "{2E95F4FB-D250-4AFF-AEC2-22E50F1A62B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudea.Domain.GameHelper", "Cloudea.Domain.GameHelper\Cloudea.Domain.GameHelper.csproj", "{E22ED50C-9445-4F0B-9749-F014253D1190}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Domain.GameHelper", "Cloudea.Domain.GameHelper\Cloudea.Domain.GameHelper.csproj", "{E22ED50C-9445-4F0B-9749-F014253D1190}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudea.MLTest", "Cloudea.MLTest\Cloudea.MLTest.csproj", "{B877F7B5-E2DE-4DD8-9377-5C7B5D4B00EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.MLTest", "Cloudea.MLTest\Cloudea.MLTest.csproj", "{B877F7B5-E2DE-4DD8-9377-5C7B5D4B00EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
