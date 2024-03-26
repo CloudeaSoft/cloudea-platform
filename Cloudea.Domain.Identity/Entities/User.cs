@@ -1,6 +1,8 @@
 ﻿using Cloudea.Domain.Common.Database;
 using Cloudea.Domain.Common.Primitives;
+using Cloudea.Domain.Identity.DomainEvents;
 using Cloudea.Domain.Identity.ValueObjects;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -9,19 +11,17 @@ namespace Cloudea.Domain.Identity.Entities;
 /// <summary>
 /// 用户信息
 /// </summary>
-public class User : Entity, ISoftDelete
+public class User : AggregateRoot, ISoftDelete
 {
     private User(
         Guid id,
         string userName,
-        string nickName,
         string email,
         string passwordHash,
         string salt,
         bool enable) : base(id)
     {
         UserName = userName;
-        NickName = nickName;
         Email = email;
         PasswordHash = passwordHash;
         Salt = salt;
@@ -34,10 +34,6 @@ public class User : Entity, ISoftDelete
     /// 用户名
     /// </summary>
     public string UserName { get; set; }
-    /// <summary>
-    /// 昵称
-    /// </summary>
-    public string NickName { get; set; }
     /// <summary>
     /// 邮箱
     /// </summary>
@@ -54,11 +50,6 @@ public class User : Entity, ISoftDelete
     /// </summary>
     [JsonIgnore]
     public string Salt { get; private set; }
-    /// <summary>
-    /// 头像数据
-    /// </summary>
-    [StringLength(500)]
-    public byte[]? Avatar { get; set; }
     /// <summary>
     /// 是否启用
     /// </summary>
@@ -83,23 +74,26 @@ public class User : Entity, ISoftDelete
 
     public static User Create(
         string userName,
-        string nickName,
         string email,
         PasswordHash passwordHash,
         Salt salt,
         bool enable)
     {
-        return new User(
+        var user = new User(
             Guid.NewGuid(),
             userName,
-            nickName,
             email,
             passwordHash.Value,
             salt.Value,
             enable);
+
+        var domainEvent = new UserCreatedDomainEvent(Guid.NewGuid(), user.Id);
+        user.RaiseDomainEvent(domainEvent);
+
+        return user;
     }
 
-    public void Update()
+    public void SetEmail()
     {
 
     }
@@ -110,12 +104,12 @@ public class User : Entity, ISoftDelete
         Salt = salt.Value;
     }
 
-    public void EnableMe()
+    public void EnableUser()
     {
         Enable = true;
     }
 
-    public void DisableMe()
+    public void DisableUser()
     {
         Enable = false;
     }

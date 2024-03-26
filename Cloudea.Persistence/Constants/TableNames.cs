@@ -1,7 +1,7 @@
 ﻿namespace Cloudea.Persistence.Constants;
 
 /// <summary>
-/// 表名
+/// Table names
 /// </summary>
 internal static class TableNames
 {
@@ -10,6 +10,8 @@ internal static class TableNames
     internal const string User = "u_user";
 
     internal const string UserRole = "u_user_role";
+
+    internal const string UserProfile = "u_profile";
 
     internal const string Role = "u_role";
 

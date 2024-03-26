@@ -55,7 +55,8 @@ public class Result<TValue> : Result
 
     public TValue Data => Status
         ? _data!
-        : throw new InvalidOperationException("The value of a failure result can not be accessed");
+        : _data!;
+    //: throw new InvalidOperationException("The value of a failure result can not be accessed");
 
     public static implicit operator Result<TValue>(TValue value) => Create(value);
 

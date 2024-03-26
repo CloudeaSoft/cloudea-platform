@@ -114,7 +114,7 @@ namespace Cloudea.Application.Identity
                 userEmail = tokenData.Split(",")[0];
             }
             catch (Exception ex) {
-                return new Error("UserToken.InvalidParam", ex.ToString());
+                return new Error("User.Token.InvalidParam", ex.ToString());
             }
 
             // 验证信息合法性
@@ -134,13 +134,12 @@ namespace Cloudea.Application.Identity
             }
 
             // 创建新用户信息
-            var nickName = "新用户";
             var passwordRes = Password.Create(password);
             if (passwordRes.IsFailure) {
                 return passwordRes.Error;
             }
 
-            var saltRes = Salt.Create(Guid.NewGuid().ToString("N"));// 生成Salt
+            var saltRes = Salt.Create(Guid.NewGuid().ToString("N"));// generate salt
             if (saltRes.IsFailure) {
                 return saltRes.Error;
             }
@@ -153,7 +152,6 @@ namespace Cloudea.Application.Identity
 
             var newUser = User.Create(
                 userName,
-                nickName,
                 userEmail,
                 passwordHashRes.Data,
                 saltRes.Data,
@@ -162,7 +160,7 @@ namespace Cloudea.Application.Identity
             _userRepository.Add(newUser);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            // 返回登录token
+            // return login token
             return newUser.Id;
         }
 
