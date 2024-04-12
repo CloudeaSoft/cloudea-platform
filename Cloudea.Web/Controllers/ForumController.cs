@@ -49,7 +49,10 @@ public class ForumController : ApiControllerBase
         if (res.IsFailure) {
             return HandleFailure(res);
         }
-        return CreatedAtAction(nameof(Section), new { id = res.Data }, res.Data);
+        return CreatedAtAction(
+            nameof(Section),
+            new { id = res.Data },
+            res);
     }
 
     /// <summary>
@@ -121,7 +124,7 @@ public class ForumController : ApiControllerBase
         return CreatedAtAction(
             nameof(Post),
             new { id = res.Data },
-            res.Data);
+            res);
     }
 
     /// <summary>
@@ -131,7 +134,7 @@ public class ForumController : ApiControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpPost(ID+"/Info")]
+    [HttpPost(ID + "/Info")]
     public async Task<IActionResult> Post(
         Guid id,
         [FromBody] PageRequest request,
@@ -147,12 +150,14 @@ public class ForumController : ApiControllerBase
     /// </summary>
     /// <param name="page"></param>
     /// <param name="limit"></param>
+    /// <param name="sectionId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet(PageRequest)]
     public async Task<IActionResult> Post(
         int page,
         int limit,
+        Guid? sectionId,
         CancellationToken cancellationToken)
     {
         var request = new PageRequest {
@@ -160,7 +165,7 @@ public class ForumController : ApiControllerBase
             PageIndex = page
         };
 
-        var res = await _forumService.ListPostAsync(request, cancellationToken);
+        var res = await _forumService.ListPostAsync(request, sectionId, cancellationToken);
 
         return res.IsSuccess ? Ok(res) : NotFound(res.Error);
     }

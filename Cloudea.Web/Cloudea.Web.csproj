@@ -55,4 +55,10 @@
 	  <ProjectReference Include="..\Cloudea.Persistence\Cloudea.Persistence.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="TextIcon.txt">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

@@ -154,7 +154,7 @@ namespace Cloudea.Web
             // CORS
             builder.Services.AddCors(opt => {
                 opt.AddDefaultPolicy(b => {
-                    b.WithOrigins("http://localhost:5173")
+                    b.WithOrigins("http://localhost:3000")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
@@ -198,15 +198,15 @@ namespace Cloudea.Web
                                             .RepeatForever()));
 
                 // CalculateUserPostInterestJob
-                var calculateUserPostInterestJobKey = new JobKey(nameof(CalculateUserPostInterestJob));
-                configure
-                    .AddJob<CalculateUserPostInterestJob>(calculateUserPostInterestJobKey)
-                    .AddTrigger(
-                        trigger =>
-                            trigger.ForJob(calculateUserPostInterestJobKey)
-                                .WithSimpleSchedule(
-                                    schedule => schedule.WithIntervalInHours(24)
-                                        .RepeatForever()));
+                //var calculateUserPostInterestJobKey = new JobKey(nameof(CalculateUserPostInterestJob));
+                //configure
+                //    .AddJob<CalculateUserPostInterestJob>(calculateUserPostInterestJobKey)
+                //    .AddTrigger(
+                //        trigger =>
+                //            trigger.ForJob(calculateUserPostInterestJobKey)
+                //                .WithSimpleSchedule(
+                //                    schedule => schedule.WithIntervalInHours(24)
+                //                        .RepeatForever()));
             });
             builder.Services.AddQuartzHostedService();
             #endregion

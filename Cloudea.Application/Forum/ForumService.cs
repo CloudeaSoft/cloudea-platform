@@ -5,6 +5,7 @@ using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Forum.Entities;
 using Cloudea.Domain.Forum.Repositories;
 using Cloudea.Domain.Identity.Repositories;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -24,10 +25,12 @@ namespace Cloudea.Application.Forum
         IForumPostUserHistoryRepository forumPostUserHistoryRepository,
         ILogger<ForumService> logger,
         IForumPostUserLikeRepository forumPostUserLikeRepository,
-        IForumPostUserFavoriteRepository forumPostUserFavoriteRepository)
+        IForumPostUserFavoriteRepository forumPostUserFavoriteRepository,
+        IUserProfileRepository userProfileRepository)
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly ICurrentUser _currentUser = currentUser;
+        private readonly IUserProfileRepository _userProfileRepository = userProfileRepository;
 
         private readonly IForumPostRepository _forumPostRepository = forumPostRepository;
         private readonly IForumPostUserHistoryRepository _forumPostUserHistoryRepository = forumPostUserHistoryRepository;
@@ -202,7 +205,7 @@ namespace Cloudea.Application.Forum
 
                 // Get Replys
                 var replys = await _forumReplyRepository.GetByPostIdWithPageRequestAsync(postId, request, cancellationToken);
-                if (replys is null || replys.Rows.Count <= 0) {
+                if (replys is null || replys.Rows is null || replys.Rows.Count <= 0) {
                     return response;
                 }
 
@@ -348,10 +351,23 @@ namespace Cloudea.Application.Forum
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<Result<PageResponse<ForumPost>>> ListPostAsync(
+        public async Task<Result<ListPostResponse>> ListPostAsync(
             PageRequest request,
-            CancellationToken cancellationToken = default) =>
-            await _forumPostRepository.GetWithPageRequestAsync(request, cancellationToken);
+            Guid? sectionId,
+            CancellationToken cancellationToken = default)
+        {
+            var list = await _forumPostRepository.GetWithPageRequestSectionIdAsync(request, sectionId, cancellationToken);
+            var userIdList = list.Rows.Select(x => x.OwnerUserId).ToList();
+            var userProfileList = await _userProfileRepository.ListByUserIdAsync(userIdList, cancellationToken);
+
+            var response = ListPostResponse.Create(list);
+            foreach (var item in response.Rows) {
+                item.OwnerUser = userProfileList.Where(x => x.Id == item.OwnerUserId).FirstOrDefault()!;
+            }
+
+            return response;
+        }
+
 
         /// <summary>
         /// 创建主题帖回帖

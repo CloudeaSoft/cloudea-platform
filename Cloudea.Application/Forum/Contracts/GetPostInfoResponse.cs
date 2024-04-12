@@ -15,13 +15,8 @@ public class GetPostInfoResponse
     {
         return new GetPostInfoResponse {
             PostInfo = postInfo,
-            ReplyInfos = replyInfos
+            ReplyInfos = replyInfos ?? new()
         };
-    }
-
-    public void SetReplyInfos(PageResponse<ReplyInfo> infos)
-    {
-        ReplyInfos = infos;
     }
 }
 

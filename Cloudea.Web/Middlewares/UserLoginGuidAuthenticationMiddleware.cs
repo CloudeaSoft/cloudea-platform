@@ -18,11 +18,10 @@ namespace Cloudea.Web.Middlewares
 
         public async Task InvokeAsync(HttpContext context, UserService authUserService)
         {
-            var req = context.Request;
-            Console.WriteLine(req.Headers.Authorization);
+            var request = context.Request;
 
             // 检查 user login guid
-            if (req.Headers.TryGetValue("Authorization", out _)) {
+            if (request.Headers.TryGetValue("Authorization", out _)) {
                 Claim? userIdClaim = context.User.Claims.FirstOrDefault(t => t.Type == JwtClaims.USER_ID);
                 string userId = userIdClaim!.Value;
 

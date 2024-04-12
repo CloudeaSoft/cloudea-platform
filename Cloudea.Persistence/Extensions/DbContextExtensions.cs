@@ -24,7 +24,7 @@ namespace Cloudea.Persistence.Extensions
                 .ToListAsync(cancellationToken);
             return new PageResponse<T>() {
                 Total = count,
-                Rows = list
+                Rows = list ?? []
             };
         }
     }

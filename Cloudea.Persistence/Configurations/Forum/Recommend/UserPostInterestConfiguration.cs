@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace Cloudea.Persistence.Configurations.Forum.Recommend
 {
-    public class UserPostInterestConfiguration : IEntityTypeConfiguration<UserPostInterest>
-    {
-        public void Configure(EntityTypeBuilder<UserPostInterest> builder)
-        {
-            builder.ToTable(TableNames.ForumComment);
+    //public class UserPostInterestConfiguration : IEntityTypeConfiguration<UserPostInterest>
+    //{
+    //    public void Configure(EntityTypeBuilder<UserPostInterest> builder)
+    //    {
+    //        builder.ToTable(TableNames.ForumComment);
 
-            builder.HasKey(x => x.AutoIncId);
-        }
-    }
+    //        builder.HasKey(x => x.AutoIncId);
+    //    }
+    //}
 }

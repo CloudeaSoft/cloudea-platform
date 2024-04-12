@@ -5,11 +5,11 @@
         /// <summary>
         /// 总数
         /// </summary>
-        public long Total { get; set; }
+        public long Total { get; set; } = 0;
 
         /// <summary>
         /// 数据
         /// </summary>
-        public List<T> Rows { get; set; } = default!;
+        public List<T> Rows { get; set; } = [];
     }
 }

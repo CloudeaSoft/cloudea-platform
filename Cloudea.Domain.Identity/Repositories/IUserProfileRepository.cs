@@ -15,6 +15,8 @@ namespace Cloudea.Domain.Identity.Repositories
 
         void Delete(UserProfile user);
 
-        Task<UserProfile?> GetByUserIdAsync(Guid userId,CancellationToken cancellationToken = default);
+        Task<UserProfile?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+
+        Task<List<UserProfile>> ListByUserIdAsync(List<Guid> userIdList, CancellationToken cancellationToken = default);
     }
 }

@@ -14,9 +14,9 @@ namespace Cloudea.Web.Controllers
         }
 
         [HttpGet(ID)]
-        public async Task<IActionResult> Profile(Guid userId)
+        public async Task<IActionResult> Profile(Guid id)
         {
-            var res = await _service.GetUserProfileAsync(userId);
+            var res = await _service.GetUserProfileAsync(id);
             return res.IsSuccess ? Ok(res) : NotFound(res);
         }
     }

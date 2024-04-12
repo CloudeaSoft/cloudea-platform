@@ -18,13 +18,13 @@ namespace Cloudea.Persistence.Repositories.Identity
             _context = context;
         }
 
-        public void Add(UserProfile user) => 
+        public void Add(UserProfile user) =>
             _context.Set<UserProfile>().Add(user);
 
-        public void Delete(UserProfile user) => 
+        public void Delete(UserProfile user) =>
             _context.Set<UserProfile>().Remove(user);
 
-        public void Update(UserProfile user) => 
+        public void Update(UserProfile user) =>
             _context.Set<UserProfile>().Update(user);
 
         public async Task<UserProfile?> GetByUserIdAsync(
@@ -33,5 +33,14 @@ namespace Cloudea.Persistence.Repositories.Identity
             await _context.Set<UserProfile>()
                 .Where(x => x.Id == userId)
                 .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+
+        public async Task<List<UserProfile>> ListByUserIdAsync(
+            List<Guid> userIdList,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Set<UserProfile>()
+                .Where(x => userIdList.Contains(x.Id))
+                .ToListAsync(cancellationToken: cancellationToken);
+        }
     }
 }

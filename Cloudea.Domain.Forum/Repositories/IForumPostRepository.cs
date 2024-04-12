@@ -11,6 +11,9 @@ namespace Cloudea.Domain.Forum.Repositories
 
         Task<ForumPost?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-        Task<PageResponse<ForumPost>> GetWithPageRequestAsync(PageRequest request, CancellationToken cancellationToken = default);
+        Task<PageResponse<ForumPost>> GetWithPageRequestSectionIdAsync(
+            PageRequest request,
+            Guid? sectionId,
+            CancellationToken cancellationToken = default);
     }
 }
