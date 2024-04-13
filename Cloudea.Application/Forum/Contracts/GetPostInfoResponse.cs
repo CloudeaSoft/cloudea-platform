@@ -13,7 +13,8 @@ public class GetPostInfoResponse
 
     public static GetPostInfoResponse Create(PostInfo postInfo, PageResponse<ReplyInfo>? replyInfos = null)
     {
-        return new GetPostInfoResponse {
+        return new GetPostInfoResponse
+        {
             PostInfo = postInfo,
             ReplyInfos = replyInfos ?? new()
         };
@@ -33,13 +34,15 @@ public record PostInfo
     public long ClickCount { get; set; }
     public long LikeCount { get; set; }
     public long DislikeCount { get; set; }
+    public long ReplyCount { get; set; }
 
     public DateTimeOffset CreateTime { get; set; }
     public DateTimeOffset? LastUpdatedTime { get; set; }
 
     public static PostInfo Create(ForumPost forumPost)
     {
-        return new PostInfo() {
+        return new PostInfo()
+        {
             PostId = forumPost.Id,
             CreatorId = forumPost.OwnerUserId,
             Title = forumPost.Title,
@@ -47,6 +50,7 @@ public record PostInfo
             ClickCount = forumPost.ClickCount,
             LikeCount = forumPost.LikeCount,
             DislikeCount = forumPost.DislikeCount,
+            ReplyCount = forumPost.ReplyCount,
             CreateTime = forumPost.CreatedOnUtc,
             LastUpdatedTime = forumPost.LastEditTime
         };
@@ -65,14 +69,16 @@ public record ReplyInfo
     public string Content { get; set; }
     public long LikeCount { get; set; }
     public long DislikeCount { get; set; }
+    public long CommentCount { get; set; }
 
     public DateTimeOffset CreateTime { get; set; }
 
-    public List<CommentInfo> CommentInfos { get; set; } = [];
 
-    public static ReplyInfo Create(ForumReply forumReply, List<CommentInfo> CommentInfos)
+
+    public static ReplyInfo Create(ForumReply forumReply)
     {
-        return new ReplyInfo() {
+        return new ReplyInfo()
+        {
             ReplyId = forumReply.Id,
             CreatorId = forumReply.OwnerUserId,
             Title = forumReply.Title,
@@ -80,34 +86,7 @@ public record ReplyInfo
             LikeCount = forumReply.LikeCount,
             DislikeCount = forumReply.DislikeCount,
             CreateTime = forumReply.CreatedOnUtc,
-            CommentInfos = CommentInfos
-        };
-    }
-}
-
-public record CommentInfo
-{
-    private CommentInfo() { }
-
-    public Guid CommentId { get; set; }
-    public string Creator { set; get; } = default!;
-    public Guid CreatorId { set; get; }
-
-    public string Content { get; set; }
-    public long LikeCount { get; set; }
-    public long DislikeCount { get; set; }
-
-    public DateTimeOffset CreateTime { get; set; }
-
-    public static CommentInfo Create(ForumComment forumComment)
-    {
-        return new CommentInfo() {
-            CommentId = forumComment.Id,
-            CreatorId = forumComment.OwnerUserId,
-            Content = forumComment.Content,
-            LikeCount = forumComment.LikeCount,
-            DislikeCount = forumComment.DislikeCount,
-            CreateTime = forumComment.CreatedOnUtc
+            CommentCount = forumReply.CommentCount
         };
     }
 }

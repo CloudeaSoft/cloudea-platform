@@ -55,7 +55,8 @@ namespace Cloudea.Application.Forum
         {
             var master = (await _userRepository.GetByIdAsync(request.MasterId));
 
-            if (master is null) {
+            if (master is null)
+            {
                 return new Error("User.NotFound");
             }
 
@@ -64,7 +65,8 @@ namespace Cloudea.Application.Forum
                 master.Id,
                 request.Statement);
 
-            if (newSection is null) {
+            if (newSection is null)
+            {
                 return new Error("ForumSection.InvaildParameter");
             }
 
@@ -86,7 +88,8 @@ namespace Cloudea.Application.Forum
             CancellationToken cancellationToken = default)
         {
             var section = await _forumSectionRepository.GetByIdAsync(id, cancellationToken);
-            if (section is null) {
+            if (section is null)
+            {
                 return new Error("ForumSection.NotFound");
             }
 
@@ -108,7 +111,8 @@ namespace Cloudea.Application.Forum
             CancellationToken cancellationToken = default)
         {
             var section = await _forumSectionRepository.GetByIdAsync(id, cancellationToken);
-            if (section is null) {
+            if (section is null)
+            {
                 return new Error("ForumSection.NotFound");
             }
 
@@ -125,7 +129,8 @@ namespace Cloudea.Application.Forum
             CancellationToken cancellationToken = default)
         {
             var pageResponse = await _forumSectionRepository.GetWithPageRequestAsync(request, cancellationToken);
-            if (pageResponse.Rows.Count <= 0) {
+            if (pageResponse.Rows.Count <= 0)
+            {
                 return new Error("ForumSection.NotFound");
             }
 
@@ -143,7 +148,8 @@ namespace Cloudea.Application.Forum
             CancellationToken cancellationToken = default)
         {
             var section = await _forumSectionRepository.GetByIdAsync(request.SectionId, cancellationToken);
-            if (section is null) {
+            if (section is null)
+            {
                 return new Error("ForumSection.NotFound",
                     $"The forum_section with Id {request.SectionId} was not found");
             }
@@ -152,7 +158,8 @@ namespace Cloudea.Application.Forum
                 userId,
                 request.Title,
                 request.Content);
-            if (newPost is null) {
+            if (newPost is null)
+            {
                 return new Error("ForumPost.InvaildParameter");
             }
 
@@ -174,7 +181,8 @@ namespace Cloudea.Application.Forum
         {
             var res = await _forumPostRepository.GetByIdAsync(id, cancellationToken);
 
-            if (res is null) {
+            if (res is null)
+            {
                 return new Error("ForumPost.NotFound");
             }
 
@@ -194,51 +202,43 @@ namespace Cloudea.Application.Forum
         {
             // Get Post / If null return error
             var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
-            if (post is null) {
+            if (post is null)
+            {
                 return new Error("ForumPost.NotFound");
             }
 
-            try {
+            try
+            {
                 // Create response instance
                 var postInfo = PostInfo.Create(post);
                 var response = GetPostInfoResponse.Create(postInfo);
 
                 // Get Replys
                 var replys = await _forumReplyRepository.GetByPostIdWithPageRequestAsync(postId, request, cancellationToken);
-                if (replys is null || replys.Rows is null || replys.Rows.Count <= 0) {
+                if (replys is null || replys.Rows is null || replys.Rows.Count <= 0)
+                {
                     return response;
                 }
 
-                // Get Comments
-                var replyIds = replys.Rows.Select(x => x.Id).ToList();
-                var comments = await _forumCommentRepository.ListByReplyIdsAsync(replyIds, cancellationToken);
-
-                // Fill Replys with their Comments
-                PageResponse<ReplyInfo> replyInfos = new() {
-                    Total = replys.Total,
-                    Rows = []
-                };
-                foreach (var reply in replys.Rows) {
-                    var commentInfos = new List<CommentInfo>();
-                    foreach (var comment in comments.Where(x => x.ParentReplyId == reply.Id)) {
-                        commentInfos.Add(CommentInfo.Create(comment));
-                    }
-                    replyInfos.Rows.Add(ReplyInfo.Create(reply, commentInfos));
-                }
+                var replyInfos = PageResponse<ReplyInfo>.Create(replys.Total, replys.Rows.Select(ReplyInfo.Create).ToList());
 
                 return GetPostInfoResponse.Create(postInfo, replyInfos);
             }
-            catch (NullReferenceException ex) {
+            catch (NullReferenceException ex)
+            {
                 _logger.LogCritical(ex.ToString());
                 throw;
             }
-            finally {
+            finally
+            {
                 // Create user history before return
                 var userId = await _currentUser.GetUserIdAsync();
-                if (userId == Guid.Empty) {
-                    // Create guest history
+                if (userId == Guid.Empty)
+                {
+                    post.CreateHistory(userId);
                 }
-                else {
+                else
+                {
                     var history = post.CreateHistory(userId)!;
                     _forumPostUserHistoryRepository.Add(history);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -250,14 +250,16 @@ namespace Cloudea.Application.Forum
         {
             // Get Post / If null return error
             var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
-            if (post is null) {
+            if (post is null)
+            {
                 return new Error("ForumPost.NotFound");
             }
 
             var userId = await _currentUser.GetUserIdAsync();
 
             var like = await _forumPostUserLikeRepository.GetByUserIdPostIdAsync(userId, postId);
-            if (like is not null) {
+            if (like is not null)
+            {
                 return new Error("ForumPostUserLike.Exist");
             }
 
@@ -272,14 +274,16 @@ namespace Cloudea.Application.Forum
         {
             // Get Post / If null return error
             var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
-            if (post is null) {
+            if (post is null)
+            {
                 return new Error("ForumPost.NotFound");
             }
 
             var userId = await _currentUser.GetUserIdAsync();
 
             var like = await _forumPostUserLikeRepository.GetByUserIdPostIdAsync(userId, postId, cancellationToken);
-            if (like is null) {
+            if (like is null)
+            {
                 return new Error("ForumPostUserLike.NotFound");
             }
 
@@ -292,14 +296,16 @@ namespace Cloudea.Application.Forum
         {
             // Get Post / If null return error
             var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
-            if (post is null) {
+            if (post is null)
+            {
                 return new Error("ForumPost.NotFound");
             }
 
             var userId = await _currentUser.GetUserIdAsync();
 
             var like = await _forumPostUserLikeRepository.GetByUserIdPostIdAsync(userId, postId, cancellationToken);
-            if (like is not null) {
+            if (like is not null)
+            {
                 return new Error("ForumPostUserLike.Exist");
             }
 
@@ -314,7 +320,8 @@ namespace Cloudea.Application.Forum
         {
             // Get Post / If null return error
             var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
-            if (post is null) {
+            if (post is null)
+            {
                 return new Error("ForumPost.NotFound");
             }
 
@@ -330,14 +337,16 @@ namespace Cloudea.Application.Forum
         {
             // Get Post / If null return error
             var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
-            if (post is null) {
+            if (post is null)
+            {
                 return new Error("ForumPost.NotFound");
             }
 
             var userId = await _currentUser.GetUserIdAsync();
 
             var favorite = await _forumPostUserFavoriteRepository.GetByUserIdPostIdAsync(userId, postId, cancellationToken);
-            if (favorite is null) {
+            if (favorite is null)
+            {
                 return new Error("ForumPostUserLike.NotFound");
             }
 
@@ -357,11 +366,12 @@ namespace Cloudea.Application.Forum
             CancellationToken cancellationToken = default)
         {
             var list = await _forumPostRepository.GetWithPageRequestSectionIdAsync(request, sectionId, cancellationToken);
-            var userIdList = list.Rows.Select(x => x.OwnerUserId).ToList();
+            var userIdList = list.Rows.Select(x => x.OwnerUserId).Distinct().ToList();
             var userProfileList = await _userProfileRepository.ListByUserIdAsync(userIdList, cancellationToken);
 
             var response = ListPostResponse.Create(list);
-            foreach (var item in response.Rows) {
+            foreach (var item in response.Rows)
+            {
                 item.OwnerUser = userProfileList.Where(x => x.Id == item.OwnerUserId).FirstOrDefault()!;
             }
 
@@ -380,12 +390,14 @@ namespace Cloudea.Application.Forum
             var userId = await _currentUser.GetUserIdAsync();
 
             var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
-            if (post is null) {
+            if (post is null)
+            {
                 return new Error("ForumPost.NotFound");
             }
 
             var reply = post.CreateReply(userId, content);
-            if (reply is null) {
+            if (reply is null)
+            {
                 return new Error("ForumReply.InvalidParam");
             }
 
@@ -401,12 +413,14 @@ namespace Cloudea.Application.Forum
             var ownerUserId = await _currentUser.GetUserIdAsync();
 
             var reply = await _forumReplyRepository.GetByIdAsync(replyId, cancellationToken);
-            if (reply is null) {
+            if (reply is null)
+            {
                 return new Error("ForumReply.NotFound");
             }
 
             var comment = reply.AddComment(ownerUserId, content, targetUserId);
-            if (comment is null) {
+            if (comment is null)
+            {
                 return new Error("ForumComment.InvalidParam");
             }
 
@@ -415,6 +429,21 @@ namespace Cloudea.Application.Forum
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return comment.Id;
+        }
+
+        public async Task<Result<ListCommitPageResponse>> ListCommitAsync(Guid replyId, PageRequest request, CancellationToken cancellationToken = default)
+        {
+            var reply = await _forumReplyRepository.GetByIdAsync(replyId, cancellationToken);
+            if (reply is null)
+            {
+                return new Error("ForumReply.NotFound");
+            }
+
+            var commentPage = await _forumCommentRepository.GetByReplyIdAndPageRequestAsync(replyId, request, cancellationToken);
+            var userList = commentPage.Rows.Select(x => x.OwnerUserId).Distinct().ToList();
+            var userProfileList = await _userProfileRepository.ListByUserIdAsync(userList, cancellationToken);
+
+            return ListCommitPageResponse.Create(commentPage, userProfileList);
         }
     }
 }

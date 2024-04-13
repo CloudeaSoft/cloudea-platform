@@ -46,7 +46,8 @@ public class ForumController : ApiControllerBase
     public async Task<IActionResult> Section([FromBody] CreateSectionRequest request, CancellationToken cancellationToken)
     {
         var res = await _forumService.CreateSectionAsync(request, cancellationToken);
-        if (res.IsFailure) {
+        if (res.IsFailure)
+        {
             return HandleFailure(res);
         }
         return CreatedAtAction(
@@ -95,7 +96,8 @@ public class ForumController : ApiControllerBase
         int limit,
         CancellationToken cancellationToken = default)
     {
-        var request = new PageRequest {
+        var request = new PageRequest
+        {
             PageSize = limit,
             PageIndex = page
         };
@@ -117,7 +119,8 @@ public class ForumController : ApiControllerBase
         var userId = await _currentUser.GetUserIdAsync();
         var res = await _forumService.CreatePostAsync(userId, request, cancellationToken);
 
-        if (res.IsFailure) {
+        if (res.IsFailure)
+        {
             return HandleFailure(res);
         }
 
@@ -160,7 +163,8 @@ public class ForumController : ApiControllerBase
         Guid? sectionId,
         CancellationToken cancellationToken)
     {
-        var request = new PageRequest {
+        var request = new PageRequest
+        {
             PageSize = limit,
             PageIndex = page
         };
@@ -182,7 +186,8 @@ public class ForumController : ApiControllerBase
     {
         var res = await _forumService.PostReplyAsync(id, content, cancellationToken);
 
-        if (res.IsFailure) {
+        if (res.IsFailure)
+        {
             return HandleFailure(res);
         }
 
@@ -202,7 +207,21 @@ public class ForumController : ApiControllerBase
     {
         var res = await _forumService.PostCommentAsync(id, targetUserId, content, cancellationToken);
 
-        if (res.IsFailure) {
+        if (res.IsFailure)
+        {
+            return HandleFailure(res);
+        }
+
+        return Ok(res);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Comment(Guid id, int page, int limit, CancellationToken cancellationToken)
+    {
+        var res = await _forumService.ListCommitAsync(id, new PageRequest(page, limit), cancellationToken);
+
+        if (res.IsFailure)
+        {
             return HandleFailure(res);
         }
 

@@ -1,4 +1,5 @@
-﻿using Cloudea.Domain.Common.Repositories;
+﻿using Cloudea.Application.Abstractions;
+using Cloudea.Domain.Common.Repositories;
 using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Identity.Entities;
 using Cloudea.Domain.Identity.Repositories;
@@ -10,17 +11,28 @@ namespace Cloudea.Application.Identity
         private readonly UserService _userService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserProfileRepository _userProfileRepository;
+        private readonly ICurrentUser _currentUser;
 
-        public UserProfileService(UserService userService, IUserProfileRepository userProfileRepository, IUnitOfWork unitOfWork)
+        public UserProfileService(UserService userService, IUserProfileRepository userProfileRepository, IUnitOfWork unitOfWork, ICurrentUser currentUser)
         {
             _userService = userService;
             _userProfileRepository = userProfileRepository;
             _unitOfWork = unitOfWork;
+            _currentUser = currentUser;
         }
 
         public async Task<Result<UserProfile>> GetUserProfileAsync(Guid userId)
         {
             var profile = await _userProfileRepository.GetByUserIdAsync(userId);
+            if (profile is null) {
+                return new Error("UserProfile.NotFound");
+            }
+            return profile;
+        }
+
+        public async Task<Result<UserProfile>> GetSelfUserProfileAsync()
+        {
+            var profile = await _userProfileRepository.GetByUserIdAsync(await _currentUser.GetUserIdAsync());
             if (profile is null) {
                 return new Error("UserProfile.NotFound");
             }

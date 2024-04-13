@@ -12,16 +12,13 @@ namespace Cloudea.Application.Identity.Events
     {
         private readonly IUserProfileRepository _userProfileRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CreateUserProfileWhenUserCreatedDomainEventHandler> _logger;
 
         public CreateUserProfileWhenUserCreatedDomainEventHandler(
-            IUnitOfWork unitOfWork,
             IUserProfileRepository repository,
             IUserRepository userRepository,
             ILogger<CreateUserProfileWhenUserCreatedDomainEventHandler> logger)
         {
-            _unitOfWork = unitOfWork;
             _userProfileRepository = repository;
             _userRepository = userRepository;
             _logger = logger;
@@ -38,8 +35,6 @@ namespace Cloudea.Application.Identity.Events
             var displayName = DisplayName.Create($"新用户_{GenerateRandomString(10)}");
             var profile = UserProfile.Create(user, displayName);
             _userProfileRepository.Add(profile);
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         private static string GenerateRandomString(int length)

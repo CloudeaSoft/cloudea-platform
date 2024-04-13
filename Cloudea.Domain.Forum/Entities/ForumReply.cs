@@ -18,6 +18,8 @@ public sealed class ForumReply : AggregateRoot, IAuditableEntity
         OwnerUserId = userId;
         Content = content;
         LikeCount = 0;
+        DislikeCount = 0;
+        CommentCount = 0;
     }
 
     private ForumReply() { }
@@ -30,6 +32,8 @@ public sealed class ForumReply : AggregateRoot, IAuditableEntity
     public long LikeCount { get; private set; }
     public long DislikeCount { get; private set; }
 
+    public long CommentCount { get; private set; }
+
     public DateTimeOffset CreatedOnUtc { get; set; }
     public DateTimeOffset? ModifiedOnUtc { get; set; }
 
@@ -37,7 +41,8 @@ public sealed class ForumReply : AggregateRoot, IAuditableEntity
     {
         if (userId == Guid.Empty) return null;
         if (post is null || post.Id == Guid.Empty) return null;
-        if (string.IsNullOrEmpty(content)) {
+        if (string.IsNullOrEmpty(content))
+        {
             return null;
         }
 
@@ -48,7 +53,8 @@ public sealed class ForumReply : AggregateRoot, IAuditableEntity
 
     public void Update(string? content)
     {
-        if (!string.IsNullOrEmpty(content)) {
+        if (!string.IsNullOrEmpty(content))
+        {
             Content = content;
         }
     }
@@ -56,7 +62,8 @@ public sealed class ForumReply : AggregateRoot, IAuditableEntity
     public ForumComment? AddComment(Guid ownerUserId, string content, Guid? targetUserId)
     {
         var comment = ForumComment.Create(this, ownerUserId, targetUserId, content);
-        if (comment is null) {
+        if (comment is null)
+        {
             return null;
         }
 
@@ -64,5 +71,30 @@ public sealed class ForumReply : AggregateRoot, IAuditableEntity
         RaiseDomainEvent(new CommentCreatedDomainEvent(eventId, comment.Id, Id));
 
         return comment;
+    }
+
+    public void IncreaseCommentCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            return;
+        }
+
+        CommentCount += num;
+    }
+
+    public void DecreaseCommentCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            return;
+        }
+
+        CommentCount -= num;
+
+        if (CommentCount < 0)
+        {
+            CommentCount = 0;
+        }
     }
 }

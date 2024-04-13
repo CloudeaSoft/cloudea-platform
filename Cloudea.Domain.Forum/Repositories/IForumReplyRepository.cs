@@ -10,5 +10,7 @@ namespace Cloudea.Domain.Forum.Repositories
         Task<PageResponse<ForumReply>> GetByPostIdWithPageRequestAsync(Guid topicId, PageRequest request, CancellationToken cancellationToken = default);
 
         void Add(ForumReply reply);
+
+        void Update(ForumReply reply);
     }
 }

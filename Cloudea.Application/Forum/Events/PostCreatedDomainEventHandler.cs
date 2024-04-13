@@ -17,7 +17,8 @@ namespace Cloudea.Application.Forum.Events
         public async Task Handle(PostCreatedDomainEvent notification, CancellationToken cancellationToken)
         {
             var section = await _forumSectionRepository.GetByIdAsync(notification.SectionId, cancellationToken);
-            if (section is null) {
+            if (section is null)
+            {
                 return;
             }
             section.IncreaseTopicCount();

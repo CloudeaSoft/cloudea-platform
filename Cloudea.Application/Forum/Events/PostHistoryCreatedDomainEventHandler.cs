@@ -4,24 +4,24 @@ using Cloudea.Domain.Forum.Repositories;
 
 namespace Cloudea.Application.Forum.Events
 {
-    public class ReplyCreatedDomainEventHandler
-        : IDomainEventHandler<ReplyCreatedDomainEvent>
+    public class PostHistoryCreatedDomainEventHandler
+    : IDomainEventHandler<PostHistoryCreatedDomainEvent>
     {
         private readonly IForumPostRepository _forumPostRepository;
 
-        public ReplyCreatedDomainEventHandler(IForumPostRepository forumPostRepository)
+        public PostHistoryCreatedDomainEventHandler(IForumPostRepository forumPostRepository)
         {
             _forumPostRepository = forumPostRepository;
         }
 
-        public async Task Handle(ReplyCreatedDomainEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(PostHistoryCreatedDomainEvent notification, CancellationToken cancellationToken)
         {
             var post = await _forumPostRepository.GetByIdAsync(notification.PostId, cancellationToken);
             if (post is null)
             {
                 return;
             }
-            post.IncreaseReplyCount();
+            post.IncreaseClickCount();
             _forumPostRepository.Update(post);
         }
     }

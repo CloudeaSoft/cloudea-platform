@@ -31,10 +31,11 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
 
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
-    public long ClickCount { get; set; }
+    public long ClickCount { get; private set; }
 
-    public long LikeCount { get; set; }
-    public long DislikeCount { get; set; }
+    public long LikeCount { get; private set; }
+    public long DislikeCount { get; private set; }
+    public long ReplyCount { get; private set; }
 
     public DateTimeOffset LastClickTime { get; set; }
     public DateTimeOffset LastEditTime { get; set; }
@@ -63,11 +64,13 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
         string? title,
         string? content)
     {
-        if (!string.IsNullOrEmpty(title)) {
+        if (!string.IsNullOrEmpty(title))
+        {
             Title = title;
         }
 
-        if (!string.IsNullOrEmpty(content)) {
+        if (!string.IsNullOrEmpty(content))
+        {
             Content = content;
         }
     }
@@ -75,7 +78,8 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
     public ForumReply? CreateReply(Guid userId, string content)
     {
         var reply = ForumReply.Create(userId, this, content);
-        if (reply is null) {
+        if (reply is null)
+        {
             return null;
         }
 
@@ -87,7 +91,16 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
 
     public ForumPostUserHistory? CreateHistory(Guid userId)
     {
-        return ForumPostUserHistory.Create(this, userId);
+        var history = ForumPostUserHistory.Create(this, userId);
+        if (history is null)
+        {
+            return null;
+        }
+
+        var eventId = Guid.NewGuid();
+        RaiseDomainEvent(new PostHistoryCreatedDomainEvent(eventId, history.Id, Id));
+
+        return history;
     }
 
     public ForumPostUserLike? CreateLike(Guid userId)
@@ -103,5 +116,40 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
     public ForumPostUserFavorite? CreateFavorite(Guid userId)
     {
         return ForumPostUserFavorite.Create(this, userId);
+    }
+
+    public void IncreaseReplyCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            return;
+        }
+
+        ReplyCount += num;
+    }
+
+    public void DecreaseReplyCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            return;
+        }
+
+        ReplyCount -= num;
+
+        if (ReplyCount < 0)
+        {
+            ReplyCount = 0;
+        }
+    }
+
+    public void IncreaseClickCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            return;
+        }
+
+        ClickCount += num;
     }
 }

@@ -19,5 +19,12 @@ namespace Cloudea.Web.Controllers
             var res = await _service.GetUserProfileAsync(id);
             return res.IsSuccess ? Ok(res) : NotFound(res);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> MyProfile()
+        {
+            var res = await _service.GetSelfUserProfileAsync();
+            return res.IsSuccess ? Ok(res) : NotFound(res);
+        }
     }
 }

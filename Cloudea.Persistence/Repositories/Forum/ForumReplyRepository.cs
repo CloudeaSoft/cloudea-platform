@@ -27,4 +27,7 @@ public class ForumReplyRepository(ApplicationDbContext context) : IForumReplyRep
                         .Where(x => x.ParentPostId == topicId)
                         .OrderBy(x => x.CreatedOnUtc)
                         .ToPageListAsync(request, cancellationToken);
+
+    public void Update(ForumReply reply) =>
+        _dbContext.Set<ForumReply>().Update(reply);
 }
