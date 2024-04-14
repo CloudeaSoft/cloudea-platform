@@ -1,6 +1,6 @@
 ﻿using Cloudea.Application.Abstractions;
 using Cloudea.Application.Forum;
-using Cloudea.Application.Forum.Contracts;
+using Cloudea.Application.Forum.Contracts.Request;
 using Cloudea.Domain.Common.API;
 using Cloudea.Domain.Common.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -90,6 +90,7 @@ public class ForumController : ApiControllerBase
     /// 获取Section列表
     /// </summary>
     /// <returns></returns>
+    [AllowAnonymous]
     [HttpGet(PageRequest)]
     public async Task<IActionResult> Section(
         int page,
@@ -137,13 +138,13 @@ public class ForumController : ApiControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpPost(ID + "/Info")]
+    [AllowAnonymous]
+    [HttpPost(ID)]
     public async Task<IActionResult> Post(
         Guid id,
-        [FromBody] PageRequest request,
         CancellationToken cancellationToken)
     {
-        var res = await _forumService.GetPostInfoAsync(id, request, cancellationToken);
+        var res = await _forumService.GetPostAsync(id, cancellationToken);
 
         return res.IsSuccess ? Ok(res) : NotFound(res.Error);
     }
@@ -156,6 +157,7 @@ public class ForumController : ApiControllerBase
     /// <param name="sectionId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
+    [AllowAnonymous]
     [HttpGet(PageRequest)]
     public async Task<IActionResult> Post(
         int page,
@@ -194,6 +196,19 @@ public class ForumController : ApiControllerBase
         return Ok(res);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Reply(Guid postId, int page, int limit, CancellationToken cancellationToken)
+    {
+        var res = await _forumService.ListReplyAsync(postId, new PageRequest(page, limit), cancellationToken);
+
+        if (res.IsFailure)
+        {
+            return HandleFailure(res);
+        }
+
+        return Ok(res);
+    }
+
     /// <summary>
     /// 创建评论
     /// </summary>
@@ -215,10 +230,19 @@ public class ForumController : ApiControllerBase
         return Ok(res);
     }
 
+    /// <summary>
+    /// 获取评论
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="page"></param>
+    /// <param name="limit"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Comment(Guid id, int page, int limit, CancellationToken cancellationToken)
     {
-        var res = await _forumService.ListCommitAsync(id, new PageRequest(page, limit), cancellationToken);
+        var res = await _forumService.ListCommentAsync(id, new PageRequest(page, limit), cancellationToken);
 
         if (res.IsFailure)
         {

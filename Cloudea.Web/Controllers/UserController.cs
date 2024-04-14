@@ -1,9 +1,11 @@
 ﻿using Cloudea.Application.Identity;
 using Cloudea.Domain.Common.API;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers
 {
+    [Authorize]
     public class UserController : ApiControllerBase
     {
         private readonly UserProfileService _service;

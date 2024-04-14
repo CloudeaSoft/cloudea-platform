@@ -1,7 +1,6 @@
 ﻿using Cloudea.Domain.Common.Shared;
-using System.Resources;
 
-namespace Cloudea.Application.Forum.Contracts
+namespace Cloudea.Application.Forum.Contracts.Response
 {
     public class SectionListResponse : PageResponse<SectionInfo>
     {

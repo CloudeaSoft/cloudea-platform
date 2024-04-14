@@ -24,17 +24,8 @@ namespace Cloudea.Persistence.Repositories.Forum
         {
             return await _context.Set<ForumComment>()
                 .Where(x => x.ParentReplyId == id)
+                .OrderBy(x => x.CreatedOnUtc)
                 .ToPageListAsync(request, cancellationToken);
-        }
-
-        public async Task<List<ForumComment>> ListByReplyIdsAsync(List<Guid> replyIds, CancellationToken c)
-        {
-            var set = _context.Set<ForumComment>().AsNoTracking();
-            var sorted = set.OrderByDescending(x => x.CreatedOnUtc);
-            return await set.Select(x => x.ParentReplyId)
-                      .Distinct()
-                      .SelectMany(x => sorted.Where(y => y.ParentReplyId == x).Take(2))
-                      .ToListAsync(cancellationToken: c);
         }
     }
 }

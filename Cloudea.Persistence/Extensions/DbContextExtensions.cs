@@ -16,13 +16,16 @@ namespace Cloudea.Persistence.Extensions
         public static async Task<PageResponse<T>> ToPageListAsync<T>(this IQueryable<T> source, PageRequest request, CancellationToken cancellationToken = default)
         {
             var count = source.Count();
-            if (count <= 0) {
+            if (count <= 0)
+            {
                 return new PageResponse<T>();
             }
-            var list = await source.Skip((request.PageIndex - 1) * request.PageSize)
+            var list = await source.OrderBy(x => x)
+                .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .ToListAsync(cancellationToken);
-            return new PageResponse<T>() {
+            return new PageResponse<T>()
+            {
                 Total = count,
                 Rows = list ?? []
             };

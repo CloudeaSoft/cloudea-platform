@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloudea.Application.Forum.Contracts
+namespace Cloudea.Application.Forum.Contracts.Response
 {
     public class ListSectionResponse : PageResponse<ListSectionResponse.Section>
     {

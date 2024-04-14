@@ -3,10 +3,12 @@ using Cloudea.Application.Identity;
 using Cloudea.Domain.Common.API;
 using Cloudea.Domain.Identity.Enums;
 using Cloudea.Domain.Identity.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers
 {
+    [Authorize]
     public class IdentityController : ApiControllerBase
     {
         private readonly UserService authUserService;

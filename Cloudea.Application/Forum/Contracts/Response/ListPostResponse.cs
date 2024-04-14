@@ -2,7 +2,7 @@
 using Cloudea.Domain.Forum.Entities;
 using Cloudea.Domain.Identity.Entities;
 
-namespace Cloudea.Application.Forum.Contracts
+namespace Cloudea.Application.Forum.Contracts.Response
 {
     public class ListPostResponse : PageResponse<ListPostResponse.Post>
     {
@@ -13,12 +13,15 @@ namespace Cloudea.Application.Forum.Contracts
 
         public static ListPostResponse Create(PageResponse<ForumPost> postList)
         {
-            var response = new ListPostResponse() {
+            var response = new ListPostResponse()
+            {
                 Total = postList.Total,
                 Rows = []
             };
-            foreach (var post in postList.Rows) {
-                response.Rows.Add(new Post() {
+            foreach (var post in postList.Rows)
+            {
+                response.Rows.Add(new Post()
+                {
                     Id = post.Id,
                     ParentSectionId = post.ParentSectionId,
                     OwnerUserId = post.OwnerUserId,

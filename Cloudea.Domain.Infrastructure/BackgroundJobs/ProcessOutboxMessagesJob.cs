@@ -14,12 +14,12 @@ public class ProcessOutboxMessagesJob : IJob
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly ILogger<ProcessOutboxMessagesJob> _logger;
-    private readonly IPublisher _publisher;
+    private readonly IMediator _mediator;
 
-    public ProcessOutboxMessagesJob(ApplicationDbContext dbContext, IPublisher publisher, ILogger<ProcessOutboxMessagesJob> logger)
+    public ProcessOutboxMessagesJob(ApplicationDbContext dbContext, IMediator publisher, ILogger<ProcessOutboxMessagesJob> logger)
     {
         _dbContext = dbContext;
-        _publisher = publisher;
+        _mediator = publisher;
         _logger = logger;
     }
 
@@ -28,6 +28,7 @@ public class ProcessOutboxMessagesJob : IJob
         List<OutboxMessage> messages = await _dbContext
             .Set<OutboxMessage>()
             .Where(m => m.ProcessedOnUtc == null)
+            .OrderBy(x => x.OccurredOnUtc)
             .Take(20)
             .ToListAsync(context.CancellationToken);
 
@@ -45,7 +46,7 @@ public class ProcessOutboxMessagesJob : IJob
             }
 
             try {
-                await _publisher.Publish(domainEvent, context.CancellationToken);
+                await _mediator.Publish(domainEvent, context.CancellationToken);
                 message.ProcessedOnUtc = DateTimeOffset.UtcNow;
             }
             catch (Exception ex) {
@@ -54,7 +55,6 @@ public class ProcessOutboxMessagesJob : IJob
                 _logger.LogError(message: ex.Message);
             }
         }
-
         await _dbContext.SaveChangesAsync();
     }
 }

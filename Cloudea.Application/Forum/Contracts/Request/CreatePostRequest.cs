@@ -1,3 +1,3 @@
-﻿namespace Cloudea.Application.Forum.Contracts;
+﻿namespace Cloudea.Application.Forum.Contracts.Request;
 
 public sealed record CreatePostRequest(Guid SectionId, string Title, string Content);
