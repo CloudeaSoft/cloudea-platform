@@ -28,6 +28,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="email"></param>
         /// <param name="verCode"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> RegisterToken(string email, string verCode)
         {
@@ -43,6 +44,7 @@ namespace Cloudea.Web.Controllers
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         public new async Task<IActionResult> User([FromBody] UserRegisterRequest user)
         {
@@ -58,6 +60,7 @@ namespace Cloudea.Web.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Session([FromBody] UserLoginRequest request)
         {
@@ -79,6 +82,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="email"></param>
         /// <param name="codeType"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> VerificationCode(string email, VerificationCodeType codeType)
         {
