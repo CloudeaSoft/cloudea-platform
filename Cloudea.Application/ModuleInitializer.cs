@@ -4,6 +4,7 @@ using MediatR;
 using Cloudea.Application.Identity;
 using Cloudea.Application.Abstractions;
 using Cloudea.Domain.Common;
+using Cloudea.Application.File;
 
 namespace Cloudea.Application
 {
@@ -18,6 +19,8 @@ namespace Cloudea.Application
             services.AddScoped<UserProfileService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddScoped<VerificationCodeService>();
+
+            services.AddScoped<FileService>();
         }
     }
 }

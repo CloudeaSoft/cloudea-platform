@@ -18,7 +18,7 @@ namespace Cloudea.Persistence
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddScoped<IFSRepository, FileRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
 
             services.AddScoped<IForumSectionRepository, ForumSectionRepository>();
             services.AddScoped<IForumPostRepository, ForumPostRepository>();

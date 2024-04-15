@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cloudea.Web.Controllers
 {
     [Authorize]
+    [Route("api/[controller]/[action]")]
     public class UserController : ApiControllerBase
     {
         private readonly UserProfileService _service;

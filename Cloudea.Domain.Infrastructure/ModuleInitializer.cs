@@ -1,6 +1,6 @@
-﻿using Cloudea.Application.Utils;
+﻿using Cloudea.Application.Infrastructure;
+using Cloudea.Application.Utils;
 using Cloudea.Domain.Common;
-using Cloudea.Domain.File.Infrastructure;
 using Cloudea.Infrastructure.FileStorageClients;
 using Cloudea.Infrastructure.Jwt;
 using Microsoft.Extensions.DependencyInjection;

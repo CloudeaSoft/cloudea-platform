@@ -1,6 +1,6 @@
 ﻿using Cloudea.Domain.File.Enums;
 
-namespace Cloudea.Domain.File.Infrastructure
+namespace Cloudea.Application.Infrastructure
 {
     public interface IStorageClient
     {

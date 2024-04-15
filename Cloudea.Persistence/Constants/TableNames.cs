@@ -19,6 +19,8 @@ internal static class TableNames
 
     internal const string VerificationCode = "u_verification_code";
 
+    internal const string File = "f_file";
+
     internal const string ForumPost = "forum_post";
 
     internal const string ForumSection = "forum_section";

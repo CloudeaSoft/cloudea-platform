@@ -1,9 +1,10 @@
 ﻿using Cloudea.Domain.File.Entities;
 using Cloudea.Domain.File.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cloudea.Persistence.Repositories.File
 {
-    public class FileRepository : IFSRepository
+    public class FileRepository : IFileRepository
     {
         private readonly ApplicationDbContext _context;
 
@@ -12,10 +13,19 @@ namespace Cloudea.Persistence.Repositories.File
             _context = context;
         }
 
-        public Task<File_UploadedFile?> FindFileAsync(long fileSize, string sha256Hash)
-        {
-            throw new NotImplementedException();
-            return null;
-        }
+        public void Add(UploadedFile file) =>
+            _context.Set<UploadedFile>().Add(file);
+
+        public void Delete(UploadedFile file) =>
+            _context.Set<UploadedFile>().Remove(file);
+
+        public async Task<UploadedFile?> GetBySizeHashAsync(
+            long fileSize,
+            string sha256Hash) =>
+            await _context.Set<UploadedFile>()
+                .Where(x =>
+                    x.FileSizeInBytes == fileSize &&
+                    x.FileSHA256Hash == sha256Hash)
+                .FirstOrDefaultAsync();
     }
 }

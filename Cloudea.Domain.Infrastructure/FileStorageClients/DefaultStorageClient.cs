@@ -1,5 +1,5 @@
-﻿using Cloudea.Domain.File.Enums;
-using Cloudea.Domain.File.Infrastructure;
+﻿using Cloudea.Application.Infrastructure;
+using Cloudea.Domain.File.Enums;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
@@ -22,7 +22,8 @@ class DefaultStorageClient : IStorageClient
 
     public async Task<Uri> SaveFileAsync(string key, Stream content, CancellationToken cancellationToken = default)
     {
-        if (key.StartsWith('/')) {
+        if (key.StartsWith('/'))
+        {
             throw new ArgumentException("key should not start with /", nameof(key));
         }
         string workingDir = Path.Combine(hostEnv.ContentRootPath, "wwwroot");
@@ -38,8 +39,8 @@ class DefaultStorageClient : IStorageClient
         }
         using Stream outStream = File.OpenWrite(fullPath);
         await content.CopyToAsync(outStream, cancellationToken);
-        var req = httpContextAccessor.HttpContext.Request;
-        string url = req.Scheme + "://" + req.Host + "/FileService/" + key;
+        HttpRequest req = httpContextAccessor.HttpContext!.Request;
+        string url = req.Scheme + "://" + req.Host + "/" + key;
         return new Uri(url);
     }
 }

@@ -1,12 +1,21 @@
-﻿using Cloudea.Domain.Common.Database;
+﻿using Cloudea.Domain.Common.Primitives;
 
 namespace Cloudea.Domain.File.Entities
 {
-    public class File_UploadedFile : BaseDataEntity
+    public class UploadedFile : Entity
     {
-        private File_UploadedFile()
+        private UploadedFile(Guid id,
+            long fileSizeInBytes,
+            string fileName,
+            string fileSHA256Hash,
+            Uri backupUrl,
+            Uri remoteUrl) : base(id)
         {
-
+            FileSizeInBytes = fileSizeInBytes;
+            FileName = fileName;
+            FileSHA256Hash = fileSHA256Hash;
+            BackupUrl = backupUrl;
+            RemoteUrl = remoteUrl;
         }
 
         /// <summary>
@@ -46,23 +55,18 @@ namespace Cloudea.Domain.File.Entities
         /// <param name="backupUrl"></param>
         /// <param name="remoteUrl"></param>
         /// <returns></returns>
-        public static File_UploadedFile Create(
+        public static UploadedFile Create(
             Guid id,
             long fileSizeInBytes,
             string fileName,
             string fileSHA256Hash,
             Uri backupUrl,
-            Uri remoteUrl)
-        {
-            File_UploadedFile item = new File_UploadedFile() {
-                Id = id,
-                FileName = fileName,
-                FileSHA256Hash = fileSHA256Hash,
-                FileSizeInBytes = fileSizeInBytes,
-                BackupUrl = backupUrl,
-                RemoteUrl = remoteUrl
-            };
-            return item;
-        }
+            Uri remoteUrl) =>
+            new(id,
+                fileSizeInBytes,
+                fileName,
+                fileSHA256Hash,
+                backupUrl,
+                remoteUrl);
     }
 }
