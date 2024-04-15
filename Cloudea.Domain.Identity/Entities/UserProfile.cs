@@ -1,18 +1,19 @@
 ﻿using Cloudea.Domain.Common.Primitives;
+using Cloudea.Domain.Identity.DomainEvents;
 using Cloudea.Domain.Identity.ValueObjects;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cloudea.Domain.Identity.Entities;
 
-public class UserProfile : Entity, IAuditableEntity
+public class UserProfile : AggregateRoot, IAuditableEntity
 {
     private UserProfile(
         Guid id,
         string userName,
         string displayName,
         string? signature,
-        string? avatarUrl,
-        string? coverImageUrl,
+        Uri? avatarUrl,
+        Uri? coverImageUrl,
         int leaves)
         : base(id)
     {
@@ -27,32 +28,32 @@ public class UserProfile : Entity, IAuditableEntity
     private UserProfile() { }
 
     [MaxLength(100)]
-    public string UserName { get; set; }
+    public string UserName { get; private set; }
 
     [MaxLength(256)]
-    public string DisplayName { get; set; }
+    public string DisplayName { get; private set; }
 
     [MaxLength(500)]
-    public string? Signature { get; set; }
+    public string? Signature { get; private set; }
 
     [MaxLength(256)]
-    public string? AvatarUrl { get; set; }
+    public Uri? AvatarUrl { get; private set; }
 
     [MaxLength(256)]
-    public string? CoverImageUrl { get; set; }
+    public Uri? CoverImageUrl { get; private set; }
 
-    public int Leaves { get; set; }
+    public int Leaves { get; private set; }
 
-    public DateTimeOffset CreatedOnUtc { get; set; }
+    public DateTimeOffset CreatedOnUtc { get; private set; }
 
-    public DateTimeOffset? ModifiedOnUtc { get; set; }
+    public DateTimeOffset? ModifiedOnUtc { get; private set; }
 
     public static UserProfile Create(
         User user,
         DisplayName displayName,
         string? signature = null,
-        string? avatarUrl = null,
-        string? coverImageUrl = null,
+        Uri? avatarUrl = null,
+        Uri? coverImageUrl = null,
         int leaves = 100)
     {
         return new UserProfile(
@@ -64,5 +65,15 @@ public class UserProfile : Entity, IAuditableEntity
             coverImageUrl,
             leaves
         );
+    }
+
+    public UserProfile SetAvatar(Uri avatarUrl)
+    {
+        Guid eventId = Guid.NewGuid();
+        RaiseDomainEvent(new UserProfileAvatarUpdatedDomainEvent(eventId, Id, AvatarUrl));
+
+        AvatarUrl = avatarUrl;
+
+        return this;
     }
 }

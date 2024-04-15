@@ -14,6 +14,8 @@ namespace Cloudea.Domain.File.Repositories
         /// <param name="fileSize"></param>
         /// <param name="sha256Hash"></param>
         /// <returns></returns>
-        Task<UploadedFile?> GetBySizeHashAsync(long fileSize, string sha256Hash);
+        Task<UploadedFile?> GetBySizeHashAsync(long fileSize, string sha256Hash, CancellationToken cancellation = default);
+
+        Task<UploadedFile?> GetByUriAsync(Uri path, CancellationToken cancellationToken = default);
     }
 }

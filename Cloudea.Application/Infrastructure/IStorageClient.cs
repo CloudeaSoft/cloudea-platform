@@ -1,4 +1,5 @@
-﻿using Cloudea.Domain.File.Enums;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.File.Enums;
 
 namespace Cloudea.Application.Infrastructure
 {
@@ -14,5 +15,13 @@ namespace Cloudea.Application.Infrastructure
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Uri> SaveFileAsync(string key, Stream content, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<bool> DeleteFileAsync(Uri path, CancellationToken cancellationToken = default);
     }
 }

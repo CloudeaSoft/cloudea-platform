@@ -21,11 +21,21 @@ namespace Cloudea.Persistence.Repositories.File
 
         public async Task<UploadedFile?> GetBySizeHashAsync(
             long fileSize,
-            string sha256Hash) =>
+            string sha256Hash,
+             CancellationToken cancellation = default) =>
             await _context.Set<UploadedFile>()
                 .Where(x =>
                     x.FileSizeInBytes == fileSize &&
                     x.FileSHA256Hash == sha256Hash)
+                .FirstOrDefaultAsync(cancellation);
+
+        public async Task<UploadedFile?> GetByUriAsync(
+            Uri path,
+            CancellationToken cancellationToken = default) =>
+            await _context.Set<UploadedFile>()
+                .Where(x =>
+                    x.RemoteUrl == path ||
+                    x.BackupUrl == path)
                 .FirstOrDefaultAsync();
     }
 }

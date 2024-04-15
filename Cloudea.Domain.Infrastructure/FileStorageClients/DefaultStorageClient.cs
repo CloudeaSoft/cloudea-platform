@@ -2,6 +2,7 @@
 using Cloudea.Domain.File.Enums;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Quartz.Util;
 
 namespace Cloudea.Infrastructure.FileStorageClients;
 /// <summary>
@@ -26,10 +27,11 @@ class DefaultStorageClient : IStorageClient
         {
             throw new ArgumentException("key should not start with /", nameof(key));
         }
-        string workingDir = Path.Combine(hostEnv.ContentRootPath, "wwwroot");
+        string workingDir = Path.Combine(hostEnv.ContentRootPath, "wwwroot", "File");
+
         string fullPath = Path.Combine(workingDir, key);
         string? fullDir = Path.GetDirectoryName(fullPath);//get the directory
-        if (!Directory.Exists(fullDir))//automatically create dir
+        if (!Directory.Exists(fullDir) && !string.IsNullOrWhiteSpace(fullDir))//automatically create dir
         {
             Directory.CreateDirectory(fullDir);
         }
@@ -37,10 +39,36 @@ class DefaultStorageClient : IStorageClient
         {
             File.Delete(fullPath);
         }
+
         using Stream outStream = File.OpenWrite(fullPath);
         await content.CopyToAsync(outStream, cancellationToken);
         HttpRequest req = httpContextAccessor.HttpContext!.Request;
-        string url = req.Scheme + "://" + req.Host + "/" + key;
+        string url = req.Scheme + "://" + req.Host + "/File/" + key;
         return new Uri(url);
+    }
+
+    public async Task<bool> DeleteFileAsync(Uri path, CancellationToken cancellationToken = default)
+    {
+        // 验证path  
+        if (path is null || path.ToString().IsNullOrWhiteSpace())
+        {
+            throw new ArgumentNullException(nameof(path));
+        }
+
+        // 在这里构件真实文件路径
+        string fullPath = Path.Combine(hostEnv.ContentRootPath, "wwwroot", path.LocalPath.TrimStart('/'));
+
+        // 检查文件是否存在  
+        if (!File.Exists(fullPath))
+        {
+            // 文件不存在，返回false表示未删除  
+            return false;
+        }
+
+        // 删除文件  
+        await Task.Run(() => File.Delete(fullPath), cancellationToken);
+
+        // 返回true表示物理删除成功  
+        return true;
     }
 }

@@ -40,14 +40,14 @@ public class FileService
     public async Task<Result<UploadedFile>> UploadFileAsync(
         Stream stream,
         string fileName,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         string hash = HashUtils.ComputeMd5Hash(stream);
         long fileSize = stream.Length;
         DateTimeOffset today = DateTimeOffset.Now;
 
         // 命名规则
-        string key = $"File/{today.Year}/{today.Month}/{today.Day}/{hash}/{fileName}";
+        string key = $"{today.Year}/{today.Month}/{today.Day}/{hash}/{fileName}";
 
         // 文件查重
         var oldUploadedFile = await _fileRepository.GetBySizeHashAsync(fileSize, hash);
@@ -81,5 +81,20 @@ public class FileService
             _logger.LogCritical(ex.Message);
             return new Error("File.InvalidParam", ex.Message);
         }
+    }
+
+    public async Task<Result> DeleteFileAsync(
+        Uri path,
+        CancellationToken cancellationToken = default)
+    {
+        var file = await _fileRepository.GetByUriAsync(path, cancellationToken) ?? throw new ArgumentNullException();
+
+        await _remoteStorage.DeleteFileAsync(path, cancellationToken);
+        await _backupStorage.DeleteFileAsync(path, cancellationToken);
+
+        _fileRepository.Delete(file);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
     }
 }

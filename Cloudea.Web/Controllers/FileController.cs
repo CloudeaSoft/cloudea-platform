@@ -16,12 +16,17 @@ namespace Cloudea.Web.Controllers
         }
 
         [HttpPost]
-
         public async Task<IActionResult> Upload(IFormFile file, CancellationToken cancellationToken)
         {
             string fileName = file.FileName;
             using Stream stream = file.OpenReadStream();
-            var res = await _fileService.UploadFileAsync(stream, fileName, cancellationToken);
+            var res = await _fileService.UploadFileAsync(stream, fileName, cancellationToken: cancellationToken);
+
+            if (res.IsFailure)
+            {
+                return HandleFailure(res);
+            }
+
             return Ok(res);
         }
     }
