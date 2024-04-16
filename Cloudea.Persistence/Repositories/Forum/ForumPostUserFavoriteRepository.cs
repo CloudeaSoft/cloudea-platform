@@ -21,7 +21,7 @@ public class ForumPostUserFavoriteRepository : IForumPostUserFavoriteRepository
 
     public void Delete(ForumPostUserFavorite favorite)
     {
-        _dbContext.Set<ForumPostUserFavorite>().Add(favorite);
+        _dbContext.Set<ForumPostUserFavorite>().Remove(favorite);
     }
 
     public async Task<ForumPostUserFavorite?> GetByUserIdPostIdAsync(
