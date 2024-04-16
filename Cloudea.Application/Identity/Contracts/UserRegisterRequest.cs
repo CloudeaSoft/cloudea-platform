@@ -1,4 +1,4 @@
-﻿namespace Cloudea.Domain.Identity.Models
+﻿namespace Cloudea.Application.Identity.Contracts
 {
     /// <summary>
     /// 注册账号

@@ -1,4 +1,5 @@
-﻿using Cloudea.Application.Utils;
+﻿using Cloudea.Application.Identity.Contracts;
+using Cloudea.Application.Utils;
 using Cloudea.Domain.Common.Repositories;
 using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Common.Utils;

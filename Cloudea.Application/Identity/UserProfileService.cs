@@ -1,5 +1,6 @@
 ﻿using Cloudea.Application.Abstractions;
 using Cloudea.Application.File;
+using Cloudea.Application.Identity.Contracts;
 using Cloudea.Domain.Common.Repositories;
 using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Identity.Entities;
@@ -37,12 +38,41 @@ namespace Cloudea.Application.Identity
 
         public async Task<Result<UserProfile>> GetSelfUserProfileAsync(CancellationToken cancellationToken = default)
         {
-            var profile = await _userProfileRepository.GetByUserIdAsync(await _currentUser.GetUserIdAsync());
+            var userId = await _currentUser.GetUserIdAsync();
+            if (userId == Guid.Empty)
+            {
+                return new Error("User.NotFound");
+            }
+
+            var profile = await _userProfileRepository.GetByUserIdAsync(userId);
             if (profile is null)
             {
                 return new Error("UserProfile.NotFound");
             }
             return profile;
+        }
+
+        public async Task<Result<UserProfile>> UpdateSelfUserProfileAsync(UpdateUserProfileRequest request, CancellationToken cancellationToken = default)
+        {
+            var userId = await _currentUser.GetUserIdAsync();
+            if (userId == Guid.Empty)
+            {
+                return new Error("User.NotFound");
+            }
+
+            var profile = await _userProfileRepository.GetByUserIdAsync(userId);
+            if (profile is null)
+            {
+                return new Error("UserProfile.NotFound");
+            }
+
+            var newProfile = profile.Update(request.DisplayName, request.Signature);
+
+            _userProfileRepository.Update(newProfile);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return newProfile;
         }
 
         public async Task<Result<UserProfile>> CreateUserProfileAvatar(IFormFile file, CancellationToken cancellationToken = default)
@@ -91,7 +121,7 @@ namespace Cloudea.Application.Identity
             if (res.IsFailure)
             {
                 return res.Error;
-            }            
+            }
 
             // 保存头像
             profile.SetAvatar(res.Data.RemoteUrl);

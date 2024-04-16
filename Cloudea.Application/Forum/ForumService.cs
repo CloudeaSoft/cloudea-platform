@@ -145,10 +145,15 @@ namespace Cloudea.Application.Forum
         /// <param name="request"></param>
         /// <returns></returns>
         public async Task<Result<Guid?>> CreatePostAsync(
-            Guid userId,
             CreatePostRequest request,
+            Guid userId = default,
             CancellationToken cancellationToken = default)
         {
+            if (userId == Guid.Empty)
+            {
+                userId = await _currentUser.GetUserIdAsync();
+            }
+
             var section = await _forumSectionRepository.GetByIdAsync(request.SectionId, cancellationToken);
             if (section is null)
             {
@@ -376,6 +381,32 @@ namespace Cloudea.Application.Forum
         }
 
         /// <summary>
+        /// 查看是否喜欢
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<Result<Guid?>> GetLikeOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
+        {
+            var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
+            if (post is null)
+            {
+                return new Error("ForumPost.NotFound");
+            }
+
+            var userId = await _currentUser.GetUserIdAsync();
+
+            var like = await _forumPostUserLikeRepository.GetByUserIdPostIdAsync(userId, postId);
+
+            if (like is null)
+            {
+                return Result.Success<Guid?>(null);
+            }
+
+            return like.Id;
+        }
+
+        /// <summary>
         /// 取消喜欢
         /// </summary>
         /// <param name="postId"></param>
@@ -449,9 +480,42 @@ namespace Cloudea.Application.Forum
             }
 
             var userId = await _currentUser.GetUserIdAsync();
-            var favorite = post.CreateFavorite(userId)!;
-            _forumPostUserFavoriteRepository.Add(favorite);
+
+            var favorite = await _forumPostUserFavoriteRepository.GetByUserIdPostIdAsync(userId, postId, cancellationToken);
+            if (favorite is not null)
+            {
+                return new Error("ForumPostUserFavorite.Exist");
+            }
+
+            var newFavorite = post.CreateFavorite(userId)!;
+            _forumPostUserFavoriteRepository.Add(newFavorite);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return newFavorite.Id;
+        }
+
+        /// <summary>
+        /// 查看收藏
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<Result<Guid?>> GetFavoriteOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
+        {
+            // Get Post / If null return error
+            var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
+            if (post is null)
+            {
+                return new Error("ForumPost.NotFound");
+            }
+
+            var userId = await _currentUser.GetUserIdAsync();
+
+            var favorite = await _forumPostUserFavoriteRepository.GetByUserIdPostIdAsync(userId, postId, cancellationToken);
+            if (favorite is null)
+            {
+                return Result.Success<Guid?>(null);
+            }
 
             return favorite.Id;
         }
@@ -476,7 +540,7 @@ namespace Cloudea.Application.Forum
             var favorite = await _forumPostUserFavoriteRepository.GetByUserIdPostIdAsync(userId, postId, cancellationToken);
             if (favorite is null)
             {
-                return new Error("ForumPostUserLike.NotFound");
+                return new Error("ForumPostUserFavorite.NotFound");
             }
 
             _forumPostUserFavoriteRepository.Delete(favorite);

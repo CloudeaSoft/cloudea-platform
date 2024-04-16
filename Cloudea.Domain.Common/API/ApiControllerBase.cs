@@ -12,7 +12,9 @@ namespace Cloudea.Domain.Common.API
         protected const string PageRequest = "";//"{page}/{limit}";
 
         protected IActionResult HandleFailure(Result result) =>
-            result switch { { IsSuccess: true } => throw new InvalidOperationException(),
+            result switch
+            {
+                { IsSuccess: true } => throw new InvalidOperationException(),
                 IValidationResult validationResult =>
                     BadRequest(
                         CreateProblemDetails(
@@ -32,7 +34,8 @@ namespace Cloudea.Domain.Common.API
             int status,
             Error error,
             Error[]? errors = null) =>
-            new() {
+            new()
+            {
                 Title = title,
                 Type = error.Code,
                 Detail = error.Message,

@@ -67,6 +67,13 @@ public class UserProfile : AggregateRoot, IAuditableEntity
         );
     }
 
+    public UserProfile Update(string displayName, string signature)
+    {
+        DisplayName = displayName;
+        Signature = signature;
+        return this;
+    }
+
     public UserProfile SetAvatar(Uri avatarUrl)
     {
         Guid eventId = Guid.NewGuid();

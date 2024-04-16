@@ -1,5 +1,7 @@
 ﻿using Cloudea.Application.Identity;
+using Cloudea.Application.Identity.Contracts;
 using Cloudea.Domain.Common.API;
+using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Identity.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,25 +19,39 @@ namespace Cloudea.Web.Controllers
             _service = service;
         }
 
-        [HttpGet("profile/" + ID)]
-        public async Task<IActionResult> Profile(Guid id, CancellationToken cancellationToken)
+        [HttpGet("Profile/" + ID)]
+        [ProducesResponseType(typeof(Result<UserProfile>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Profile(Guid id, CancellationToken c)
         {
-            var res = await _service.GetUserProfileAsync(id, cancellationToken);
+            var res = await _service.GetUserProfileAsync(id, c);
             return res.IsSuccess ? Ok(res) : NotFound(res);
         }
 
-        [HttpGet("profile/mine")]
-        public async Task<IActionResult> MyProfile(CancellationToken cancellationToken)
+        [HttpGet("Profile")]
+        [ProducesResponseType(typeof(Result<UserProfile>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> MyProfile(CancellationToken c)
         {
-            var res = await _service.GetSelfUserProfileAsync(cancellationToken);
+            var res = await _service.GetSelfUserProfileAsync(c);
             return res.IsSuccess ? Ok(res) : NotFound(res);
         }
 
-        [HttpPost("profile/avatar")]
-        [ProducesResponseType(typeof(UserProfile), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Avatar(IFormFile file, CancellationToken cancellationToken)
+        [HttpPut("Profile")]
+        [ProducesResponseType(typeof(Result<UserProfile>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> MyProfile([FromBody] UpdateUserProfileRequest request, CancellationToken c)
         {
-            var res = await _service.CreateUserProfileAvatar(file, cancellationToken);
+            var res = await _service.UpdateSelfUserProfileAsync(request, c);
+            if (res.IsFailure)
+            {
+                return HandleFailure(res);
+            }
+            return Ok(res);
+        }
+
+        [HttpPost("Profile/Avatar")]
+        [ProducesResponseType(typeof(Result<UserProfile>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Avatar(IFormFile file, CancellationToken c)
+        {
+            var res = await _service.CreateUserProfileAvatar(file, c);
 
             if (res.IsFailure)
             {

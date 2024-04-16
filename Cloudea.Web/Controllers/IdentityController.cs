@@ -1,8 +1,8 @@
 ﻿using Cloudea.Application.Abstractions;
 using Cloudea.Application.Identity;
+using Cloudea.Application.Identity.Contracts;
 using Cloudea.Domain.Common.API;
 using Cloudea.Domain.Identity.Enums;
-using Cloudea.Domain.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
