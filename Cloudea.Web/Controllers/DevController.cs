@@ -7,19 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers
 {
-    /*[Authorize]*/
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+    [Authorize]
     public class DevController : ApiControllerBase
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     {
         private IFreeSql Database { get; set; }
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public ILogger<DevController> Logger { get; set; }
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public DevController(IFreeSql database, ILogger<DevController> logger)
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             Database = database;
             Logger = logger;

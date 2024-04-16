@@ -5,7 +5,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Minor Code Smell", "S3459:Unassigned members should be removed", Justification = "<挂起>", Scope = "member", Target = "~F:Cloudea.Web.Controllers.AuthServiceController._roleDbContext")]
+[assembly: SuppressMessage("Minor Code Smell", "S3459:Unassigned members should be removed", Justification = "<挂起>", Scope = "member", Target = "~F:Cloudea.Web.Controllers.AuthController._roleDbContext")]
 [assembly: SuppressMessage("Critical Code Smell", "S4487:Unread \"private\" fields should be removed", Justification = "<挂起>", Scope = "member", Target = "~F:Cloudea.Web.Middlewares.GlobalExceptionHandlingMiddleware._logger")]
 [assembly: SuppressMessage("Major Code Smell", "S2971:\"IEnumerable\" LINQs should be simplified", Justification = "<挂起>", Scope = "member", Target = "~M:Cloudea.Web.Controllers.DevController.SyncDatabase~Microsoft.AspNetCore.Mvc.IActionResult")]
 [assembly: SuppressMessage("Minor Code Smell", "S3267:Loops should be simplified with \"LINQ\" expressions", Justification = "<挂起>", Scope = "member", Target = "~M:Cloudea.Web.Controllers.DevController.SyncDatabase~Microsoft.AspNetCore.Mvc.IActionResult")]

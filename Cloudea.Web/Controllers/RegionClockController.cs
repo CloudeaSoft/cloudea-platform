@@ -12,9 +12,7 @@ namespace Cloudea.Web.Controllers
 
         private readonly RegionClockService regionClock;
 
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public RegionClockController(RegionClockService regionClock)
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         {
             this.regionClock = regionClock;
         }

@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cloudea.Web.Controllers
 {
     [Authorize]
-    public class AuthServiceController : ApiControllerBase
+    public class AuthController : ApiControllerBase
     {
         private readonly AuthService _domainService;
 
-        public AuthServiceController(AuthService domainService)
+        public AuthController(AuthService domainService)
         {
             _domainService = domainService;
         }

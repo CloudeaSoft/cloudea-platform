@@ -15,6 +15,12 @@ namespace Cloudea.Web.Controllers
             _fileService = fileService;
         }
 
+        /// <summary>
+        /// 上传文件
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file, CancellationToken cancellationToken)
         {

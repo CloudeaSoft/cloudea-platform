@@ -173,6 +173,12 @@ public class ForumController : ApiControllerBase
         return res.IsSuccess ? Ok(res) : NotFound(res);
     }
 
+    /// <summary>
+    /// 创建喜欢
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpPost("Post/" + ID + "/Like")]
     public async Task<IActionResult> PostLike(
         Guid id,
@@ -186,6 +192,12 @@ public class ForumController : ApiControllerBase
         return Ok(res);
     }
 
+    /// <summary>
+    /// 获取喜欢/不喜欢
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpGet("Post/" + ID + "/Like")]
     public async Task<IActionResult> PostLikeGet(
         Guid id,
@@ -196,6 +208,12 @@ public class ForumController : ApiControllerBase
         return res.IsSuccess ? Ok(res) : NotFound(res);
     }
 
+    /// <summary>
+    /// 删除喜欢/不喜欢
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpDelete("Post/" + ID + "/Like")]
     public async Task<IActionResult> PostLikeDelete(
         Guid id,
@@ -209,6 +227,12 @@ public class ForumController : ApiControllerBase
         return Ok(res);
     }
 
+    /// <summary>
+    /// 创建不喜欢
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpPost("Post/" + ID + "/Dislike")]
     public async Task<IActionResult> PostDislike(
         Guid id,
@@ -222,6 +246,12 @@ public class ForumController : ApiControllerBase
         return Ok(res);
     }
 
+    /// <summary>
+    /// 创建收藏
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpPost("Post/" + ID + "/Favorite")]
     public async Task<IActionResult> PostFavorite(
         Guid id,
@@ -235,6 +265,12 @@ public class ForumController : ApiControllerBase
         return Ok(res);
     }
 
+    /// <summary>
+    /// 获取收藏
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpGet("Post/" + ID + "/Favorite")]
     public async Task<IActionResult> PostFavoriteGet(
         Guid id,
@@ -245,6 +281,12 @@ public class ForumController : ApiControllerBase
         return res.IsSuccess ? Ok(res) : NotFound(res);
     }
 
+    /// <summary>
+    /// 删除收藏
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpDelete("Post/" + ID + "/Favorite")]
     public async Task<IActionResult> PostFavoriteDelete(
         Guid id,
