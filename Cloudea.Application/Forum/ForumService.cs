@@ -386,7 +386,7 @@ namespace Cloudea.Application.Forum
         /// <param name="postId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Result<Guid?>> GetLikeOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
+        public async Task<Result<ForumPostUserLike?>> GetLikeOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
         {
             var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
             if (post is null)
@@ -400,10 +400,10 @@ namespace Cloudea.Application.Forum
 
             if (like is null)
             {
-                return Result.Success<Guid?>(null);
+                return Result.Success<ForumPostUserLike?>(null);
             }
 
-            return like.Id;
+            return like;
         }
 
         /// <summary>
@@ -500,7 +500,7 @@ namespace Cloudea.Application.Forum
         /// <param name="postId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Result<Guid?>> GetFavoriteOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
+        public async Task<Result<ForumPostUserFavorite?>> GetFavoriteOnPostAsync(Guid postId, CancellationToken cancellationToken = default)
         {
             // Get Post / If null return error
             var post = await _forumPostRepository.GetByIdAsync(postId, cancellationToken);
@@ -514,10 +514,10 @@ namespace Cloudea.Application.Forum
             var favorite = await _forumPostUserFavoriteRepository.GetByUserIdPostIdAsync(userId, postId, cancellationToken);
             if (favorite is null)
             {
-                return Result.Success<Guid?>(null);
+                return Result.Success<ForumPostUserFavorite?>(null);
             }
 
-            return favorite.Id;
+            return favorite;
         }
 
         /// <summary>
