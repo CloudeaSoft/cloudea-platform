@@ -430,6 +430,14 @@ namespace Cloudea.Application.Forum
             }
 
             _forumPostUserLikeRepository.Delete(like);
+            if (like.IsLike)
+            {
+                post.DeleteLike(like.Id);
+            }
+            else
+            {
+                post.DeleteDislike(like.Id);
+            }
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }
@@ -544,6 +552,7 @@ namespace Cloudea.Application.Forum
             }
 
             _forumPostUserFavoriteRepository.Delete(favorite);
+            post.DeleteFavorite(favorite.Id);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }

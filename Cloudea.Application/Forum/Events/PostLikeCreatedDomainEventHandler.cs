@@ -4,25 +4,26 @@ using Cloudea.Domain.Forum.Repositories;
 
 namespace Cloudea.Application.Forum.Events
 {
-    public class ReplyCreatedDomainEventHandler
+    public class PostLikeCreatedDomainEventHandler
         : IDomainEventHandler<PostLikeCreatedDomainEvent>
     {
-        private readonly IForumPostRepository _forumPostRepository;
+        private readonly IForumPostRepository _postRepository;
 
-        public ReplyCreatedDomainEventHandler(IForumPostRepository forumPostRepository)
+        public PostLikeCreatedDomainEventHandler(IForumPostRepository postRepository)
         {
-            _forumPostRepository = forumPostRepository;
+            _postRepository = postRepository;
         }
 
         public async Task Handle(PostLikeCreatedDomainEvent notification, CancellationToken cancellationToken)
         {
-            var post = await _forumPostRepository.GetByIdAsync(notification.PostId, cancellationToken);
+            var post = await _postRepository.GetByIdAsync(notification.PostId, cancellationToken);
             if (post is null)
             {
                 return;
             }
-            post.IncreaseReplyCount();
-            _forumPostRepository.Update(post);
+
+            post.IncreaseLikeCount();
+            _postRepository.Update(post);
         }
     }
 }
