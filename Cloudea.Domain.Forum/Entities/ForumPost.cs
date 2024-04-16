@@ -35,6 +35,7 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
 
     public long LikeCount { get; private set; }
     public long DislikeCount { get; private set; }
+    public long FavoriteCount { get; private set; }
     public long ReplyCount { get; private set; }
 
     public DateTimeOffset LastClickTime { get; set; }
@@ -58,7 +59,6 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
 
         return new ForumPost(id, userId, section.Id, title, content);
     }
-
 
     public void Update(
         string? title,
@@ -84,9 +84,15 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
         }
 
         var evnetId = Guid.NewGuid();
-        RaiseDomainEvent(new ReplyCreatedDomainEvent(evnetId, reply.Id, Id));
+        RaiseDomainEvent(new PostLikeCreatedDomainEvent(evnetId, reply.Id, Id));
 
         return reply;
+    }
+
+    public void DeleteReply(Guid replyId)
+    {
+        var eventId = Guid.NewGuid();
+        RaiseDomainEvent(new ReplyDeletedDomainEvent(eventId, replyId, Id));
     }
 
     public ForumPostUserHistory? CreateHistory(Guid userId)
@@ -105,24 +111,69 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
 
     public ForumPostUserLike? CreateLike(Guid userId)
     {
-        return ForumPostUserLike.Create(this, userId);
+        var like = ForumPostUserLike.Create(this, userId);
+        if (like is null)
+        {
+            return null;
+        }
+
+        var eventId = Guid.NewGuid();
+        RaiseDomainEvent(new PostLikeCreatedDomainEvent(eventId, like.Id, Id));
+
+        return like;
+    }
+
+    public void DeleteLike(Guid likeId)
+    {
+        var eventId = Guid.NewGuid();
+        RaiseDomainEvent(new PostLikeDeletedDomainEvent(eventId, likeId, Id));
     }
 
     public ForumPostUserLike? CreateDislike(Guid userId)
     {
-        return ForumPostUserLike.Create(this, userId, false);
+        var dislike = ForumPostUserLike.Create(this, userId, false);
+        if (dislike is null)
+        {
+            return null;
+        }
+
+        var eventId = Guid.NewGuid();
+        RaiseDomainEvent(new PostDislikeCreatedDomainEvent(eventId, dislike.Id, Id));
+
+        return dislike;
+    }
+
+    public void DeleteDislike(Guid dislikeId)
+    {
+        var eventId = Guid.NewGuid();
+        RaiseDomainEvent(new PostDislikeDeletedDomainEvent(eventId, dislikeId, Id));
     }
 
     public ForumPostUserFavorite? CreateFavorite(Guid userId)
     {
-        return ForumPostUserFavorite.Create(this, userId);
+        var favorite = ForumPostUserFavorite.Create(this, userId);
+        if (favorite is null)
+        {
+            return null;
+        }
+
+        var eventId = Guid.NewGuid();
+        RaiseDomainEvent(new PostFavoriteCreatedDomainEvent(Id, favorite.Id, Id));
+
+        return favorite;
+    }
+
+    public void DeleteFavorite(Guid favoriteId)
+    {
+        var eventId = Guid.NewGuid();
+        RaiseDomainEvent(new PostFavoriteDeletedDomainEvent(eventId, favoriteId, Id));
     }
 
     public void IncreaseReplyCount(int num = 1)
     {
         if (num < 0)
         {
-            return;
+            throw new InvalidOperationException();
         }
 
         ReplyCount += num;
@@ -132,7 +183,7 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
     {
         if (num < 0)
         {
-            return;
+            throw new InvalidOperationException();
         }
 
         ReplyCount -= num;
@@ -147,9 +198,84 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
     {
         if (num < 0)
         {
-            return;
+            throw new InvalidOperationException();
         }
 
         ClickCount += num;
+    }
+
+    public void IncreaseLikeCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            throw new InvalidOperationException();
+        }
+
+        LikeCount += num;
+    }
+
+    public void DecreaseLikeCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            throw new InvalidOperationException();
+        }
+
+        LikeCount -= num;
+
+        if (LikeCount < 0)
+        {
+            LikeCount = 0;
+        }
+    }
+
+    public void IncreaseDislikeCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            throw new InvalidOperationException();
+        }
+
+        DislikeCount += num;
+    }
+
+    public void DecreaseDislikeCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            throw new InvalidOperationException();
+        }
+
+        DislikeCount -= num;
+
+        if (DislikeCount < 0)
+        {
+            DislikeCount = 0;
+        }
+    }
+
+    public void IncreaseFavoriteCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            throw new InvalidOperationException();
+        }
+
+        FavoriteCount += num;
+    }
+
+    public void DecreaseFavoriteCount(int num = 1)
+    {
+        if (num < 0)
+        {
+            throw new InvalidOperationException();
+        }
+
+        FavoriteCount -= num;
+
+        if (FavoriteCount < 0)
+        {
+            FavoriteCount = 0;
+        }
     }
 }

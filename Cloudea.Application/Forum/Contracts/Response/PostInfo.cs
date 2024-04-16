@@ -17,6 +17,7 @@ public record PostInfo
     public long ClickCount { get; set; }
     public long LikeCount { get; set; }
     public long DislikeCount { get; set; }
+    public long FavoriteCount { get; set; }
     public long ReplyCount { get; set; }
 
     public DateTimeOffset CreateTime { get; set; }
@@ -33,6 +34,7 @@ public record PostInfo
             ClickCount = forumPost.ClickCount,
             LikeCount = forumPost.LikeCount,
             DislikeCount = forumPost.DislikeCount,
+            FavoriteCount = forumPost.FavoriteCount,
             ReplyCount = forumPost.ReplyCount,
             CreateTime = forumPost.CreatedOnUtc,
             LastUpdatedTime = forumPost.LastEditTime
