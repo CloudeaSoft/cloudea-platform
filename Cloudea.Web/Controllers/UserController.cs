@@ -12,9 +12,9 @@ namespace Cloudea.Web.Controllers
     [Route("api/[controller]")]
     public class UserController : ApiControllerBase
     {
-        private readonly UserProfileService _service;
+        private readonly UserService _service;
 
-        public UserController(UserProfileService service)
+        public UserController(UserService service)
         {
             _service = service;
         }

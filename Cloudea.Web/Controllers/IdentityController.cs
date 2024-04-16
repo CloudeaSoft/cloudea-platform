@@ -11,14 +11,14 @@ namespace Cloudea.Web.Controllers
     [Authorize]
     public class IdentityController : ApiControllerBase
     {
-        private readonly UserService authUserService;
-        private readonly VerificationCodeService verificationCodeService;
+        private readonly IdentityService _identityService;
+        private readonly VerificationCodeService _verificationCodeService;
         private readonly ICurrentUser _currentUser;
 
-        public IdentityController(UserService authUserService, VerificationCodeService verificationCodeService, ICurrentUser currentUser)
+        public IdentityController(IdentityService authUserService, VerificationCodeService verificationCodeService, ICurrentUser currentUser)
         {
-            this.authUserService = authUserService;
-            this.verificationCodeService = verificationCodeService;
+            _identityService = authUserService;
+            _verificationCodeService = verificationCodeService;
             _currentUser = currentUser;
         }
 
@@ -32,8 +32,9 @@ namespace Cloudea.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterToken(string email, string verCode)
         {
-            var res = await authUserService.GetRegisterTokenAsync(email, verCode);
-            if (res.IsFailure) {
+            var res = await _identityService.GetRegisterTokenAsync(email, verCode);
+            if (res.IsFailure)
+            {
                 return HandleFailure(res);
             }
             return Ok(res);
@@ -48,8 +49,9 @@ namespace Cloudea.Web.Controllers
         [HttpPost]
         public new async Task<IActionResult> User([FromBody] UserRegisterRequest user)
         {
-            var res = await authUserService.RegisterAsync(user.RegisterToken, user.UserName, user.Password);
-            if (res.IsFailure) {
+            var res = await _identityService.RegisterAsync(user.RegisterToken, user.UserName, user.Password);
+            if (res.IsFailure)
+            {
                 return HandleFailure(res);
             }
             return Ok(res);
@@ -65,12 +67,14 @@ namespace Cloudea.Web.Controllers
         public async Task<IActionResult> Session([FromBody] UserLoginRequest request)
         {
             // 数据校验
-            if (request == null) {
+            if (request == null)
+            {
                 return BadRequest();
             }
 
-            var tokenRes = await authUserService.LoginAsync(request);
-            if (tokenRes.IsFailure) {
+            var tokenRes = await _identityService.LoginAsync(request);
+            if (tokenRes.IsFailure)
+            {
                 return NotFound();
             }
             return Ok(tokenRes);
@@ -86,8 +90,9 @@ namespace Cloudea.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> VerificationCode(string email, VerificationCodeType codeType)
         {
-            var res = await verificationCodeService.SendVerCodeEmail(email, codeType);
-            if (res.IsFailure) {
+            var res = await _verificationCodeService.SendVerCodeEmail(email, codeType);
+            if (res.IsFailure)
+            {
                 return BadRequest(res);
             }
             return Ok(res);
@@ -101,10 +106,48 @@ namespace Cloudea.Web.Controllers
         public async Task<IActionResult> SelfInfo()
         {
             var info = await _currentUser.GetUserInfoAsync();
-            if (info == null) {
+            if (info == null)
+            {
                 return BadRequest();
             }
             return Ok(info);
+        }
+
+        /// <summary>
+        /// 举报用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Report([FromBody] CreateReportRequest request, CancellationToken c)
+        {
+            var res = await _identityService.CreateReportAsync(request, c);
+            if (res.IsFailure)
+            {
+                return HandleFailure(res);
+            }
+
+            return Ok(res);
+        }
+
+        /// <summary>
+        /// 获取举报记录
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="index"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Report(int page, int index, CancellationToken c)
+        {
+            var res = await _identityService.GetReportPageAsync(new()
+                {
+                    PageIndex = page,
+                    PageSize = index
+                }, c);
+
+            return res.IsSuccess ? Ok(res) : BadRequest(res);
         }
     }
 }

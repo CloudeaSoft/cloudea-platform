@@ -15,8 +15,8 @@ namespace Cloudea.Application
             services.AddScoped<ForumService>();
             services.AddScoped<AuthService>();
 
+            services.AddScoped<IdentityService>();
             services.AddScoped<UserService>();
-            services.AddScoped<UserProfileService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddScoped<VerificationCodeService>();
 

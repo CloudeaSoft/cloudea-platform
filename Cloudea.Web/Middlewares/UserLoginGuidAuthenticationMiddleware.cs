@@ -16,7 +16,7 @@ namespace Cloudea.Web.Middlewares
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, UserService authUserService)
+        public async Task InvokeAsync(HttpContext context, IdentityService authUserService)
         {
             var request = context.Request;
 
