@@ -5,7 +5,7 @@ namespace Cloudea.Domain.Identity.Entities
 {
     public class Report : Entity, IAuditableEntity
     {
-        public Report(
+        private Report(
             Guid id,
             Guid userId,
             Guid targetUserId,
@@ -21,6 +21,8 @@ namespace Cloudea.Domain.Identity.Entities
             Description = description;
             Status = reportStatus;
         }
+
+        private Report() { }
 
         public Guid UserId { get; set; }
         public Guid TargetUserId { get; set; }

@@ -310,7 +310,7 @@ public class ForumController : ApiControllerBase
     [HttpPost("Reply")]
     public async Task<IActionResult> Reply(Guid id, string content, CancellationToken cancellationToken)
     {
-        var res = await _forumService.PostReplyAsync(id, content, cancellationToken);
+        var res = await _forumService.CreateReplyAsync(id, content, cancellationToken);
 
         if (res.IsFailure)
         {

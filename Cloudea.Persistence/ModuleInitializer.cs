@@ -35,6 +35,7 @@ namespace Cloudea.Persistence
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
         }
     }
 }

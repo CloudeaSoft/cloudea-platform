@@ -238,7 +238,7 @@ namespace Cloudea.Application.Forum
             var response = ListPostResponse.Create(list);
             foreach (var item in response.Rows)
             {
-                item.OwnerUser = userProfileList.Where(x => x.Id == item.OwnerUserId).FirstOrDefault()!;
+                item.Creator = userProfileList.Where(x => x.Id == item.CreatorId).FirstOrDefault()!;
             }
 
             return response;
@@ -250,7 +250,7 @@ namespace Cloudea.Application.Forum
         /// <param name="reply"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Result<Guid>> PostReplyAsync(
+        public async Task<Result<Guid>> CreateReplyAsync(
             Guid postId,
             string content,
             CancellationToken cancellationToken = default)

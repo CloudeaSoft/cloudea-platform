@@ -20,6 +20,10 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
         Title = title;
         Content = content;
         ClickCount = 0;
+        LikeCount = 0;
+        DislikeCount = 0;
+        FavoriteCount = 0;
+        ReplyCount = 0;
         LastClickTime = DateTimeOffset.UtcNow;
         LastEditTime = DateTimeOffset.UtcNow;
     }
@@ -84,7 +88,7 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
         }
 
         var evnetId = Guid.NewGuid();
-        RaiseDomainEvent(new PostLikeCreatedDomainEvent(evnetId, reply.Id, Id));
+        RaiseDomainEvent(new ReplyCreatedDomainEvent(evnetId, reply.Id, Id));
 
         return reply;
     }

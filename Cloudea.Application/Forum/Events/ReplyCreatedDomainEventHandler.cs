@@ -5,7 +5,7 @@ using Cloudea.Domain.Forum.Repositories;
 namespace Cloudea.Application.Forum.Events
 {
     public class ReplyCreatedDomainEventHandler
-        : IDomainEventHandler<PostLikeCreatedDomainEvent>
+        : IDomainEventHandler<ReplyCreatedDomainEvent>
     {
         private readonly IForumPostRepository _forumPostRepository;
 
@@ -14,7 +14,7 @@ namespace Cloudea.Application.Forum.Events
             _forumPostRepository = forumPostRepository;
         }
 
-        public async Task Handle(PostLikeCreatedDomainEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(ReplyCreatedDomainEvent notification, CancellationToken cancellationToken)
         {
             var post = await _forumPostRepository.GetByIdAsync(notification.PostId, cancellationToken);
             if (post is null)
