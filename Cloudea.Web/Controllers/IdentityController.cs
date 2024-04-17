@@ -81,6 +81,25 @@ namespace Cloudea.Web.Controllers
         }
 
         /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UserPassword([FromBody] ResetPasswordRequest request, CancellationToken cancellationToken)
+        {
+            var res = await _identityService.ResetPasswordAsync(request, cancellationToken);
+            if (res.IsFailure)
+            {
+                return HandleFailure(res);
+            }
+
+            return Ok(res);
+        }
+
+        /// <summary>
         /// 获取验证码
         /// </summary>
         /// <param name="email"></param>
@@ -142,10 +161,10 @@ namespace Cloudea.Web.Controllers
         public async Task<IActionResult> Report(int page, int index, CancellationToken c)
         {
             var res = await _identityService.GetReportPageAsync(new()
-                {
-                    PageIndex = page,
-                    PageSize = index
-                }, c);
+            {
+                PageIndex = page,
+                PageSize = index
+            }, c);
 
             return res.IsSuccess ? Ok(res) : BadRequest(res);
         }

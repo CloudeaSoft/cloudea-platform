@@ -10,14 +10,14 @@ public interface ICurrentUser
     /// <summary>
     /// 用户是否登录
     /// </summary>
-    Task<bool> CheckUserLoginAsync();
+    Task<bool> CheckUserLoginAsync(CancellationToken cancellationToken = default);
     /// <summary>
     /// 用户信息Id
     /// </summary>
-    Task<Guid> GetUserIdAsync();
+    Task<Guid> GetUserIdAsync(CancellationToken cancellationToken = default);
     /// <summary>
     /// 获得用户信息
     /// </summary>
     /// <returns></returns>
-    Task<User?> GetUserInfoAsync();
+    Task<User?> GetUserInfoAsync(CancellationToken cancellationToken = default);
 }

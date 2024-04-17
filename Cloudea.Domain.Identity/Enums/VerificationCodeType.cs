@@ -14,7 +14,7 @@ public enum VerificationCodeType
     /// </summary>
     RegisterByEmail = 1,
     /// <summary>
-    /// 通过手机重置密码
+    /// 通过邮箱重置密码
     /// </summary>
     ResetPasswordByEmail = 2,
     /// <summary>

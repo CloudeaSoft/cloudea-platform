@@ -157,24 +157,15 @@ namespace Cloudea.Application.Identity
                 return passwordRes.Error;
             }
 
-            var saltRes = Salt.Create(Guid.NewGuid().ToString("N"));// generate salt
-            if (saltRes.IsFailure)
-            {
-                return saltRes.Error;
-            }
+            var newSalt = GenerateNewSalt();// generate salt
 
-            var passwordHashRes = PasswordHash.Create(HashPassword(passwordRes.Data, saltRes.Data));
-            if (passwordHashRes.IsFailure)
-            {
-                return passwordHashRes.Error;
-            }
-
+            var passwordHash = HashPassword(passwordRes.Data, newSalt);
 
             var newUser = User.Create(
                 userName,
                 userEmail,
-                passwordHashRes.Data,
-                saltRes.Data,
+                passwordHash,
+                newSalt,
                 true);
 
             _userRepository.Add(newUser);
@@ -184,9 +175,9 @@ namespace Cloudea.Application.Identity
             return newUser.Id;
         }
 
-        private static string HashPassword(Password password, Salt salt)
+        private static PasswordHash HashPassword(Password password, Salt salt)
         {
-            return EncryptionUtils.EncryptMD5("Cloudea" + password.Value + "System" + salt.Value);
+            return PasswordHash.Create(EncryptionUtils.EncryptMD5("Cloudea" + password.Value + "System" + salt.Value)).Data;
         }
 
         /// <summary>
@@ -205,7 +196,7 @@ namespace Cloudea.Application.Identity
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<Result<string>> LoginAsync(UserLoginRequest request)
+        public async Task<Result<string>> LoginAsync(UserLoginRequest request, CancellationToken cancellationToken = default)
         {
             User? user;
             // 邮箱+验证码登录
@@ -267,7 +258,7 @@ namespace Cloudea.Application.Identity
                 return HandleLoginFailure();
             }
 
-            return await GenerateUserLoginTokenAsync(user.Id);
+            return await GenerateUserLoginTokenAsync(user.Id, cancellationToken);
         }
 
         private static bool CheckPassword(string password, User user)
@@ -282,7 +273,7 @@ namespace Cloudea.Application.Identity
                 return false;
             }
             var saltRes = Salt.Create(user.Salt);
-            if (!HashPassword(pwdRes.Data, saltRes.Data).Equals(user.PasswordHash))
+            if (!HashPassword(pwdRes.Data, saltRes.Data).Value.Equals(user.PasswordHash))
             {
                 return false;
             }
@@ -299,11 +290,11 @@ namespace Cloudea.Application.Identity
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<Result<string>> GenerateUserLoginTokenAsync(Guid userId)
+        public async Task<Result<string>> GenerateUserLoginTokenAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             // 用户接口权限
             List<Claim> claims = [];
-            HashSet<string> permissions = await GetPermissionsAsync(userId).ConfigureAwait(true);
+            HashSet<string> permissions = await GetPermissionsAsync(userId);
             foreach (var permission in permissions)
             {
                 claims.Add(new(JwtClaims.USER_PERMISSIONS, permission));
@@ -316,6 +307,61 @@ namespace Cloudea.Application.Identity
             claims.Add(new Claim(JwtClaims.USER_LOGIN_GUID, GenerateUserLoginGuid(userId.ToString())));
             var tokenRes = _jwtTokenService.Generate(claims);
             return tokenRes;
+        }
+
+        public async Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest request, CancellationToken cancellationToken = default)
+        {
+            // init
+            var user = await _currentUser.GetUserInfoAsync(cancellationToken);
+            if (user is null)
+            {
+                return new Error("User.NotFound");
+            }
+
+            // check vercode
+            var checkRes = await _userVerificationCodeService.CheckVerCodeEmail(
+                user.Email,
+                VerificationCodeType.ResetPasswordByEmail,
+                request.VerCode,
+                cancellationToken: cancellationToken);
+
+            if (checkRes.IsFailure)
+            {
+                return new Error("User.Password.BadRequest");
+            }
+
+            // check password
+            var requestPasswordRes = Password.Create(request.OldPassword);
+            if (requestPasswordRes.IsFailure)
+            {
+                return new Error("User.Password.BadRequest");
+            }
+            var salt = Salt.Create(user.Salt);
+            if (HashPassword(requestPasswordRes.Data, salt.Data).Value != user.PasswordHash)
+            {
+                return new Error("User.Password.BadRequest");
+            }
+
+            // generate new password
+            var newPasswordRes = Password.Create(request.NewPassword);
+            if (newPasswordRes.IsFailure)
+            {
+                return new Error("User.Password.BadRequest", "密码格式不正确");
+            }
+            var newSalt = GenerateNewSalt();
+            var newPasswordHash = HashPassword(newPasswordRes.Data, newSalt);
+            user.SetPassword(newPasswordHash, newSalt);
+
+            _userRepository.Update(user);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return await GenerateUserLoginTokenAsync(user.Id, cancellationToken);
+        }
+
+        public Salt GenerateNewSalt()
+        {
+            return Salt.Create(Guid.NewGuid().ToString("N")).Data;
         }
 
         /// <summary>
@@ -405,6 +451,7 @@ namespace Cloudea.Application.Identity
 
         #region 用户登录Guid控制
         const string CACHE_USER_LOGIN_GUID_KEY = $"{JwtClaims.USER_LOGIN_GUID}:";
+
         /// <summary>
         /// 生成用户唯一登录的guid
         /// </summary>

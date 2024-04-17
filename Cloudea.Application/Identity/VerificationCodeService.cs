@@ -49,9 +49,10 @@ namespace Cloudea.Application.Identity
         /// <returns></returns>
         public async Task<Result> CheckVerCodeEmail(string email, VerificationCodeType codeType, string code, bool delete = false, CancellationToken cancellationToken = default)
         {
-            /*if (CheckEmail(email) is false) {
-                return Result.Fail("邮箱格式错误");
-            }*/
+            //if (CheckEmail(email) is false)
+            //{
+            //    return new Error("邮箱格式错误");
+            //}
 
             VerificationCode? entity = await _verificationCodeRepository.GetByEmailAndCodeTypeAsync(email, codeType);
             if (entity is null) {

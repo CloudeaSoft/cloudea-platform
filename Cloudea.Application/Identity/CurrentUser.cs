@@ -35,14 +35,16 @@ namespace Cloudea.Application.Identity
         /// 初始化
         /// </summary>
         /// <returns></returns>
-        private async Task Init()
+        private async Task Init(CancellationToken cancellationToken = default)
         {
             // 从jwt token 中读取登录信息
             var claim = _httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(t => t.Type == JwtClaims.USER_ID);
-            if (claim != null) {
+            if (claim != null)
+            {
                 Guid userId = Guid.Parse(claim.Value);
-                var res = await _userService.GetByIdAsync(userId);
-                if (res is null) {
+                var res = await _userService.GetByIdAsync(userId, cancellationToken);
+                if (res is null)
+                {
                     string err = $"userId:{userId} GetInfo:User.NotFound";
                     _logger.LogError(err);
                     _user = null;
@@ -58,12 +60,13 @@ namespace Cloudea.Application.Identity
         /// 获取用户信息
         /// </summary>
         /// <returns></returns>
-        public async Task<User?> GetUserInfoAsync()
+        public async Task<User?> GetUserInfoAsync(CancellationToken cancellationToken = default)
         {
-            if (_inited) {
+            if (_inited)
+            {
                 return _user;
             }
-            await Init();
+            await Init(cancellationToken);
             return _user;
         }
 
@@ -71,12 +74,13 @@ namespace Cloudea.Application.Identity
         /// 检查登陆状态
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> CheckUserLoginAsync()
+        public async Task<bool> CheckUserLoginAsync(CancellationToken cancellationToken = default)
         {
-            if (_inited) {
+            if (_inited)
+            {
                 return _user != null;
             }
-            await Init();
+            await Init(cancellationToken);
             return _user != null;
         }
 
@@ -84,12 +88,13 @@ namespace Cloudea.Application.Identity
         /// 获取用户Id
         /// </summary>
         /// <returns></returns>
-        public async Task<Guid> GetUserIdAsync()
+        public async Task<Guid> GetUserIdAsync(CancellationToken cancellationToken = default)
         {
-            if (_inited) {
+            if (_inited)
+            {
                 return _user != null ? _user.Id : Guid.Empty;
             }
-            await Init();
+            await Init(cancellationToken);
             return _user != null ? _user.Id : Guid.Empty;
         }
     }
