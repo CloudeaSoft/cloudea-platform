@@ -38,7 +38,6 @@ public class User : AggregateRoot, ISoftDelete
     /// 邮箱
     /// </summary>
     [EmailAddress]
-    [JsonIgnore]
     public string Email { get; set; }
     /// <summary>
     /// 密码 (加密后)

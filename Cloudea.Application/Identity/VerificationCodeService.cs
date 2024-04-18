@@ -5,8 +5,6 @@ using Cloudea.Domain.Identity.Entities;
 using Cloudea.Domain.Identity.Enums;
 using Cloudea.Domain.Identity.Repositories;
 using MediatR;
-using System;
-using System.Text.RegularExpressions;
 
 namespace Cloudea.Application.Identity
 {
@@ -26,20 +24,6 @@ namespace Cloudea.Application.Identity
         const int EXPIRE_TIME = 5;
 
         /// <summary>
-        /// 验证邮箱格式是否正确
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public static bool CheckEmail(string email)
-        {
-            var re = @"/^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/";//正则表达式
-            if (Regex.IsMatch(email, re)) {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
         /// 检查验证码
         /// </summary>
         /// <param name="email"></param>
@@ -49,11 +33,6 @@ namespace Cloudea.Application.Identity
         /// <returns></returns>
         public async Task<Result> CheckVerCodeEmail(string email, VerificationCodeType codeType, string code, bool delete = false, CancellationToken cancellationToken = default)
         {
-            //if (CheckEmail(email) is false)
-            //{
-            //    return new Error("邮箱格式错误");
-            //}
-
             VerificationCode? entity = await _verificationCodeRepository.GetByEmailAndCodeTypeAsync(email, codeType);
             if (entity is null) {
                 return new Error("验证码错误");

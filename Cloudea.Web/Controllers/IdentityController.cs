@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cloudea.Web.Controllers
 {
     [Authorize]
+    [Route("api/[controller]")]
     public class IdentityController : ApiControllerBase
     {
         private readonly IdentityService _identityService;
@@ -29,7 +30,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="verCode"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("RegisterToken")]
         public async Task<IActionResult> RegisterToken(string email, string verCode)
         {
             var res = await _identityService.GetRegisterTokenAsync(email, verCode);
@@ -46,7 +47,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("User")]
         public new async Task<IActionResult> User([FromBody] UserRegisterRequest user)
         {
             var res = await _identityService.RegisterAsync(user.RegisterToken, user.UserName, user.Password);
@@ -63,7 +64,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("Session")]
         public async Task<IActionResult> Session([FromBody] UserLoginRequest request)
         {
             // 数据校验
@@ -75,7 +76,7 @@ namespace Cloudea.Web.Controllers
             var tokenRes = await _identityService.LoginAsync(request);
             if (tokenRes.IsFailure)
             {
-                return NotFound();
+                return HandleFailure(tokenRes);
             }
             return Ok(tokenRes);
         }
@@ -86,9 +87,28 @@ namespace Cloudea.Web.Controllers
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPut("User/Password")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UserPassword([FromBody] ResetPasswordRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
+        {
+            var res = await _identityService.ChangePasswordAsync(request, cancellationToken);
+            if (res.IsFailure)
+            {
+                return HandleFailure(res);
+            }
+
+            return Ok(res);
+        }
+
+        /// <summary>
+        /// 重置密码
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("User/Password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken cancellationToken)
         {
             var res = await _identityService.ResetPasswordAsync(request, cancellationToken);
             if (res.IsFailure)
@@ -106,7 +126,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="codeType"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("VerificationCode")]
         public async Task<IActionResult> VerificationCode(string email, VerificationCodeType codeType)
         {
             var res = await _verificationCodeService.SendVerCodeEmail(email, codeType);
@@ -121,7 +141,7 @@ namespace Cloudea.Web.Controllers
         /// 获取当前账户信息
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("User/Info")]
         public async Task<IActionResult> SelfInfo()
         {
             var info = await _currentUser.GetUserInfoAsync();
@@ -138,7 +158,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="request"></param>
         /// <param name="c"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("Report")]
         public async Task<IActionResult> Report([FromBody] CreateReportRequest request, CancellationToken c)
         {
             var res = await _identityService.CreateReportAsync(request, c);
@@ -157,7 +177,7 @@ namespace Cloudea.Web.Controllers
         /// <param name="index"></param>
         /// <param name="c"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("Report")]
         public async Task<IActionResult> Report(int page, int index, CancellationToken c)
         {
             var res = await _identityService.GetReportPageAsync(new()

@@ -180,6 +180,16 @@ namespace Cloudea.Application.Identity
             return PasswordHash.Create(EncryptionUtils.EncryptMD5("Cloudea" + password.Value + "System" + salt.Value)).Data;
         }
 
+        private static bool CheckPassword(Password password, User user)
+        {
+            var saltRes = Salt.Create(user.Salt);
+            if (!HashPassword(password, saltRes.Data).Value.Equals(user.PasswordHash))
+            {
+                return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// 使用邮箱注册 - 生成注册token
         /// </summary>
@@ -253,7 +263,7 @@ namespace Cloudea.Application.Identity
             {
                 return HandleLoginFailure();
             }
-            else if (CheckPassword(request.Password!, user) is false)
+            else if (CheckPassword(Password.Create(request.Password!).Data, user) is false)
             {
                 return HandleLoginFailure();
             }
@@ -261,24 +271,7 @@ namespace Cloudea.Application.Identity
             return await GenerateUserLoginTokenAsync(user.Id, cancellationToken);
         }
 
-        private static bool CheckPassword(string password, User user)
-        {
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                return false;
-            }
-            var pwdRes = Password.Create(password);
-            if (pwdRes.IsFailure)
-            {
-                return false;
-            }
-            var saltRes = Salt.Create(user.Salt);
-            if (!HashPassword(pwdRes.Data, saltRes.Data).Value.Equals(user.PasswordHash))
-            {
-                return false;
-            }
-            return true;
-        }
+
 
         private static Result<string> HandleLoginFailure()
         {
@@ -309,7 +302,15 @@ namespace Cloudea.Application.Identity
             return tokenRes;
         }
 
-        public async Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest request, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<Result<string>> ChangePasswordAsync(
+            ChangePasswordRequest request,
+            CancellationToken cancellationToken = default)
         {
             // init
             var user = await _currentUser.GetUserInfoAsync(cancellationToken);
@@ -318,26 +319,14 @@ namespace Cloudea.Application.Identity
                 return new Error("User.NotFound");
             }
 
-            // check vercode
-            var checkRes = await _userVerificationCodeService.CheckVerCodeEmail(
-                user.Email,
-                VerificationCodeType.ResetPasswordByEmail,
-                request.VerCode,
-                cancellationToken: cancellationToken);
-
-            if (checkRes.IsFailure)
-            {
-                return new Error("User.Password.BadRequest");
-            }
-
             // check password
-            var requestPasswordRes = Password.Create(request.OldPassword);
-            if (requestPasswordRes.IsFailure)
+            var oldPasswordRes = Password.Create(request.OldPassword);
+            if (oldPasswordRes.IsFailure)
             {
                 return new Error("User.Password.BadRequest");
             }
-            var salt = Salt.Create(user.Salt);
-            if (HashPassword(requestPasswordRes.Data, salt.Data).Value != user.PasswordHash)
+            var checkRes = CheckPassword(oldPasswordRes.Data, user);
+            if(checkRes is false)
             {
                 return new Error("User.Password.BadRequest");
             }
@@ -359,7 +348,53 @@ namespace Cloudea.Application.Identity
             return await GenerateUserLoginTokenAsync(user.Id, cancellationToken);
         }
 
-        public Salt GenerateNewSalt()
+        /// <summary>
+        /// 重置密码
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<Result<string>> ResetPasswordAsync(
+            ResetPasswordRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            // init
+            var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
+            if (user is null)
+            {
+                return new Error("User.NotFound");
+            }
+
+            // check vercode
+            var vercodeRes = await _userVerificationCodeService.CheckVerCodeEmail(
+                user.Email,
+                VerificationCodeType.ResetPasswordByEmail,
+                request.VerCode,
+                cancellationToken: cancellationToken);
+
+            if (vercodeRes.IsFailure)
+            {
+                return new Error("VerificationCode.NotFound");
+            }
+
+            // generate new password
+            var newPasswordRes = Password.Create(request.NewPassword);
+            if (newPasswordRes.IsFailure)
+            {
+                return new Error("User.Password.BadRequest", "密码格式不正确");
+            }
+            var newSalt = GenerateNewSalt();
+            var newPasswordHash = HashPassword(newPasswordRes.Data, newSalt);
+            user.SetPassword(newPasswordHash, newSalt);
+
+            _userRepository.Update(user);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return await GenerateUserLoginTokenAsync(user.Id, cancellationToken);
+        }
+
+        public static Salt GenerateNewSalt()
         {
             return Salt.Create(Guid.NewGuid().ToString("N")).Data;
         }
