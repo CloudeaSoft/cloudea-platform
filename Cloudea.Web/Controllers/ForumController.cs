@@ -1,5 +1,4 @@
-﻿using Cloudea.Application.Abstractions;
-using Cloudea.Application.Forum;
+﻿using Cloudea.Application.Forum;
 using Cloudea.Application.Forum.Contracts.Request;
 using Cloudea.Domain.Common.API;
 using Cloudea.Domain.Common.Shared;
@@ -96,8 +95,7 @@ public class ForumController : ApiControllerBase
         int limit,
         CancellationToken cancellationToken = default)
     {
-        var request = new PageRequest
-        {
+        var request = new PageRequest {
             PageSize = limit,
             PageIndex = page
         };
@@ -162,8 +160,7 @@ public class ForumController : ApiControllerBase
         Guid? sectionId,
         CancellationToken cancellationToken)
     {
-        var request = new PageRequest
-        {
+        var request = new PageRequest {
             PageSize = limit,
             PageIndex = page
         };
@@ -382,5 +379,14 @@ public class ForumController : ApiControllerBase
         }
 
         return Ok(res);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("Search")]
+    public async Task<IActionResult> Search(string query, int page, CancellationToken cancellationToken)
+    {
+        var res = await _forumService.SearchPostAsync(query, page, cancellationToken);
+
+        return res.IsSuccess ? Ok(res) : NotFound(res);
     }
 }

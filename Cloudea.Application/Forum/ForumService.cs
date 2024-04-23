@@ -6,10 +6,7 @@ using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Forum.Entities;
 using Cloudea.Domain.Forum.Repositories;
 using Cloudea.Domain.Identity.Repositories;
-using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Ubiety.Dns.Core;
 
 namespace Cloudea.Application.Forum
 {
@@ -231,7 +228,7 @@ namespace Cloudea.Application.Forum
             Guid? sectionId,
             CancellationToken cancellationToken = default)
         {
-            var list = await _forumPostRepository.GetWithPageRequestSectionIdAsync(request, sectionId, cancellationToken);
+            var list = await _forumPostRepository.GetWithPageRequestBySectionIdAsync(request, sectionId, cancellationToken);
             var userIdList = list.Rows.Select(x => x.OwnerUserId).Distinct().ToList();
             var userProfileList = await _userProfileRepository.ListByUserIdAsync(userIdList, cancellationToken);
 
@@ -555,6 +552,23 @@ namespace Cloudea.Application.Forum
             post.DeleteFavorite(favorite.Id);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
+        }
+
+        public async Task<Result<PageResponse<PostInfo>>> SearchPostAsync(
+            string query,
+            int page,
+            CancellationToken cancellationToken = default)
+        {
+            var userIds = await _userProfileRepository.ListUserIdByDisplayNameAsync(query);
+            var posts = await _forumPostRepository.GetWithPageRequestByUserIdTitleContentAsync(
+                new(page, 15),
+                userIds,
+                query,
+                query,
+                cancellationToken);
+            return PageResponse<PostInfo>.Create(
+                posts.Total,
+                posts.Rows.Select(PostInfo.Create).ToList());
         }
     }
 }
