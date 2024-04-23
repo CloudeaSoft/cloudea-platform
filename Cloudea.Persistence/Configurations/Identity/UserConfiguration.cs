@@ -11,6 +11,15 @@ namespace Cloudea.Persistence.Configurations.Identity
         {
             builder.ToTable(TableNames.User);
             builder.HasKey(t => t.AutoIncId);
+
+            builder.ComplexProperty(u => u.PasswordHash)
+                .Property(p => p.Value)
+                .HasColumnName(nameof(User.PasswordHash));
+
+
+            builder.ComplexProperty(u => u.Salt)
+                .Property(s => s.Value)
+                .HasColumnName(nameof(User.Salt));
         }
     }
 }

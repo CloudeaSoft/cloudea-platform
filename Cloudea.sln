@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Domain.GameHelper",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.MLTest", "Cloudea.MLTest\Cloudea.MLTest.csproj", "{B877F7B5-E2DE-4DD8-9377-5C7B5D4B00EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudea.Test", "Cloudea.Test\Cloudea.Test.csproj", "{58D7BA72-BB35-4B12-AB0B-7B3B867FD961}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{B877F7B5-E2DE-4DD8-9377-5C7B5D4B00EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B877F7B5-E2DE-4DD8-9377-5C7B5D4B00EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B877F7B5-E2DE-4DD8-9377-5C7B5D4B00EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58D7BA72-BB35-4B12-AB0B-7B3B867FD961}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58D7BA72-BB35-4B12-AB0B-7B3B867FD961}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58D7BA72-BB35-4B12-AB0B-7B3B867FD961}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58D7BA72-BB35-4B12-AB0B-7B3B867FD961}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +106,7 @@ Global
 		{2E95F4FB-D250-4AFF-AEC2-22E50F1A62B0} = {E6B1532C-5DDD-4901-9E64-1FE7AC6C9A68}
 		{E22ED50C-9445-4F0B-9749-F014253D1190} = {E6B1532C-5DDD-4901-9E64-1FE7AC6C9A68}
 		{B877F7B5-E2DE-4DD8-9377-5C7B5D4B00EA} = {E6B1532C-5DDD-4901-9E64-1FE7AC6C9A68}
+		{58D7BA72-BB35-4B12-AB0B-7B3B867FD961} = {E6B1532C-5DDD-4901-9E64-1FE7AC6C9A68}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90FBFF38-D36E-4A20-A675-C21D9F0462C5}

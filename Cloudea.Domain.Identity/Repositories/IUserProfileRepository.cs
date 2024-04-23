@@ -1,9 +1,4 @@
 ﻿using Cloudea.Domain.Identity.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cloudea.Domain.Identity.Repositories
 {
@@ -18,5 +13,7 @@ namespace Cloudea.Domain.Identity.Repositories
         Task<UserProfile?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
         Task<List<UserProfile>> ListByUserIdAsync(List<Guid> userIdList, CancellationToken cancellationToken = default);
+
+        Task<List<Guid>> ListUserIdByDisplayNameAsync(string displayName, CancellationToken cancellationToken = default);
     }
 }

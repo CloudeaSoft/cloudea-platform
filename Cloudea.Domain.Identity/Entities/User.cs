@@ -17,8 +17,8 @@ public class User : AggregateRoot, ISoftDelete
         Guid id,
         string userName,
         string email,
-        string passwordHash,
-        string salt,
+        PasswordHash passwordHash,
+        Salt salt,
         bool enable) : base(id)
     {
         UserName = userName;
@@ -43,12 +43,12 @@ public class User : AggregateRoot, ISoftDelete
     /// 密码 (加密后)
     /// </summary>
     [JsonIgnore]
-    public string PasswordHash { get; private set; }
+    public PasswordHash PasswordHash { get; private set; }
     /// <summary>
     /// 密码混淆
     /// </summary>
     [JsonIgnore]
-    public string Salt { get; private set; }
+    public Salt Salt { get; private set; }
     /// <summary>
     /// 是否启用
     /// </summary>
@@ -82,8 +82,8 @@ public class User : AggregateRoot, ISoftDelete
             Guid.NewGuid(),
             userName,
             email,
-            passwordHash.Value,
-            salt.Value,
+            passwordHash,
+            salt,
             enable);
 
         var domainEvent = new UserCreatedDomainEvent(Guid.NewGuid(), user.Id);
@@ -99,8 +99,8 @@ public class User : AggregateRoot, ISoftDelete
 
     public void SetPassword(PasswordHash newPassword, Salt salt)
     {
-        PasswordHash = newPassword.Value;
-        Salt = salt.Value;
+        PasswordHash = newPassword;
+        Salt = salt;
     }
 
     public void EnableUser()
