@@ -2,12 +2,13 @@
 using Cloudea.Domain.Common.API;
 using Cloudea.Domain.Common.Freesql;
 using Cloudea.Domain.Common.Utils;
+using Cloudea.Domain.Identity.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers
 {
-    [Authorize]
+    [HasPermission(Domain.Identity.Entities.Permission.AccessMember)]
     public class DevController : ApiControllerBase
     {
         private IFreeSql Database { get; set; }
@@ -26,8 +27,10 @@ namespace Cloudea.Web.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Login(string password) {
-            if (password != "jst@123456") {
+        public IActionResult Login(string password)
+        {
+            if (password != "jst@123456")
+            {
                 return Unauthorized("密码错误");
             }
 
@@ -43,17 +46,22 @@ namespace Cloudea.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult SyncDatabase() {
+        public IActionResult SyncDatabase()
+        {
 
-            try {
+            try
+            {
                 // 扫描所有dll
                 var typesList = AssemblyLoader.GetAllAssemblies().Select(t => t.GetTypes()).ToList();
                 List<Type> entityTypes = new List<Type>();
 
-                foreach (var types in typesList) {
+                foreach (var types in typesList)
+                {
 
-                    foreach (var type in types) {
-                        if (type.CustomAttributes.Where(t => t.AttributeType == typeof(AutoGenerateTableAttribute)).Any()) {
+                    foreach (var type in types)
+                    {
+                        if (type.CustomAttributes.Where(t => t.AttributeType == typeof(AutoGenerateTableAttribute)).Any())
+                        {
                             entityTypes.Add(type);
                         }
                     }
@@ -63,7 +71,8 @@ namespace Cloudea.Web.Controllers
                 Database.SyncStructure(entityTypes);
                 return Ok("同步完成");
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Logger.LogError(ex.ToString());
                 return BadRequest();
             }

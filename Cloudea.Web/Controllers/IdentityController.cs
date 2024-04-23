@@ -48,6 +48,7 @@ namespace Cloudea.Web.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("User")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         public new async Task<IActionResult> User([FromBody] UserRegisterRequest user)
         {
             var res = await _identityService.RegisterAsync(user.RegisterToken, user.UserName, user.Password);
@@ -65,6 +66,7 @@ namespace Cloudea.Web.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("Session")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> Session([FromBody] UserLoginRequest request)
         {
             // 数据校验

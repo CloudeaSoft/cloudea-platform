@@ -75,6 +75,7 @@ namespace Cloudea.Application.Identity
 
         public async Task<Result<UserProfile>> CreateUserProfileAvatar(IFormFile file, CancellationToken cancellationToken = default)
         {
+            #region 基本的验证逻辑
             // 检查用户
             Guid userId = await _currentUser.GetUserIdAsync();
             if (userId == Guid.Empty)
@@ -112,6 +113,7 @@ namespace Cloudea.Application.Identity
             {
                 return new Error("UserProfile.Avatar.InvalidParam", "只允许上传JPEG或PNG格式的图片");
             }
+            #endregion
 
             // 上传头像
             var stream = file.OpenReadStream();

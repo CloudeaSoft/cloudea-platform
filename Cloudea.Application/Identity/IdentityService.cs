@@ -182,8 +182,7 @@ namespace Cloudea.Application.Identity
 
         private static bool CheckPassword(Password password, User user)
         {
-            var saltRes = Salt.Create(user.Salt);
-            if (!HashPassword(password, saltRes.Data).Value.Equals(user.PasswordHash))
+            if (!HashPassword(password, user.Salt).Equals(user.PasswordHash))
             {
                 return false;
             }
@@ -326,7 +325,7 @@ namespace Cloudea.Application.Identity
                 return new Error("User.Password.BadRequest");
             }
             var checkRes = CheckPassword(oldPasswordRes.Data, user);
-            if(checkRes is false)
+            if (checkRes is false)
             {
                 return new Error("User.Password.BadRequest");
             }

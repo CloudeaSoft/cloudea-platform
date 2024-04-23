@@ -24,9 +24,6 @@ public class PermissionAuthorizationHandler
             .Where(x => x.Type == JwtClaims.USER_PERMISSIONS)
             .Select(x => x.Value)
             .ToHashSet();
-        foreach (var permission in permissions) {
-            await Console.Out.WriteLineAsync(permission.ToString());
-        }
 
         if (permissions.Contains(requirement.Permission)) {
             context.Succeed(requirement);

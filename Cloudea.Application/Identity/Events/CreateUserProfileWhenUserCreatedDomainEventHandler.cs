@@ -6,43 +6,42 @@ using Cloudea.Domain.Identity.Repositories;
 using Cloudea.Domain.Identity.ValueObjects;
 using Microsoft.Extensions.Logging;
 
-namespace Cloudea.Application.Identity.Events
+namespace Cloudea.Application.Identity.Events;
+
+public class CreateUserProfileWhenUserCreatedDomainEventHandler : IDomainEventHandler<UserCreatedDomainEvent>
 {
-    public class CreateUserProfileWhenUserCreatedDomainEventHandler : IDomainEventHandler<UserCreatedDomainEvent>
+    private readonly IUserProfileRepository _userProfileRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly ILogger<CreateUserProfileWhenUserCreatedDomainEventHandler> _logger;
+
+    public CreateUserProfileWhenUserCreatedDomainEventHandler(
+        IUserProfileRepository repository,
+        IUserRepository userRepository,
+        ILogger<CreateUserProfileWhenUserCreatedDomainEventHandler> logger)
     {
-        private readonly IUserProfileRepository _userProfileRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly ILogger<CreateUserProfileWhenUserCreatedDomainEventHandler> _logger;
+        _userProfileRepository = repository;
+        _userRepository = userRepository;
+        _logger = logger;
+    }
 
-        public CreateUserProfileWhenUserCreatedDomainEventHandler(
-            IUserProfileRepository repository,
-            IUserRepository userRepository,
-            ILogger<CreateUserProfileWhenUserCreatedDomainEventHandler> logger)
-        {
-            _userProfileRepository = repository;
-            _userRepository = userRepository;
-            _logger = logger;
+    public async Task Handle(UserCreatedDomainEvent notification, CancellationToken cancellationToken)
+    {
+        var user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
+        if (user is null) {
+            var ex = new NullReferenceException($"EventId:{notification.Id}, UserId:{notification.UserId}, User.NotFound");
+            _logger.LogCritical(ex.Message);
+            throw ex;
         }
+        var displayName = DisplayName.Create($"新用户_{GenerateRandomString(10)}");
+        var profile = UserProfile.Create(user, displayName);
+        _userProfileRepository.Add(profile);
+    }
 
-        public async Task Handle(UserCreatedDomainEvent notification, CancellationToken cancellationToken)
-        {
-            var user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
-            if (user is null) {
-                var ex = new NullReferenceException($"EventId:{notification.Id}, UserId:{notification.UserId}, User.NotFound");
-                _logger.LogCritical(ex.Message);
-                throw ex;
-            }
-            var displayName = DisplayName.Create($"新用户_{GenerateRandomString(10)}");
-            var profile = UserProfile.Create(user, displayName);
-            _userProfileRepository.Add(profile);
-        }
-
-        private static string GenerateRandomString(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            Random random = new();
-            return new string(Enumerable.Repeat(chars, length)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
+    private static string GenerateRandomString(int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new();
+        return new string(Enumerable.Repeat(chars, length)
+          .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }
