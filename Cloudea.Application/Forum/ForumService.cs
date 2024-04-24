@@ -204,7 +204,7 @@ namespace Cloudea.Application.Forum
             finally
             {
                 // Create user history before return
-                var userId = await _currentUser.GetUserIdAsync();
+                var userId = await _currentUser.GetUserIdAsync(cancellationToken);
                 if (userId == Guid.Empty)
                 {
                     post.CreateHistory(userId);
@@ -559,16 +559,26 @@ namespace Cloudea.Application.Forum
             int page,
             CancellationToken cancellationToken = default)
         {
-            var userIds = await _userProfileRepository.ListUserIdByDisplayNameAsync(query);
+            var userIds = await _userProfileRepository.ListUserIdByDisplayNameAsync(query, cancellationToken);
             var posts = await _forumPostRepository.GetWithPageRequestByUserIdTitleContentAsync(
                 new(page, 15),
                 userIds,
                 query,
                 query,
                 cancellationToken);
-            return PageResponse<PostInfo>.Create(
+
+            var profileIds = posts.Rows.Select(x => x.OwnerUserId).ToHashSet();
+            var profiles = await _userProfileRepository.ListByUserIdAsync(profileIds, cancellationToken);
+            var response = PageResponse<PostInfo>.Create(
                 posts.Total,
                 posts.Rows.Select(PostInfo.Create).ToList());
+
+            foreach (var post in response.Rows)
+            {
+                post.Creator = profiles.Where(x => x.Id == post.CreatorId).FirstOrDefault()!;
+            }
+
+            return response;
         }
     }
 }

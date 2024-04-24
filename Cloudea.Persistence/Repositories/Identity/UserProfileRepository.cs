@@ -30,7 +30,7 @@ internal class UserProfileRepository : IUserProfileRepository
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
     public async Task<List<UserProfile>> ListByUserIdAsync(
-        List<Guid> userIdList,
+        ICollection<Guid> userIdList,
         CancellationToken cancellationToken = default) =>
         await _context.Set<UserProfile>()
             .Where(x => userIdList.Contains(x.Id))

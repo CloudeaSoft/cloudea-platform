@@ -1,17 +1,25 @@
-﻿using Cloudea.Domain.Common.Database;
+﻿using Cloudea.Domain.Common.Primitives;
 
 namespace Cloudea.Domain.Forum.Entities.Recommend;
 
-public class UserPostInterest : BaseDataEntity
+public class UserPostInterest : Entity
 {
+    private UserPostInterest(Guid id, Guid userId, Guid postId, double score)
+        : base(id)
+    {
+        UserId = userId;
+        PostId = postId;
+        Score = score;
+    }
+
     public Guid UserId { get; set; }
 
-    public List<PostInterest> PostInterestList { get; set; } = [];
+    public Guid PostId { get; set; }
 
-    public class PostInterest
+    public double Score { get; set; }
+
+    public static UserPostInterest Create(Guid userId, Guid postId, double score)
     {
-        public Guid PostId { get; set; }
-
-        public double Score { get; set; }
+        return new(Guid.NewGuid(), userId, postId, score);
     }
 }

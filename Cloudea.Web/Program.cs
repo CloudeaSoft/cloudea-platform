@@ -196,6 +196,17 @@ namespace Cloudea.Web
                                     schedule =>
                                         schedule.WithIntervalInSeconds(10)
                                             .RepeatForever()));
+
+                var calculateUserPostInterestJobKey = new JobKey(nameof(CalculateUserPostInterestJob));
+                configure
+                    .AddJob<CalculateUserPostInterestJob>(calculateUserPostInterestJobKey)
+                    .AddTrigger(
+                        trigger =>
+                            trigger.ForJob(calculateUserPostInterestJobKey)
+                                .WithSimpleSchedule(
+                                    schedule =>
+                                        schedule.WithIntervalInSeconds(10)
+                                            .RepeatForever()));
             });
             builder.Services.AddQuartzHostedService();
             #endregion

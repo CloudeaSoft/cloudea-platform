@@ -40,4 +40,8 @@ internal static class TableNames
     internal const string ForumPostUserFavorite = "forum_post_user_favorite";
 
     internal const string ForumRecommendUserPostInterest = "forum_recommend_user_post_interest";
+
+    internal const string ForumRecommendUserSimilarity = "forum_recommend_user_similarity";
+
+    internal const string ForumRecommendPostSimilarity = "forum_recommend_post_similarity";
 }

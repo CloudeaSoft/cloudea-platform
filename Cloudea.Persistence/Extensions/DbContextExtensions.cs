@@ -20,7 +20,7 @@ namespace Cloudea.Persistence.Extensions
             {
                 return new PageResponse<T>();
             }
-            var list = await source.OrderBy(x => x)
+            var list = await source
                 .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .ToListAsync(cancellationToken);

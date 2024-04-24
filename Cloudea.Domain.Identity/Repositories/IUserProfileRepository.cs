@@ -12,7 +12,7 @@ namespace Cloudea.Domain.Identity.Repositories
 
         Task<UserProfile?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
-        Task<List<UserProfile>> ListByUserIdAsync(List<Guid> userIdList, CancellationToken cancellationToken = default);
+        Task<List<UserProfile>> ListByUserIdAsync(ICollection<Guid> userIdList, CancellationToken cancellationToken = default);
 
         Task<List<Guid>> ListUserIdByDisplayNameAsync(string displayName, CancellationToken cancellationToken = default);
     }

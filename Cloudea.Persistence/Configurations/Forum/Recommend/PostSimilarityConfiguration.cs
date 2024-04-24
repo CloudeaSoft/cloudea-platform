@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cloudea.Persistence.Configurations.Forum.Recommend;
 
-public class UserPostInterestConfiguration : IEntityTypeConfiguration<UserPostInterest>
+public class PostSimilarityConfiguration : IEntityTypeConfiguration<PostSimilarity>
 {
-    public void Configure(EntityTypeBuilder<UserPostInterest> builder)
+    public void Configure(EntityTypeBuilder<PostSimilarity> builder)
     {
-        builder.ToTable(TableNames.ForumRecommendUserPostInterest);
+        builder.ToTable(TableNames.ForumRecommendPostSimilarity);
 
         builder.HasKey(x => x.AutoIncId);
     }
