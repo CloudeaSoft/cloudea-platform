@@ -18,8 +18,7 @@ public class CalculateUserPostInterestJob : IJob
 
     private readonly IUserRepository _userRepository;
 
-    private readonly ApplicationDbContext _context;
-
+    private readonly IUnitOfWork _unitOfWork;
 
     public CalculateUserPostInterestJob(
         IForumPostUserHistoryRepository forumPostUserHistoryRepository,
@@ -27,7 +26,7 @@ public class CalculateUserPostInterestJob : IJob
         IForumPostUserLikeRepository forumPostUserLikeRepository,
         IForumPostUserFavoriteRepository forumPostUserFavoriteRepository,
         IUserPostInterestRepository userPostInterestRepository,
-        ApplicationDbContext context)
+        IUnitOfWork unitOfWork)
     {
         _userRepository = userRepository;
 
@@ -35,7 +34,7 @@ public class CalculateUserPostInterestJob : IJob
         _forumPostUserLikeRepository = forumPostUserLikeRepository;
         _forumPostUserFavoriteRepository = forumPostUserFavoriteRepository;
         _userPostInterestRepository = userPostInterestRepository;
-        _context = context;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task Execute(IJobExecutionContext context)
@@ -91,6 +90,6 @@ public class CalculateUserPostInterestJob : IJob
         }
 
         // Save all changes to the database  
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(context.CancellationToken);
     }
 }

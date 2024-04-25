@@ -16,10 +16,10 @@ public class ProcessOutboxMessagesJob : IJob
     private readonly ILogger<ProcessOutboxMessagesJob> _logger;
     private readonly IMediator _mediator;
 
-    public ProcessOutboxMessagesJob(ApplicationDbContext dbContext, IMediator publisher, ILogger<ProcessOutboxMessagesJob> logger)
+    public ProcessOutboxMessagesJob(ApplicationDbContext dbContext, IMediator mediator, ILogger<ProcessOutboxMessagesJob> logger)
     {
         _dbContext = dbContext;
-        _mediator = publisher;
+        _mediator = mediator;
         _logger = logger;
     }
 

@@ -1,7 +1,7 @@
-﻿using Cloudea.Domain.Forum.Entities.Recommend;
+﻿using Cloudea.Domain.Common.Repositories;
+using Cloudea.Domain.Forum.Entities.Recommend;
 using Cloudea.Domain.Forum.Repositories;
 using Cloudea.Domain.Forum.Repositories.Recommend;
-using Cloudea.Persistence;
 using Quartz;
 using System.Collections.Concurrent;
 
@@ -13,7 +13,7 @@ public class CalculatePostSimilarityJob : IJob
     private readonly IPostSimilarityRepository _postSimilarityRepository;
 
     private readonly IForumPostRepository _forumPostRepository;
-    private readonly ApplicationDbContext _context;
+    private readonly IUnitOfWork _unitOfWork;
 
     private const int MAX_COUNT = 20;
 
@@ -21,12 +21,12 @@ public class CalculatePostSimilarityJob : IJob
         IUserPostInterestRepository userPostInterestRepository,
         IPostSimilarityRepository postSimilarityRepository,
         IForumPostRepository forumPostRepository,
-        ApplicationDbContext context)
+        IUnitOfWork unitOfWork)
     {
         _userPostInterestRepository = userPostInterestRepository;
         _postSimilarityRepository = postSimilarityRepository;
         _forumPostRepository = forumPostRepository;
-        _context = context;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task Execute(IJobExecutionContext context)
@@ -40,7 +40,7 @@ public class CalculatePostSimilarityJob : IJob
             _postSimilarityRepository.AddOrUpdateRange(similarities);
         }
 
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(context.CancellationToken);
     }
 
     private async Task<List<PostSimilarity>> CalculatePostSimilarity(Guid postId, List<Guid> relatedPostIds)
