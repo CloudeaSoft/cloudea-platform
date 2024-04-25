@@ -1,8 +1,9 @@
 ﻿using Cloudea.Domain.Forum.Entities.Recommend;
 using Cloudea.Domain.Forum.Repositories.Recommend;
+using Cloudea.Domain.Identity.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cloudea.Persistence.Repositories.Forum.Forum
+namespace Cloudea.Persistence.Repositories.Forum.Recommend
 {
     public class UserPostInterestRepository(ApplicationDbContext context) : IUserPostInterestRepository
     {
@@ -58,7 +59,14 @@ namespace Cloudea.Persistence.Repositories.Forum.Forum
             _context.UpdateRange(recordsToUpdate);
         }
 
-        public async Task<ICollection<UserPostInterest>> ListByUserIdAsync(
+        public async Task<List<UserPostInterest>> ListByPostIdAsync(
+            Guid postId,
+            CancellationToken cancellationToken = default) =>
+            await _context.Set<UserPostInterest>()
+                .Where(x => x.PostId == postId)
+                .ToListAsync(cancellationToken);
+
+        public async Task<List<UserPostInterest>> ListByUserIdAsync(
             Guid userId,
             CancellationToken cancellationToken = default) =>
             await _context.Set<UserPostInterest>()

@@ -205,7 +205,29 @@ namespace Cloudea.Web
                             trigger.ForJob(calculateUserPostInterestJobKey)
                                 .WithSimpleSchedule(
                                     schedule =>
-                                        schedule.WithIntervalInSeconds(10)
+                                        schedule.WithIntervalInSeconds(60)
+                                            .RepeatForever()));
+
+                var calculatePostSimilarityJobKey = new JobKey(nameof(CalculatePostSimilarityJob));
+                configure
+                    .AddJob<CalculatePostSimilarityJob>(calculatePostSimilarityJobKey)
+                    .AddTrigger(
+                        trigger =>
+                            trigger.ForJob(calculatePostSimilarityJobKey)
+                                .WithSimpleSchedule(
+                                    schedule =>
+                                        schedule.WithIntervalInSeconds(60)
+                                            .RepeatForever()));
+
+                var calculateUserSimilarityJobKey = new JobKey(nameof(CalculateUserSimilarityJob));
+                configure
+                    .AddJob<CalculateUserSimilarityJob>(calculateUserSimilarityJobKey)
+                    .AddTrigger(
+                        trigger =>
+                            trigger.ForJob(calculateUserSimilarityJobKey)
+                                .WithSimpleSchedule(
+                                    schedule =>
+                                        schedule.WithIntervalInSeconds(60)
                                             .RepeatForever()));
             });
             builder.Services.AddQuartzHostedService();

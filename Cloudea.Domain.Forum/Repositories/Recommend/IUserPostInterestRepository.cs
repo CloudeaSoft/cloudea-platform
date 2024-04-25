@@ -8,6 +8,8 @@ namespace Cloudea.Domain.Forum.Repositories.Recommend
 
         void AddOrUpdateRange(ICollection<UserPostInterest> userPostInterests);
 
-        Task<ICollection<UserPostInterest>> ListByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+        Task<List<UserPostInterest>> ListByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+
+        Task<List<UserPostInterest>> ListByPostIdAsync(Guid postId, CancellationToken cancellationToken = default);
     }
 }

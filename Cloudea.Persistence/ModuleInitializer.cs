@@ -6,7 +6,7 @@ using Cloudea.Domain.Forum.Repositories.Recommend;
 using Cloudea.Domain.Identity.Repositories;
 using Cloudea.Persistence.Repositories.File;
 using Cloudea.Persistence.Repositories.Forum;
-using Cloudea.Persistence.Repositories.Forum.Forum;
+using Cloudea.Persistence.Repositories.Forum.Recommend;
 using Cloudea.Persistence.Repositories.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,6 +28,8 @@ namespace Cloudea.Persistence
             services.AddScoped<IForumReplyRepository, ForumReplyRepository>();
             services.AddScoped<IForumCommentRepository, ForumCommentRepository>();
             services.AddScoped<IUserPostInterestRepository, UserPostInterestRepository>();
+            services.AddScoped<IUserSimilarityRepository, UserSimilarityRepository>();
+            services.AddScoped<IPostSimilarityRepository, PostSimilarityRepository>();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserLoginRepository, UserLoginRepository>();

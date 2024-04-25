@@ -3,55 +3,66 @@ using Cloudea.Domain.Forum.Entities.Recommend;
 using Cloudea.Domain.Forum.Repositories.Recommend;
 using Cloudea.Domain.Identity.Repositories;
 using Quartz;
+using System.Collections.Concurrent;
 
 namespace Cloudea.Infrastructure.BackgroundJobs.ForumPostRecommendSystem;
 
 public class CalculateUserSimilarityJob : IJob
 {
     private readonly IUserPostInterestRepository _userPostInterestRepository;
+    private readonly IUserSimilarityRepository _userSimilarityRepository;
 
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     private const int MAX_COUNT = 20;
 
-    public CalculateUserSimilarityJob(IUserRepository userRepository, IUnitOfWork unitOfWork, IUserPostInterestRepository userPostInterestRepository)
+    public CalculateUserSimilarityJob(
+        IUserRepository userRepository,
+        IUnitOfWork unitOfWork,
+        IUserPostInterestRepository userPostInterestRepository,
+        IUserSimilarityRepository userSimilarityRepository)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _userPostInterestRepository = userPostInterestRepository;
+        _userSimilarityRepository = userSimilarityRepository;
     }
 
     public async Task Execute(IJobExecutionContext context)
     {
-        ICollection<Guid> userIds = await _userRepository.ListAllUserIdAsync();
+        List<Guid> userIds = await _userRepository.ListAllUserIdAsync();
 
         foreach (Guid userId in userIds)
         {
             var similarities = await CalculateUserSimilarity(userId, userIds);
+
+            _userSimilarityRepository.AddOrUpdateRange(similarities);
         }
+        await _unitOfWork.SaveChangesAsync(context.CancellationToken);
     }
 
-    private async Task<ICollection<(Guid, double)>> CalculateUserSimilarity(Guid userId, ICollection<Guid> relatedUserIds)
+    private async Task<List<UserSimilarity>> CalculateUserSimilarity(Guid userId, List<Guid> relatedUserIds)
     {
-        relatedUserIds.Remove(userId);
-        ICollection<(Guid, double)> result = [];
+        List<Guid> relatedUserIdsCopy = new(relatedUserIds);
+        relatedUserIdsCopy.Remove(userId);
+        List<UserSimilarity> result = [];
 
-        foreach (var relatedUserId in relatedUserIds)
+        foreach (var relatedUserId in relatedUserIdsCopy)
         {
             var userInterest = await _userPostInterestRepository.ListByUserIdAsync(userId);
             var relatedUserInterest = await _userPostInterestRepository.ListByUserIdAsync(relatedUserId);
 
-            double score = await CalculateInterestSimilarity(userInterest, relatedUserInterest);
-            result.Add((relatedUserId, score));
+            double score = CalculateInterestSimilarity(userInterest, relatedUserInterest);
+            result.Add(UserSimilarity.Create(userId, relatedUserId, score));
         }
 
-        return result.OrderByDescending(x => x.Item2).Take(MAX_COUNT).ToList();
+        return result.OrderByDescending(x => x.Score).Take(MAX_COUNT).ToList();
     }
 
-    private async Task<double> CalculateInterestSimilarity(
-        ICollection<UserPostInterest> userInterest,
-        ICollection<UserPostInterest> relatedUserInterest)
+    private double CalculateInterestSimilarity(
+        List<UserPostInterest> userInterest,
+        List<UserPostInterest> relatedUserInterest)
     {
         var userPostIds = userInterest.Select(i => i.PostId).ToHashSet();
         var relatedUserPostIds = relatedUserInterest.Select(i => i.PostId).ToHashSet();
@@ -59,44 +70,42 @@ public class CalculateUserSimilarityJob : IJob
         // 找到两个集合中都存在的PostId  
         var commonPostIds = userPostIds.Intersect(relatedUserPostIds);
 
-        ICollection<UserPostInterest> userInterestIntersection =
-            userInterest
-            .Where(x => commonPostIds.Contains(x.PostId)).ToList();
+        Dictionary<Guid, UserPostInterest> userInterestIntersectionDict = userInterest
+            .Where(x => commonPostIds.Contains(x.PostId))
+            .ToDictionary(i => i.PostId, i => i);
 
-        ICollection<UserPostInterest> relatedUserInterestIntersection =
-            relatedUserInterest
-            .Where(x => commonPostIds.Contains(x.PostId)).ToList();
+        Dictionary<Guid, UserPostInterest> relatedUserInterestIntersectionDict = relatedUserInterest
+            .Where(x => commonPostIds.Contains(x.PostId))
+            .ToDictionary(i => i.PostId, i => i);
 
         // result = a / (b^(1/2) * c^(1/2))
-        double a = 0;
-        double b = 0;
-        double c = 0;
+        ConcurrentBag<double> aBag = [];
+        ConcurrentBag<double> bBag = [];
+        ConcurrentBag<double> cBag = [];
 
-        await Task.Run(() => {
-            foreach (var item in userInterestIntersection)
+        // 使用 Parallel.ForEach 来并行计算 a, b, c  
+        Parallel.ForEach(commonPostIds, postId => {
+            if (userInterestIntersectionDict.TryGetValue(postId, out var userItem) &&
+                relatedUserInterestIntersectionDict.TryGetValue(postId, out var relatedUserItem))
             {
-                var itemB = relatedUserInterestIntersection
-                    .Where(x => x.PostId == item.PostId)
-                    .FirstOrDefault();
+                double userScore = userItem.Score;
+                double relatedUserScore = relatedUserItem.Score;
 
-                if (itemB != null)
-                {
-                    a += item.Score * itemB.Score;
-                    b += item.Score * item.Score;
-                }
-            }
-
-            foreach (var item in relatedUserInterestIntersection)
-            {
-                c += item.Score * item.Score;
+                aBag.Add(userScore * relatedUserScore);
+                bBag.Add(userScore * userScore);
+                cBag.Add(relatedUserScore * relatedUserScore);
             }
         });
 
+        double a = aBag.Sum();
+        double b = bBag.Sum();
+        double c = cBag.Sum();
+
         if (b > 0 && c > 0)
         {
-            double sqrtB = Math.Sqrt(b);
-            double sqrtC = Math.Sqrt(c);
-            return a / (sqrtB * sqrtC);
+            double numerator = a;
+            double denominator = Math.Sqrt(b * c);
+            return numerator / denominator;
         }
         else
         {

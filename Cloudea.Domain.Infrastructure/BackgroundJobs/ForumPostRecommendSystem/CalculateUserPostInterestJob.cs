@@ -3,6 +3,7 @@ using Cloudea.Domain.Forum.Entities.Recommend;
 using Cloudea.Domain.Forum.Repositories;
 using Cloudea.Domain.Forum.Repositories.Recommend;
 using Cloudea.Domain.Identity.Repositories;
+using Cloudea.Persistence;
 using Quartz;
 
 namespace Cloudea.Infrastructure.BackgroundJobs.ForumPostRecommendSystem;
@@ -17,7 +18,8 @@ public class CalculateUserPostInterestJob : IJob
 
     private readonly IUserRepository _userRepository;
 
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly ApplicationDbContext _context;
+
 
     public CalculateUserPostInterestJob(
         IForumPostUserHistoryRepository forumPostUserHistoryRepository,
@@ -25,7 +27,7 @@ public class CalculateUserPostInterestJob : IJob
         IForumPostUserLikeRepository forumPostUserLikeRepository,
         IForumPostUserFavoriteRepository forumPostUserFavoriteRepository,
         IUserPostInterestRepository userPostInterestRepository,
-        IUnitOfWork unitOfWork)
+        ApplicationDbContext context)
     {
         _userRepository = userRepository;
 
@@ -33,7 +35,7 @@ public class CalculateUserPostInterestJob : IJob
         _forumPostUserLikeRepository = forumPostUserLikeRepository;
         _forumPostUserFavoriteRepository = forumPostUserFavoriteRepository;
         _userPostInterestRepository = userPostInterestRepository;
-        _unitOfWork = unitOfWork;
+        _context = context;
     }
 
     public async Task Execute(IJobExecutionContext context)
@@ -89,6 +91,6 @@ public class CalculateUserPostInterestJob : IJob
         }
 
         // Save all changes to the database  
-        await _unitOfWork.SaveChangesAsync(context.CancellationToken);
+        await _context.SaveChangesAsync();
     }
 }

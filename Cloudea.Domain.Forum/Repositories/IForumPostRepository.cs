@@ -22,5 +22,7 @@ namespace Cloudea.Domain.Forum.Repositories
             string title,
             string content,
             CancellationToken cancellationToken = default);
+
+        Task<List<Guid>> ListAllPostIdAsync(CancellationToken cancellationToken = default);
     }
 }

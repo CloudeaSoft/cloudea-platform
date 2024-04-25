@@ -41,4 +41,9 @@ public class ForumPostRepository(ApplicationDbContext dbContext) : IForumPostRep
                 x.Content.Contains(content))
             .OrderByDescending(x => x.CreatedOnUtc)
             .ToPageListAsync(request, cancellationToken);
+
+    public async Task<List<Guid>> ListAllPostIdAsync(CancellationToken cancellationToken = default) =>
+        await _dbContext.Set<ForumPost>()
+            .Select(x => x.Id)
+            .ToListAsync(cancellationToken);
 }
