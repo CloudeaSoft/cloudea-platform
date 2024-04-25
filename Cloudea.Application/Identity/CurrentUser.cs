@@ -78,10 +78,10 @@ namespace Cloudea.Application.Identity
         {
             if (_inited)
             {
-                return _user != null;
+                return _user is not null;
             }
             await Init(cancellationToken);
-            return _user != null;
+            return _user is not null;
         }
 
         /// <summary>
@@ -92,10 +92,10 @@ namespace Cloudea.Application.Identity
         {
             if (_inited)
             {
-                return _user != null ? _user.Id : Guid.Empty;
+                return _user is not null ? _user.Id : Guid.Empty;
             }
             await Init(cancellationToken);
-            return _user != null ? _user.Id : Guid.Empty;
+            return _user is not null ? _user.Id : Guid.Empty;
         }
     }
 }

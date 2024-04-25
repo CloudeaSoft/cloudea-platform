@@ -64,4 +64,13 @@ public class PostSimilarityRepository(ApplicationDbContext context) : IPostSimil
         await _context.Set<PostSimilarity>()
             .Where(x => x.PostId == postId)
             .ToListAsync(cancellationToken);
+
+    public async Task<List<PostSimilarity>> ListByPostIdListWithLimitAsync(
+        List<Guid> postIds,
+        int limit,
+        CancellationToken cancellationToken = default) =>
+        await _context.Set<PostSimilarity>()
+            .Where(x => postIds.Contains(x.PostId))
+            .Take(limit)
+            .ToListAsync(cancellationToken);
 }

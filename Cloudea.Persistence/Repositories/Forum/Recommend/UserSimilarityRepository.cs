@@ -65,4 +65,14 @@ public class UserSimilarityRepository(ApplicationDbContext context) : IUserSimil
         await _context.Set<UserSimilarity>()
             .Where(x => x.UserId == userId)
             .ToListAsync(cancellationToken);
+
+    public async Task<List<UserSimilarity>> ListByUserIdWithLimitAsync(
+        Guid userId,
+        int limit,
+        CancellationToken cancellationToken = default) =>
+        await _context.Set<UserSimilarity>()
+            .Where(x => x.UserId == userId)
+            .OrderBy(x => x.Score)
+            .Take(limit)
+            .ToListAsync(cancellationToken);
 }

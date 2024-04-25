@@ -13,6 +13,8 @@ namespace Cloudea.Application
         public void Initialize(IServiceCollection services)
         {
             services.AddScoped<ForumService>();
+            services.AddScoped<ForumRecommendService>();
+
             services.AddScoped<AuthService>();
 
             services.AddScoped<IdentityService>();

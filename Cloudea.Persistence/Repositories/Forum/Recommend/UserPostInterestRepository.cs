@@ -66,6 +66,12 @@ namespace Cloudea.Persistence.Repositories.Forum.Recommend
                 .Where(x => x.PostId == postId)
                 .ToListAsync(cancellationToken);
 
+        public async Task<List<UserPostInterest>> ListByPostIdListAsync(List<Guid> postIds, CancellationToken cancellationToken = default) =>
+            await _context.Set<UserPostInterest>()
+               .Where(x => postIds.Contains(x.PostId))
+               .ToListAsync(cancellationToken);
+
+
         public async Task<List<UserPostInterest>> ListByUserIdAsync(
             Guid userId,
             CancellationToken cancellationToken = default) =>
@@ -73,5 +79,9 @@ namespace Cloudea.Persistence.Repositories.Forum.Recommend
                 .Where(x => x.UserId == userId)
                 .ToListAsync(cancellationToken);
 
+        public async Task<List<UserPostInterest>> ListByUserIdListAsync(List<Guid> userIds, CancellationToken cancellationToken = default) =>
+            await _context.Set<UserPostInterest>()
+               .Where(x => userIds.Contains(x.UserId))
+               .ToListAsync(cancellationToken);
     }
 }

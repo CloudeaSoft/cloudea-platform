@@ -24,5 +24,9 @@ namespace Cloudea.Domain.Forum.Repositories
             CancellationToken cancellationToken = default);
 
         Task<List<Guid>> ListAllPostIdAsync(CancellationToken cancellationToken = default);
+
+        Task<List<ForumPost>> ListRandomPostWithLimitAsync(int limit, CancellationToken cancellationToken = default);
+
+        Task<List<ForumPost>> ListByPostIdListAsync(List<Guid> postIds, CancellationToken cancellationToken = default);
     }
 }

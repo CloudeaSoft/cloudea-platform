@@ -11,5 +11,9 @@ namespace Cloudea.Domain.Forum.Repositories.Recommend
         Task<List<UserPostInterest>> ListByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
         Task<List<UserPostInterest>> ListByPostIdAsync(Guid postId, CancellationToken cancellationToken = default);
+
+        Task<List<UserPostInterest>> ListByUserIdListAsync(List<Guid> userIds, CancellationToken cancellationToken = default);
+
+        Task<List<UserPostInterest>> ListByPostIdListAsync(List<Guid> postIds, CancellationToken cancellationToken = default);
     }
 }

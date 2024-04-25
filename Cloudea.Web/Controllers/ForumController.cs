@@ -13,10 +13,12 @@ namespace Cloudea.Web.Controllers;
 public class ForumController : ApiControllerBase
 {
     private readonly ForumService _forumService;
+    private readonly ForumRecommendService _forumRecommendService;
 
-    public ForumController(ForumService forumService)
+    public ForumController(ForumService forumService, ForumRecommendService forumRecommendService)
     {
         _forumService = forumService;
+        _forumRecommendService = forumRecommendService;
     }
 
     /// <summary>
@@ -386,6 +388,15 @@ public class ForumController : ApiControllerBase
     public async Task<IActionResult> Search(string query, int page, CancellationToken cancellationToken)
     {
         var res = await _forumService.SearchPostAsync(query, page, cancellationToken);
+
+        return res.IsSuccess ? Ok(res) : NotFound(res);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("Recommend")]
+    public async Task<IActionResult> Recommend(CancellationToken cancellationToken)
+    {
+        var res = await _forumRecommendService.RecommendPostAsync(cancellationToken);
 
         return res.IsSuccess ? Ok(res) : NotFound(res);
     }
