@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cloudea.Domain.GameHelper.Models;
+﻿namespace Cloudea.Domain.GameHelper.Models;
 
 /// <summary>
 /// 寻访记录信息 - 全部
 /// </summary>
 public class GachaHistory
 {
-    public List[] list { get; set; } = new List[0];
+    private GachaHistory(List<Gacha> gachaList)
+    {
+        list = gachaList;
+    }
+
+    public List<Gacha> list { get; set; } = [];
+
+    public static GachaHistory Create(List<Gacha> list) => new(list);
 }
 
 /// <summary>
@@ -26,19 +27,19 @@ public class GachaHistoryPage
     /// <summary>
     /// 寻访记录相关信息
     /// </summary>
-    public Data data { get; set; }
+    public PageData data { get; set; }
     /// <summary>
     /// 提示信息
     /// </summary>
     public string msg { get; set; }
 }
 
-public class Data
+public class PageData
 {
     /// <summary>
     /// 寻访记录
     /// </summary>
-    public List[] list { get; set; } = new List[0];
+    public List<Gacha> list { get; set; } = [];
     /// <summary>
     /// 页码
     /// </summary>
@@ -60,7 +61,7 @@ public class Pagination
 /// <summary>
 /// 寻访记录 - 单条
 /// </summary>
-public class List
+public class Gacha
 {
     /// <summary>
     /// Unix时间戳 - 秒
@@ -73,13 +74,13 @@ public class List
     /// <summary>
     /// 角色列表 - 单抽/十连
     /// </summary>
-    public Char[] chars { get; set; }
+    public Character[] chars { get; set; }
 }
 
 /// <summary>
 /// 角色信息
 /// </summary>
-public class Char
+public class Character
 {
     /// <summary>
     /// 名称
