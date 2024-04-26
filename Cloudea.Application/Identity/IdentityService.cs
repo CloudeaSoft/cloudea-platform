@@ -487,7 +487,7 @@ namespace Cloudea.Application.Identity
         const string CACHE_USER_LOGIN_GUID_KEY = $"{JwtClaims.USER_LOGIN_GUID}:";
 
         /// <summary>
-        /// 生成用户唯一登录的guid
+        /// 生成用户唯一登录的 guid
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -499,7 +499,7 @@ namespace Cloudea.Application.Identity
         }
 
         /// <summary>
-        /// 获得用户当前登录guid
+        /// 获得用户当前登录 guid
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -512,7 +512,7 @@ namespace Cloudea.Application.Identity
             return "";
         }
         /// <summary>
-        /// 设置用户登录的guid
+        /// 设置用户登录的 guid
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="guid"></param>
