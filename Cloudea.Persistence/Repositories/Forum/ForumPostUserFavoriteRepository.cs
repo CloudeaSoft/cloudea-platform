@@ -1,7 +1,8 @@
-﻿using Cloudea.Domain.Forum.Entities;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Forum.Entities;
 using Cloudea.Domain.Forum.Repositories;
+using Cloudea.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Cloudea.Persistence.Repositories.Forum;
 
@@ -33,9 +34,21 @@ public class ForumPostUserFavoriteRepository : IForumPostUserFavoriteRepository
                 .FirstOrDefaultAsync(cancellationToken);
 
 
-    public async Task<List<Guid>> ListPostIdByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
-        => await _dbContext.Set<ForumPostUserFavorite>()
+    public async Task<List<Guid>> ListPostIdByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default) =>
+        await _dbContext.Set<ForumPostUserFavorite>()
                 .Where(x => x.OwnerUserId == userId)
                 .Select(x => x.ParentPostId)
                 .ToListAsync(cancellationToken: cancellationToken);
+
+    public async Task<PageResponse<Guid>> ListPostIdWithPageRequestByUserIdAsync(
+        Guid userId,
+        PageRequest pageRequest,
+        CancellationToken cancellationToken = default) =>
+        await _dbContext.Set<ForumPostUserFavorite>()
+            .Where(x => x.OwnerUserId == userId)
+            .OrderByDescending(x => x.CreatedOnUtc)
+            .Select(x => x.ParentPostId)
+            .ToPageListAsync(pageRequest, cancellationToken: cancellationToken);
 }

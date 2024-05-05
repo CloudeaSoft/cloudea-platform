@@ -1,5 +1,7 @@
-﻿using Cloudea.Domain.Forum.Entities;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Forum.Entities;
 using Cloudea.Persistence;
+using Cloudea.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cloudea.Domain.Forum.Repositories;
@@ -39,4 +41,13 @@ public class ForumPostUserLikeRepository : IForumPostUserLikeRepository
                         .Where(x => x.OwnerUserId == userId)
                         .ToListAsync(cancellationToken: cancellationToken);
 
+    public async Task<PageResponse<Guid>> ListPostIdWithPageRequestByUserIdAsync(
+    Guid userId,
+    PageRequest pageRequest,
+    CancellationToken cancellationToken = default) =>
+    await _dbContext.Set<ForumPostUserLike>()
+        .Where(x => x.OwnerUserId == userId)
+        .OrderByDescending(x => x.CreatedOnUtc)
+        .Select(x => x.ParentPostId)
+        .ToPageListAsync(pageRequest, cancellationToken: cancellationToken);
 }

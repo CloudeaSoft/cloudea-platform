@@ -2,7 +2,7 @@
 
 namespace Cloudea.Domain.Forum.Entities
 {
-    public class ForumPostUserLike : Entity
+    public class ForumPostUserLike : Entity, IAuditableEntity
     {
         public ForumPostUserLike(
             Guid id,
@@ -22,6 +22,9 @@ namespace Cloudea.Domain.Forum.Entities
         public Guid OwnerUserId { get; set; }
 
         public bool IsLike { get; set; }
+
+        public DateTimeOffset CreatedOnUtc { get; private set; }
+        public DateTimeOffset? ModifiedOnUtc { get; private set; }
 
         public static ForumPostUserLike? Create(ForumPost post, Guid userId, bool isLike = true)
         {

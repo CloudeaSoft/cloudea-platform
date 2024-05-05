@@ -1,6 +1,7 @@
-﻿using Cloudea.Domain.Forum.Entities;
-using Cloudea.Domain.Forum.Entities.Recommend;
+﻿using Cloudea.Domain.Common.Shared;
+using Cloudea.Domain.Forum.Entities;
 using Cloudea.Domain.Forum.Repositories;
+using Cloudea.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cloudea.Persistence.Repositories.Forum;
@@ -24,10 +25,20 @@ public class ForumPostUserHistoryRepository : IForumPostUserHistoryRepository
             .Select(g => g.Key)
             .ToListAsync(cancellationToken: cancellationToken);
 
-    public async Task<List<Guid>> ListPostIdByUserIdAsync(Guid userId,CancellationToken cancellationToken = default)
+    public async Task<List<Guid>> ListPostIdByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
         => await _dbContext.Set<ForumPostUserHistory>()
             .Where(x => x.UserId == userId)
             .GroupBy(x => x.PostId)
             .Select(g => g.Key)
             .ToListAsync(cancellationToken: cancellationToken);
+
+    public async Task<PageResponse<Guid>> ListPostIdWithPageRequestByUserIdAsync(
+        Guid userId,
+        PageRequest pageRequest,
+        CancellationToken cancellationToken = default) =>
+        await _dbContext.Set<ForumPostUserHistory>()
+            .Where(x => x.UserId == userId)
+            .OrderByDescending(x => x.CreatedOnUtc)
+            .Select(x => x.PostId)
+            .ToPageListAsync(pageRequest, cancellationToken: cancellationToken);
 }

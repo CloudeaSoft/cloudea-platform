@@ -400,4 +400,26 @@ public class ForumController : ApiControllerBase
 
         return res.IsSuccess ? Ok(res) : NotFound(res);
     }
+
+    [HttpGet("User/History")]
+    public async Task<IActionResult> GetHistoryPage(int page, int limit, CancellationToken cancellationToken)
+    {
+        var res = await _forumService.GetUserPostHistoryListAsync(new(page, limit), cancellationToken);
+        return res.IsSuccess ? Ok(res) : NotFound(res);
+    }
+    [HttpGet("User/Likes")]
+    public async Task<IActionResult> GetLikePage(int page, int limit, CancellationToken cancellationToken)
+    {
+        var res = await _forumService.GetUserLikedPostListAsync(new(page, limit), cancellationToken);
+
+        return res.IsSuccess ? Ok(res) : NotFound(res);
+    }
+
+    [HttpGet("User/Favorites")]
+    public async Task<IActionResult> GetFavoritePage(int page, int limit, CancellationToken cancellationToken)
+    {
+        var res = await _forumService.GetUserFavoritedPostListAsync(new(page, limit), cancellationToken);
+
+        return res.IsSuccess ? Ok(res) : NotFound(res);
+    }
 }

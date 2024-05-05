@@ -2,7 +2,7 @@
 
 namespace Cloudea.Domain.Forum.Entities
 {
-    public class ForumPostUserFavorite : Entity
+    public class ForumPostUserFavorite : Entity, IAuditableEntity
     {
         public ForumPostUserFavorite(
             Guid id,
@@ -19,6 +19,9 @@ namespace Cloudea.Domain.Forum.Entities
 
         public Guid OwnerUserId { get; set; }
 
+        public DateTimeOffset CreatedOnUtc { get; private set; }
+
+        public DateTimeOffset? ModifiedOnUtc { get; private set; }
         public static ForumPostUserFavorite? Create(ForumPost post, Guid userId)
         {
             if (post is null || post.Id == Guid.Empty) return null;
