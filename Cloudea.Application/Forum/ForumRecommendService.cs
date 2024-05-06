@@ -3,6 +3,7 @@ using Cloudea.Application.Forum.Contracts.Response;
 using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Forum.Repositories;
 using Cloudea.Domain.Forum.Repositories.Recommend;
+using Cloudea.Domain.Identity.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Cloudea.Application.Forum
@@ -14,6 +15,8 @@ namespace Cloudea.Application.Forum
         private readonly IUserSimilarityRepository _userSimilarityRepository;
         private readonly IPostSimilarityRepository _postSimilarityRepository;
         private readonly IForumPostRepository _forumPostRepository;
+
+        private readonly IUserProfileRepository _userProfileRepository;
 
         private readonly IMemoryCache _memoryCache;
 
@@ -29,7 +32,8 @@ namespace Cloudea.Application.Forum
             IUserSimilarityRepository userSimilarityRepository,
             IPostSimilarityRepository postSimilarityRepository,
             IForumPostRepository forumPostRepository,
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            IUserProfileRepository userProfileRepository)
         {
             _currentUser = currentUser;
             _userPostInterestRepository = userPostInterestRepository;
@@ -37,6 +41,7 @@ namespace Cloudea.Application.Forum
             _postSimilarityRepository = postSimilarityRepository;
             _forumPostRepository = forumPostRepository;
             _memoryCache = memoryCache;
+            _userProfileRepository = userProfileRepository;
         }
 
         private async Task<List<Guid>> UserCFAsync(Guid userId, CancellationToken cancellationToken = default)
@@ -63,6 +68,20 @@ namespace Cloudea.Application.Forum
             return postSimilarities.Select(x => x.PostId).ToList();
         }
 
+        public async Task<List<PostInfo>> FillWithUserProfile(List<PostInfo> postList, CancellationToken cancellationToken = default)
+        {
+            var userProfileList = await _userProfileRepository.ListByUserIdAsync(
+                    postList.Select(x => x.CreatorId).Distinct().ToList(),
+                    cancellationToken);
+
+            foreach (var item in postList)
+            {
+                item.Creator = userProfileList.Where(x => x.Id == item.CreatorId).FirstOrDefault()!;
+            }
+
+            return postList;
+        }
+
         public async Task<Result<List<PostInfo>>> RecommendPostAsync(CancellationToken cancellationToken = default)
         {
             var userId = await _currentUser.GetUserIdAsync(cancellationToken);
@@ -71,43 +90,47 @@ namespace Cloudea.Application.Forum
             {
                 var randomPostList = await _forumPostRepository.ListRandomPostWithLimitAsync(RECOMMEND_PAGE_LIMIT, cancellationToken);
 
-                return randomPostList.Select(PostInfo.Create).OrderBy(x => Guid.NewGuid()).ToList();
-            }
+                var randomList = randomPostList.Select(PostInfo.Create).OrderBy(x => Guid.NewGuid()).ToList();
 
-            if (_memoryCache.TryGetValue(CACHE_RECOMMEND_POST_RESULT(userId), out List<PostInfo>? memory))
+                return await FillWithUserProfile(randomList, cancellationToken);
+            }
+            else
             {
-                if (memory is not null && memory.Count >= RECOMMEND_PAGE_LIMIT)
+                if (_memoryCache.TryGetValue(CACHE_RECOMMEND_POST_RESULT(userId), out List<PostInfo>? memory))
                 {
-                    var resultRes = memory.Take(RECOMMEND_PAGE_LIMIT).ToList();
-                    var cacheRes = memory.Skip(RECOMMEND_PAGE_LIMIT).ToList();
+                    if (memory is not null && memory.Count >= RECOMMEND_PAGE_LIMIT)
+                    {
+                        var resultRes = memory.Take(RECOMMEND_PAGE_LIMIT).ToList();
+                        var cacheRes = memory.Skip(RECOMMEND_PAGE_LIMIT).ToList();
 
-                    _memoryCache.Set<List<PostInfo>>(CACHE_RECOMMEND_POST_RESULT(userId), cacheRes, TimeSpan.FromDays(1));
+                        _memoryCache.Set(CACHE_RECOMMEND_POST_RESULT(userId), cacheRes, TimeSpan.FromDays(1));
 
-                    return resultRes;
+                        return await FillWithUserProfile(resultRes, cancellationToken);
+                    }
                 }
+
+                var itemCFResult = await ItemCFAsync(userId, cancellationToken);
+                var userCFResult = await UserCFAsync(userId, cancellationToken);
+
+                var postIds = itemCFResult.Concat(userCFResult).Distinct().ToList();
+                var postList = await _forumPostRepository.ListByPostIdListAsync(postIds, cancellationToken);
+
+                if (postList.Count < RECOMMEND_LIMIT)
+                {
+                    var randomPostList = await _forumPostRepository.ListRandomPostWithLimitAsync(RECOMMEND_LIMIT - postList.Count, cancellationToken);
+                    postList.AddRange(randomPostList);
+                }
+
+                List<PostInfo> recommendRes = postList.Select(PostInfo.Create).OrderBy(x => Guid.NewGuid()).ToList();
+
+                // 拆分列表  
+                List<PostInfo> resultList = recommendRes.Take(RECOMMEND_PAGE_LIMIT).ToList();
+                List<PostInfo> cacheList = recommendRes.Skip(RECOMMEND_PAGE_LIMIT).ToList();
+
+                _memoryCache.Set(CACHE_RECOMMEND_POST_RESULT(userId), cacheList, TimeSpan.FromDays(1));
+
+                return await FillWithUserProfile(resultList, cancellationToken);
             }
-
-            var itemCFResult = await ItemCFAsync(userId, cancellationToken);
-            var userCFResult = await UserCFAsync(userId, cancellationToken);
-
-            var postIds = itemCFResult.Concat(userCFResult).Distinct().ToList();
-            var postList = await _forumPostRepository.ListByPostIdListAsync(postIds, cancellationToken);
-
-            if (postList.Count < RECOMMEND_LIMIT)
-            {
-                var randomPostList = await _forumPostRepository.ListRandomPostWithLimitAsync(RECOMMEND_LIMIT - postList.Count, cancellationToken);
-                postList.AddRange(randomPostList);
-            }
-
-            List<PostInfo> recommendRes = postList.Select(PostInfo.Create).OrderBy(x => Guid.NewGuid()).ToList();
-
-            // 拆分列表  
-            List<PostInfo> resultList = recommendRes.Take(RECOMMEND_PAGE_LIMIT).ToList();
-            List<PostInfo> cacheList = recommendRes.Skip(RECOMMEND_PAGE_LIMIT).ToList();
-
-            _memoryCache.Set(CACHE_RECOMMEND_POST_RESULT(userId), cacheList, TimeSpan.FromDays(1));
-
-            return resultList;
         }
     }
 }
