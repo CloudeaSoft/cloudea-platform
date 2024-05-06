@@ -591,7 +591,12 @@ public class ForumService(
         var pageResponse = await _forumPostUserHistoryRepository.ListPostIdWithPageRequestByUserIdAsync(userId, request, cancellationToken);
 
         List<ForumPost> posts = await _forumPostRepository.ListByPostIdListAsync(pageResponse.Rows, cancellationToken);
-        PageResponse<PostInfo> result = PageResponse<PostInfo>.Create(pageResponse.Total, posts.Select(PostInfo.Create).ToList());
+        PageResponse<PostInfo> result = PageResponse<PostInfo>.Create(pageResponse.Total,
+            pageResponse.Rows.Select(x =>
+                PostInfo.Create(posts.Where(y => y.Id == x).FirstOrDefault()!))
+            .ToList());
+
+        await FillWithUserProfileAsync(result.Rows, cancellationToken);
         return result;
     }
 
@@ -605,7 +610,12 @@ public class ForumService(
         var pageResponse = await _forumPostUserLikeRepository.ListPostIdWithPageRequestByUserIdAsync(userId, request, cancellationToken);
 
         List<ForumPost> posts = await _forumPostRepository.ListByPostIdListAsync(pageResponse.Rows, cancellationToken);
-        PageResponse<PostInfo> result = PageResponse<PostInfo>.Create(pageResponse.Total, posts.Select(PostInfo.Create).ToList());
+        PageResponse<PostInfo> result = PageResponse<PostInfo>.Create(pageResponse.Total,
+            pageResponse.Rows.Select(x =>
+                PostInfo.Create(posts.Where(y => y.Id == x).FirstOrDefault()!))
+            .ToList());
+
+        await FillWithUserProfileAsync(result.Rows, cancellationToken);
         return result;
     }
 
@@ -619,7 +629,26 @@ public class ForumService(
         var pageResponse = await _forumPostUserFavoriteRepository.ListPostIdWithPageRequestByUserIdAsync(userId, request, cancellationToken);
 
         List<ForumPost> posts = await _forumPostRepository.ListByPostIdListAsync(pageResponse.Rows, cancellationToken);
-        PageResponse<PostInfo> result = PageResponse<PostInfo>.Create(pageResponse.Total, posts.Select(PostInfo.Create).ToList());
+        PageResponse<PostInfo> result = PageResponse<PostInfo>.Create(pageResponse.Total,
+            pageResponse.Rows.Select(x =>
+                PostInfo.Create(posts.Where(y => y.Id == x).FirstOrDefault()!))
+            .ToList());
+
+        await FillWithUserProfileAsync(result.Rows, cancellationToken);
         return result;
+    }
+
+    public async Task<List<PostInfo>> FillWithUserProfileAsync(List<PostInfo> postList, CancellationToken cancellationToken = default)
+    {
+        var userProfileList = await _userProfileRepository.ListByUserIdAsync(
+                postList.Select(x => x.CreatorId).Distinct().ToList(),
+                cancellationToken);
+
+        foreach (var item in postList)
+        {
+            item.Creator = userProfileList.Where(x => x.Id == item.CreatorId).FirstOrDefault()!;
+        }
+
+        return postList;
     }
 }
