@@ -20,6 +20,13 @@
   <a><img src="https://img.shields.io/github/languages/top/CloudeaSoft/cloudea-platform?color=green" alt="languages-top" /></a>
 </p>
 
+## Introduction
+
+It currently consists of the following sub-projects:
+- Server: [cloudea-platform](https://github.com/CloudeaSoft/cloudea-platform) (this project)
+- Front-End: [cloudea-platform-nuxt3](https://github.com/CloudeaSoft/cloudea-platform-nuxt3)
+- ~Front-End: [cloudea-platform-vue](https://github.com/CloudeaSoft/cloudea-platform-vue)~ (deprecated)
+
 ## Documentation
 
 If you are planning to contribute or just want to learn more about this project please read through our [documentation](README.md)
