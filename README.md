@@ -47,6 +47,15 @@ Either use `git clone https://github.com/CloudeaSoft/cloudea-platform` on the co
 ### Step 3
 To build Cloudea Platform, open a command prompt inside the project directory. You can quickly access it on Windows by holding shift in File Explorer, then right clicking and selecting Open command window here. Then type the following command: dotnet build -c Release -o build the built files will be found in the newly created build directory.
 
+## Contributing
+
+Feel free to dive in! [Open an issue](https://github.com/CloudeaSoft/cloudea-platform/issues/new) or submit PRs.
+
+### Contributors
+
+This project exists thanks to all the people who contribute. 
+<a href="https://github.com/CloudeaSoft/cloudea-platform/graphs/contributors"></a><img src="https://opencollective.com/cloudea-platform/contributors.svg?width=890&button=false" />
+
 ## License
 
 [MIT](LICENSE) © Cloudea
