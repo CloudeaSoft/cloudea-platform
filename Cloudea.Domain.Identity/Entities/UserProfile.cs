@@ -44,9 +44,9 @@ public class UserProfile : AggregateRoot, IAuditableEntity
 
     public int Leaves { get; private set; }
 
-    public DateTimeOffset CreatedOnUtc { get; set; }
+    public DateTimeOffset CreatedOnUtc { get; private set; }
 
-    public DateTimeOffset? ModifiedOnUtc { get; set; }
+    public DateTimeOffset? ModifiedOnUtc { get; private set; }
 
     public static UserProfile Create(
         User user,
