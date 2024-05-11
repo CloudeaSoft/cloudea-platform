@@ -154,7 +154,8 @@ namespace Cloudea.Web
             // CORS
             builder.Services.AddCors(opt => {
                 opt.AddDefaultPolicy(b => {
-                    b.WithOrigins("http://localhost:3000")
+                    b.WithOrigins("http://localhost:3000",
+                        "https://www.cloudea.work")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
