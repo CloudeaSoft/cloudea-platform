@@ -6,6 +6,7 @@ using Cloudea.Application.Abstractions;
 using Cloudea.Domain.Common;
 using Cloudea.Application.File;
 using Cloudea.Application.Tool;
+using Cloudea.Application.System;
 
 namespace Cloudea.Application
 {
@@ -26,6 +27,8 @@ namespace Cloudea.Application
             services.AddScoped<FileService>();
 
             services.AddScoped<RegionClockService>();
+
+            services.AddScoped<AnnouncementService>();
         }
     }
 }

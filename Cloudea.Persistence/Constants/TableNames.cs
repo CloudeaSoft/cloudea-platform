@@ -23,6 +23,10 @@ internal static class TableNames
 
     internal const string File = "f_file";
 
+    internal const string Announcement = "s_announcement";
+
+    internal const string AnnouncementTranslation = "s_announcement_translation";
+
     internal const string ForumPost = "forum_post";
 
     internal const string ForumSection = "forum_section";

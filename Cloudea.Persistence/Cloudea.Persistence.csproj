@@ -11,6 +11,7 @@
     <ProjectReference Include="..\Cloudea.Domain.File\Cloudea.Domain.File.csproj" />
     <ProjectReference Include="..\Cloudea.Domain.Forum\Cloudea.Domain.Forum.csproj" />
     <ProjectReference Include="..\Cloudea.Domain.Identity\Cloudea.Domain.Identity.csproj" />
+    <ProjectReference Include="..\Cloudea.Domain.System\Cloudea.Domain.System.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Configurations\Book\" />
     <Folder Include="Configurations\Book\" />
   </ItemGroup>
 

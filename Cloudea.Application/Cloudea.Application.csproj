@@ -12,7 +12,11 @@
     <ProjectReference Include="..\Cloudea.Domain.Forum\Cloudea.Domain.Forum.csproj" />
     <ProjectReference Include="..\Cloudea.Domain.GameHelper\Cloudea.Domain.GameHelper.csproj" />
     <ProjectReference Include="..\Cloudea.Domain.Identity\Cloudea.Domain.Identity.csproj" />
-    <ProjectReference Include="..\Cloudea.Service.Hub\Cloudea.Service.HubTest.csproj" />
+    <ProjectReference Include="..\Cloudea.Domain.System\Cloudea.Domain.System.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="System\Events\" />
   </ItemGroup>
 
 </Project>

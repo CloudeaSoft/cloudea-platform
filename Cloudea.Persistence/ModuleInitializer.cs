@@ -4,10 +4,12 @@ using Cloudea.Domain.File.Repositories;
 using Cloudea.Domain.Forum.Repositories;
 using Cloudea.Domain.Forum.Repositories.Recommend;
 using Cloudea.Domain.Identity.Repositories;
+using Cloudea.Domain.System.Repositories;
 using Cloudea.Persistence.Repositories.File;
 using Cloudea.Persistence.Repositories.Forum;
 using Cloudea.Persistence.Repositories.Forum.Recommend;
 using Cloudea.Persistence.Repositories.Identity;
+using Cloudea.Persistence.Repositories.System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cloudea.Persistence
@@ -38,6 +40,10 @@ namespace Cloudea.Persistence
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
+
+            services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+            services.AddScoped<IAnnouncementTranslationRepository, AnnouncementTranslationRepository>();
+
         }
     }
 }

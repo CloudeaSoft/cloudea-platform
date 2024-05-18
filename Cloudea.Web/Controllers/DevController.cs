@@ -1,41 +1,82 @@
-﻿using Cloudea.Domain.Common;
+﻿using Cloudea.Application.System;
+using Cloudea.Domain.Common;
 using Cloudea.Domain.Common.API;
+using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Common.Utils;
 using Cloudea.Domain.Identity.Attributes;
+using Cloudea.Domain.System.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cloudea.Web.Controllers
 {
-    [HasPermission(Domain.Identity.Entities.Permission.AccessMember)]
+    [Authorize]
     public class DevController : ApiControllerBase
     {
-        public ILogger<DevController> Logger { get; set; }
+        private readonly AnnouncementService _announceService;
 
-        public DevController( ILogger<DevController> logger)
+        public DevController(AnnouncementService announceService)
         {
-            Logger = logger;
+            _announceService = announceService;
         }
 
         /// <summary>
-        /// 登录运维
+        /// Create Announcement
         /// </summary>
-        /// <param name="password"></param>
+        /// <param name="title"></param>
+        /// <param name="content"></param>
         /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult Login(string password)
+        [HttpPost]
+        public async Task<IActionResult> Announcement(string title, string content)
         {
-            if (password != "jst@123456")
+            var res = await _announceService.CreateAnnouncement(title, content);
+            if (res.IsFailure)
             {
-                return Unauthorized("密码错误");
+                HandleFailure(res);
             }
 
-            HttpContext.Response.Cookies.Append("Dev", EncryptionUtils.HMACSHA256("Logged," + DateTime.Now.ToString("yyyy-MM-dd"), "jstsha256secret"), new CookieOptions() {
-                Expires = DateTimeOffset.MaxValue
-            });
+            return Ok(res);
+        }
 
-            return Ok("完成登录");
+        /// <summary>
+        /// Get Announcement
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Announcement(Guid id)
+        {
+            var res = await _announceService.GetAnnouncement(id);
+
+            return res.IsSuccess ? Ok(res) : NotFound(res);
+        }
+
+        /// <summary>
+        /// Create Announcement Translation
+        /// </summary>
+        /// <param name="announcementId"></param>
+        /// <param name="language"></param>
+        /// <param name="region"></param>
+        /// <param name="title"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> AnnouncementTranslation(
+            Guid announcementId,
+            string language,
+            string region,
+            string title,
+            string content)
+        {
+            var res = await _announceService.CreateAnnouncementTranslation(
+                announcementId,
+                language, region, title, content);
+            if (res.IsFailure)
+            {
+                HandleFailure(res);
+            }
+
+            return Ok(res);
         }
     }
 }
