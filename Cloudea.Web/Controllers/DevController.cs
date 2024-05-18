@@ -1,6 +1,5 @@
 ﻿using Cloudea.Domain.Common;
 using Cloudea.Domain.Common.API;
-using Cloudea.Domain.Common.Freesql;
 using Cloudea.Domain.Common.Utils;
 using Cloudea.Domain.Identity.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -11,12 +10,10 @@ namespace Cloudea.Web.Controllers
     [HasPermission(Domain.Identity.Entities.Permission.AccessMember)]
     public class DevController : ApiControllerBase
     {
-        private IFreeSql Database { get; set; }
         public ILogger<DevController> Logger { get; set; }
 
-        public DevController(IFreeSql database, ILogger<DevController> logger)
+        public DevController( ILogger<DevController> logger)
         {
-            Database = database;
             Logger = logger;
         }
 
@@ -39,43 +36,6 @@ namespace Cloudea.Web.Controllers
             });
 
             return Ok("完成登录");
-        }
-
-        /// <summary>
-        /// 同步数据库表结构
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult SyncDatabase()
-        {
-
-            try
-            {
-                // 扫描所有dll
-                var typesList = AssemblyLoader.GetAllAssemblies().Select(t => t.GetTypes()).ToList();
-                List<Type> entityTypes = new List<Type>();
-
-                foreach (var types in typesList)
-                {
-
-                    foreach (var type in types)
-                    {
-                        if (type.CustomAttributes.Where(t => t.AttributeType == typeof(AutoGenerateTableAttribute)).Any())
-                        {
-                            entityTypes.Add(type);
-                        }
-                    }
-
-                }
-
-                Database.SyncStructure(entityTypes);
-                return Ok("同步完成");
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.ToString());
-                return BadRequest();
-            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Cloudea.Domain.Identity.Entities;
 using Cloudea.Domain.Identity.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto.Engines;
 
 namespace Cloudea.Persistence.Repositories.Identity
 {

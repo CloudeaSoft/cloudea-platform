@@ -1,5 +1,4 @@
 ﻿using Cloudea.Domain.Common.Shared;
-using FreeSql.DataAnnotations;
 
 namespace Cloudea.Domain.Identity.Entities;
 
@@ -20,6 +19,5 @@ public sealed class Role : Enumeration<Role>
 
     }
 
-    [Column]
     public List<Permission> Permissions { get; set; } = [];
 }
