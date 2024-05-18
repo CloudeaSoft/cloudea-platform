@@ -23,6 +23,8 @@ namespace Cloudea.Application
             services.AddScoped<VerificationCodeService>();
 
             services.AddScoped<FileService>();
+
+            services.AddScoped<RegionClockService>();
         }
     }
 }
