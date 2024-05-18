@@ -1,5 +1,6 @@
 ﻿using Cloudea.Domain.File.Entities;
 using Cloudea.Persistence.Constants;
+using Cloudea.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,8 +10,6 @@ internal class FileConfiguration : IEntityTypeConfiguration<UploadedFile>
 {
     public void Configure(EntityTypeBuilder<UploadedFile> builder)
     {
-        builder.ToTable(TableNames.File);
-
-        builder.HasKey(x => x.AutoIncId);
+        builder.ConfigureBase(TableNames.File); 
     }
 }

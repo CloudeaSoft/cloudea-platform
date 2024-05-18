@@ -1,5 +1,6 @@
 ﻿using Cloudea.Domain.Forum.Entities;
 using Cloudea.Persistence.Constants;
+using Cloudea.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,9 +11,7 @@ internal class ForumPostConfiguration : IEntityTypeConfiguration<ForumPost>
 {
     public void Configure(EntityTypeBuilder<ForumPost> builder)
     {
-        builder.ToTable(TableNames.ForumPost);
-
-        builder.HasKey(x => x.AutoIncId);
+        builder.ConfigureBase(TableNames.ForumPost);
 
         builder.Property(m => m.LastClickTime).IsRequired().HasColumnType("timestamp");
     }

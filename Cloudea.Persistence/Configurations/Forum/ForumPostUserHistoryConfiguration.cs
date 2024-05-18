@@ -1,5 +1,6 @@
 ﻿using Cloudea.Domain.Forum.Entities;
 using Cloudea.Persistence.Constants;
+using Cloudea.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,8 +10,6 @@ internal class ForumPostUserHistoryConfiguration : IEntityTypeConfiguration<Foru
 {
     public void Configure(EntityTypeBuilder<ForumPostUserHistory> builder)
     {
-        builder.ToTable(TableNames.ForumPostUserHistory);
-
-        builder.HasKey(x => x.AutoIncId);
+        builder.ConfigureBase(TableNames.ForumPostUserHistory);
     }
 }

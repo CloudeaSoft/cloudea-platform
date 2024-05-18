@@ -3,19 +3,18 @@ using Cloudea.Persistence.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Cloudea.Persistence.Configurations.Identity
+namespace Cloudea.Persistence.Configurations.Identity;
+
+public class RoleConfiguration : IEntityTypeConfiguration<Role>
 {
-    public class RoleConfiguration : IEntityTypeConfiguration<Role>
+    public void Configure(EntityTypeBuilder<Role> builder)
     {
-        public void Configure(EntityTypeBuilder<Role> builder)
-        {
-            builder.ToTable(TableNames.Role);
-            builder.HasKey(x => x.Value);
-            builder.HasData(
-                Role.Admin,
-                Role.SubAdmin,
-                Role.User);
-            builder.Property(x => x.Value);
-        }
+        builder.ToTable(TableNames.Role);
+        builder.HasKey(x => x.Value);
+        builder.HasData(
+            Role.Admin,
+            Role.SubAdmin,
+            Role.User);
+        builder.Property(x => x.Value);
     }
 }

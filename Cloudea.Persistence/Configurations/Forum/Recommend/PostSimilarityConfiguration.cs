@@ -1,5 +1,6 @@
 ﻿using Cloudea.Domain.Forum.Entities.Recommend;
 using Cloudea.Persistence.Constants;
+using Cloudea.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,8 +10,6 @@ public class PostSimilarityConfiguration : IEntityTypeConfiguration<PostSimilari
 {
     public void Configure(EntityTypeBuilder<PostSimilarity> builder)
     {
-        builder.ToTable(TableNames.ForumRecommendPostSimilarity);
-
-        builder.HasKey(x => x.AutoIncId);
+        builder.ConfigureBase(TableNames.ForumRecommendPostSimilarity);
     }
 }

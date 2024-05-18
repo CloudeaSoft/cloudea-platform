@@ -1,5 +1,6 @@
 ﻿using Cloudea.Domain.Identity.Entities;
 using Cloudea.Persistence.Constants;
+using Cloudea.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,7 +10,6 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
 {
     public void Configure(EntityTypeBuilder<UserRole> builder)
     {
-        builder.ToTable(TableNames.UserRole);
-        builder.HasKey(t => t.AutoIncId);
+        builder.ConfigureBase(TableNames.UserRole);
     }
 }
