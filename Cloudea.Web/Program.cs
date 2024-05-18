@@ -1,9 +1,9 @@
 using Cloudea.Domain.Common;
 using Cloudea.Domain.Common.Repositories;
+using Cloudea.RealTime;
 using Cloudea.Infrastructure.BackgroundJobs;
 using Cloudea.Infrastructure.BackgroundJobs.ForumPostRecommendSystem;
 using Cloudea.Persistence;
-using Cloudea.Service.HubTest;
 using Cloudea.Web.Infrastructure;
 using Cloudea.Web.Middlewares;
 using Cloudea.Web.OptionsSetup;
@@ -262,7 +262,7 @@ namespace Cloudea.Web
             app.UseCors();
 
             // Websocket Endpoint
-            app.MapHub<ChatRoomHub>("/ChatRoomHub");
+            app.MapHub<ChatHub>("/chat-hub");
 
             // Controller
             app.MapControllers();

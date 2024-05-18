@@ -52,6 +52,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Cloudea.Application\Cloudea.Application.csproj" />
 	  <ProjectReference Include="..\Cloudea.Domain.Infrastructure\Cloudea.Infrastructure.csproj" />
+	  <ProjectReference Include="..\Cloudea.Hub\Cloudea.RealTime.csproj" />
 	  <ProjectReference Include="..\Cloudea.Persistence\Cloudea.Persistence.csproj" />
 	</ItemGroup>
 
