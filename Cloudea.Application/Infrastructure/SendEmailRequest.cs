@@ -35,5 +35,5 @@ public class SendEmailRequest : IRequest<Result>
     /// <summary>
     /// 附件
     /// </summary>
-    public List<Attachment> Attachments { get; set; } = new List<Attachment>();
+    public List<Attachment> Attachments { get; set; } = [];
 }
