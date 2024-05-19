@@ -6,6 +6,9 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
 		<UserSecretsId>c341397e-d2ca-430c-a6fc-fec80d1e71ac</UserSecretsId>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <GenerateAssemblyInfoFile>AssemblyInfo.cs</GenerateAssemblyInfoFile>
+        <Authors>Cloudea</Authors>
 	</PropertyGroup>
 
 	<ItemGroup>
