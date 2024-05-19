@@ -1,4 +1,4 @@
-﻿namespace Cloudea.RealTime;
+﻿namespace Cloudea.RealTime.Clients;
 
 public interface IChatClient
 {

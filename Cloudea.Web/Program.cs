@@ -1,6 +1,5 @@
 using Cloudea.Domain.Common;
 using Cloudea.Domain.Common.Repositories;
-using Cloudea.RealTime;
 using Cloudea.Infrastructure.BackgroundJobs;
 using Cloudea.Infrastructure.BackgroundJobs.ForumPostRecommendSystem;
 using Cloudea.Persistence;
@@ -18,6 +17,8 @@ using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Cloudea.RealTime.Hubs;
+using Cloudea.RealTime;
 
 namespace Cloudea.Web
 {
@@ -234,7 +235,7 @@ var calculateUserPostInterestJobKey = new JobKey(nameof(CalculateUserPostInteres
 #endif
             });
             builder.Services.AddQuartzHostedService();
-#endregion
+            #endregion
 
             //Build Webapplication.
             var app = builder.Build();
@@ -263,10 +264,10 @@ var calculateUserPostInterestJobKey = new JobKey(nameof(CalculateUserPostInteres
             // Cors
             app.UseCors();
 
-            // Websocket Endpoint
-            app.MapHub<ChatHub>("/chat-hub");
+            // Map Websocket Endpoint
+            app.MapCloudeaHubs();
 
-            // Controller
+            // Map Controllers
             app.MapControllers();
 
             // Log API request

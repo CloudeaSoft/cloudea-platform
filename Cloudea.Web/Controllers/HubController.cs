@@ -1,5 +1,6 @@
 ﻿using Cloudea.Domain.Common.API;
-using Cloudea.RealTime;
+using Cloudea.RealTime.Clients;
+using Cloudea.RealTime.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 

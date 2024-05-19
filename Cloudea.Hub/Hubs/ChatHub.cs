@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Cloudea.RealTime.Clients;
+using Microsoft.AspNetCore.SignalR;
 
-namespace Cloudea.RealTime;
+namespace Cloudea.RealTime.Hubs;
 
 public class ChatHub : Hub<IChatClient>
 {
