@@ -6,14 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Web", "Cloudea.Web\Cloudea.Web.csproj", "{FB84F973-666D-4431-A5CB-E867B025F746}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E6B1532C-5DDD-4901-9E64-1FE7AC6C9A68}"
-	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
-		.editorconfig = .editorconfig
-		.gitattributes = .gitattributes
-		.gitignore = .gitignore
-		LICENSE = LICENSE
-		README.md = README.md
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Persistence", "Cloudea.Persistence\Cloudea.Persistence.csproj", "{F2DAB7D1-1346-4C19-98B6-7C9082C1B04C}"
 EndProject
@@ -40,6 +32,16 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.Domain.System", "Cloudea.Domain.System\Cloudea.Domain.System.csproj", "{8279AF18-0F87-497C-A57F-1988D2E92D47}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloudea.RealTime", "Cloudea.Hub\Cloudea.RealTime.csproj", "{FCF1EEBE-9557-427D-8211-25567590F518}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0414F9A2-AC70-4A42-9102-08EED2054271}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
