@@ -361,4 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/Cloudea.Web/appsettings.json
+
+# Custom Settings
+Cloudea.Web/wwwroot/
