@@ -39,7 +39,7 @@ public sealed class ForumSection : AggregateRoot, IAuditableEntity
     /// <returns></returns>
     public static ForumSection? Create(string name, Guid master, string statement = "")
     {
-        if (string.IsNullOrEmpty(name)) {
+        if (string.IsNullOrWhiteSpace(name)) {
             return null;
         }
         if (master == Guid.Empty) {
@@ -58,10 +58,10 @@ public sealed class ForumSection : AggregateRoot, IAuditableEntity
     /// <param name="masterId"></param>
     public void Update(string sectionName, string statement, Guid? masterId)
     {
-        if (string.IsNullOrEmpty(sectionName)) {
+        if (string.IsNullOrWhiteSpace(sectionName)) {
             Name = sectionName;
         }
-        if (string.IsNullOrEmpty(statement)) {
+        if (string.IsNullOrWhiteSpace(statement)) {
             Statement = statement;
         }
         if (masterId is not null && masterId != Guid.Empty) {

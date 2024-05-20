@@ -56,8 +56,8 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
     {
         if (userId == Guid.Empty) return null;
         if (section == null || section.Id == Guid.Empty) return null;
-        if (string.IsNullOrEmpty(title)) return null;
-        if (string.IsNullOrEmpty(content)) return null;
+        if (string.IsNullOrWhiteSpace(title)) return null;
+        if (string.IsNullOrWhiteSpace(content)) return null;
 
         var id = Guid.NewGuid();
 
@@ -68,12 +68,12 @@ public sealed class ForumPost : AggregateRoot, IAuditableEntity
         string? title,
         string? content)
     {
-        if (!string.IsNullOrEmpty(title))
+        if (!string.IsNullOrWhiteSpace(title))
         {
             Title = title;
         }
 
-        if (!string.IsNullOrEmpty(content))
+        if (!string.IsNullOrWhiteSpace(content))
         {
             Content = content;
         }

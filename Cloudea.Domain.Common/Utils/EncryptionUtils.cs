@@ -12,7 +12,7 @@ namespace Cloudea.Domain.Common.Utils
         /// <returns></returns>
         public static string EncryptMD5(string text)
         {
-            if (string.IsNullOrEmpty(text)) {
+            if (string.IsNullOrWhiteSpace(text)) {
                 throw new ArgumentException("text is null or empty");
             }
             using (var md5 = MD5.Create()) {
@@ -30,10 +30,10 @@ namespace Cloudea.Domain.Common.Utils
         /// <returns></returns>
         public static string HMACSHA256(string message, string secret)
         {
-            if (string.IsNullOrEmpty(message)) {
+            if (string.IsNullOrWhiteSpace(message)) {
                 throw new ArgumentException("message is null or empty");
             }
-            if (string.IsNullOrEmpty(secret)) {
+            if (string.IsNullOrWhiteSpace(secret)) {
                 throw new ArgumentException("secret is null or empty");
             }
             secret = secret ?? "";

@@ -48,10 +48,10 @@ namespace Cloudea.Domain.Common.API
             if (index > -1) {
                 prefix += "/" + controllerNamespace.Substring(index + temp.Length);
             }
-            if (string.IsNullOrEmpty(prefix)) {
+            if (string.IsNullOrWhiteSpace(prefix)) {
                 return;
             }
-            if (!string.IsNullOrEmpty(prefix)) {
+            if (!string.IsNullOrWhiteSpace(prefix)) {
                 prefix = prefix.Replace(".", "/");
             }
 

@@ -41,7 +41,7 @@ public sealed class ForumReply : AggregateRoot, IAuditableEntity
     {
         if (userId == Guid.Empty) return null;
         if (post is null || post.Id == Guid.Empty) return null;
-        if (string.IsNullOrEmpty(content))
+        if (string.IsNullOrWhiteSpace(content))
         {
             return null;
         }
@@ -53,7 +53,7 @@ public sealed class ForumReply : AggregateRoot, IAuditableEntity
 
     public void Update(string? content)
     {
-        if (!string.IsNullOrEmpty(content))
+        if (!string.IsNullOrWhiteSpace(content))
         {
             Content = content;
         }

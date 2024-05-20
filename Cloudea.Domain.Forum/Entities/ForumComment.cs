@@ -43,7 +43,7 @@ public sealed class ForumComment : Entity, IAuditableEntity
         if (ownerUser == Guid.Empty) {
             return null;
         }
-        if (string.IsNullOrEmpty(content)) {
+        if (string.IsNullOrWhiteSpace(content)) {
             return null;
         }
 
@@ -54,7 +54,7 @@ public sealed class ForumComment : Entity, IAuditableEntity
 
     public void Update(string content)
     {
-        if (!string.IsNullOrEmpty(content)) {
+        if (!string.IsNullOrWhiteSpace(content)) {
             Content = content;
         }
     }

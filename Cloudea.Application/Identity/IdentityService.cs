@@ -131,7 +131,7 @@ namespace Cloudea.Application.Identity
             }
 
             // 验证信息合法性
-            if (string.IsNullOrEmpty(password))
+            if (string.IsNullOrWhiteSpace(password))
             {
                 return new Error("密码不能为空");
             }
@@ -140,7 +140,7 @@ namespace Cloudea.Application.Identity
                 return new Error("密码不能小于6位");
             }
 
-            if (string.IsNullOrEmpty(userName))
+            if (string.IsNullOrWhiteSpace(userName))
             {
                 return new Error("名称不能为空");
             }
