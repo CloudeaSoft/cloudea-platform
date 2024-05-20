@@ -17,7 +17,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
-using Cloudea.RealTime.Hubs;
 using Cloudea.RealTime;
 
 namespace Cloudea.Web
