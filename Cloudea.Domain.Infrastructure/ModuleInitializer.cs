@@ -1,5 +1,4 @@
 ﻿using Cloudea.Application.Infrastructure;
-using Cloudea.Application.Utils;
 using Cloudea.Domain.Common;
 using Cloudea.Infrastructure.FileStorageClients;
 using Cloudea.Infrastructure.Jwt;
@@ -12,6 +11,6 @@ internal class ModuleInitializer : IModuleInitializer
     public void Initialize(IServiceCollection services)
     {
         services.AddScoped<IStorageClient, DefaultStorageClient>();
-        services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IJwtProvider, JwtProvider>();
     }
 }

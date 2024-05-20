@@ -1,6 +1,6 @@
 ﻿using Cloudea.Application.Abstractions;
 using Cloudea.Application.Identity.Contracts;
-using Cloudea.Application.Utils;
+using Cloudea.Application.Infrastructure;
 using Cloudea.Domain.Common.Repositories;
 using Cloudea.Domain.Common.Shared;
 using Cloudea.Domain.Common.Utils;
@@ -19,7 +19,7 @@ namespace Cloudea.Application.Identity
     public class IdentityService
     {
         private readonly VerificationCodeService _userVerificationCodeService;
-        private readonly IJwtTokenService _jwtTokenService;
+        private readonly IJwtProvider _jwtTokenService;
         private readonly IUserRepository _userRepository;
         private readonly IMemoryCache _memoryCache;
         private readonly IUserRoleRepository _userRoleRepository;
@@ -33,7 +33,7 @@ namespace Cloudea.Application.Identity
             IConfiguration configuration,
             IMemoryCache memoryCache,
             VerificationCodeService userVerificationCodeService,
-            IJwtTokenService jwtTokenService,
+            IJwtProvider jwtTokenService,
             IUserRoleRepository userRoleRepository,
             IRoleRepository roleRepository,
             IUnitOfWork unitOfWork,

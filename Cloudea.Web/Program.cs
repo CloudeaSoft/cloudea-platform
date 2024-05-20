@@ -22,9 +22,6 @@ using Cloudea.RealTime;
 
 namespace Cloudea.Web
 {
-    /// <summary>
-    /// Main Program
-    /// </summary>
     public class Program
     {
         /// <summary>
@@ -117,8 +114,6 @@ namespace Cloudea.Web
                     options.RequireHttpsMetadata = false;
                     options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters {
-                        //NameClaimType = JwtClaimTypes.Name,
-                        //RoleClaimType = JwtClaimTypes.Role,
 
                         // 颁发者
                         ValidateIssuer = true,
@@ -155,16 +150,14 @@ namespace Cloudea.Web
             // CORS
             builder.Services.AddCors(opt => {
                 opt.AddDefaultPolicy(b => {
-                    b.WithOrigins("http://localhost:3000",
+                    b.WithOrigins(
+                        "http://localhost:3000",
                         "https://www.cloudea.work")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
                 });
             });
-
-            // Auto inject services in other class library projects.
-            builder.Services.RunModuleInitializers();
 
             // Logservice - Serilog
             builder.Host.UseSerilog((context, configuration) =>
@@ -173,7 +166,8 @@ namespace Cloudea.Web
             // Persistence - Efcore
             builder.Services.AddDbContext<ApplicationDbContext>(
                 (IServiceProvider serviceProvider, DbContextOptionsBuilder dbContextOptionsBuilder) => {
-                    var databaseOptions = serviceProvider.GetService<IOptions<DatabaseOptions>>()!.Value;
+                    var optionObj = serviceProvider.GetService<IOptions<DatabaseOptions>>() ?? throw new NotImplementedException();
+                    var databaseOptions = optionObj.Value;
 
                     dbContextOptionsBuilder.UseMySql(databaseOptions.ConnectionString, ServerVersion.Parse("8.0.26"), mysqlAction => {
                         mysqlAction.EnableRetryOnFailure(databaseOptions.MaxRetryCount);
@@ -235,6 +229,9 @@ var calculateUserPostInterestJobKey = new JobKey(nameof(CalculateUserPostInteres
 #endif
             });
             builder.Services.AddQuartzHostedService();
+
+            // Auto inject services in other class library projects.
+            builder.Services.RunModuleInitializers();
             #endregion
 
             //Build Webapplication.

@@ -5,17 +5,13 @@ public class JwtOptions
     /// <summary>
     /// 密钥
     /// </summary>
-    public string Secret { get; init; } = string.Empty;
+    public string Secret { get; init; } = default!;
     /// <summary>
     /// 发行人
     /// </summary>
-    public string Issuer { get; init; } = string.Empty;
+    public string Issuer { get; init; } = default!;
     /// <summary>
     /// 接受人
     /// </summary>
-    public string Audience { get; init; } = string.Empty;
-    /// <summary>
-    /// 过期时间
-    /// </summary>
-    public int ExpireSeconds { get; init; } = 30;
+    public string Audience { get; init; } = default!;
 }
